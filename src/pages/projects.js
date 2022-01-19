@@ -1,15 +1,15 @@
 import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
-import { products } from '../__mocks__/products';
-import { ProductListToolbar } from '../components/product/product-list-toolbar';
-import { ProductCard } from '../components/product/product-card';
+import { products } from '../__mocks__/projects';
+import { ProductListToolbar } from '../components/project/project-list-toolbar';
+import { ProductCard } from '../components/project/project-card';
 import { DashboardLayout } from '../components/dashboard-layout';
 
 const Products = () => (
   <>
     <Head>
       <title>
-        Products | Material Kit
+        Projects
       </title>
     </Head>
     <Box

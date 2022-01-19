@@ -74,17 +74,6 @@ export const ProductCard = ({ product, ...rest }) => (
             display: 'flex'
           }}
         >
-          <DownloadIcon color="action" />
-          <Typography
-            color="textSecondary"
-            display="inline"
-            sx={{ pl: 1 }}
-            variant="body2"
-          >
-            {product.totalDownloads}
-            {' '}
-            Downloads
-          </Typography>
         </Grid>
       </Grid>
     </Box>
