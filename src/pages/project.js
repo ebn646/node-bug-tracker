@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
 import { ProductBoardToolbar } from '../components/project/project-board-toolbar';
-import { ProductCard } from '../components/project/project-card';
+import { ProjectCard } from '../components/project/project-card';
 import { DashboardLayout } from '../components/dashboard-layout';
 
 const Project = () => (
@@ -26,7 +26,7 @@ const Project = () => (
             container
             spacing={3}
           >
-            {projects && projects.map((project) => (
+            {projects && projects.length > 0 && projects.map((project) => (
               <Grid
                 item
                 key={project.id}
@@ -34,7 +34,7 @@ const Project = () => (
                 md={6}
                 xs={12}
               >
-                <ProductCard project={project} />
+                <ProjectCard project={project} />
               </Grid>
             ))}
           </Grid>

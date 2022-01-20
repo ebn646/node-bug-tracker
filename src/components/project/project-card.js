@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Clock as ClockIcon } from '../../icons/clock';
-import { Download as DownloadIcon } from '../../icons/download';
 
 export const ProjectCard = ({ project, ...rest }) => (
   <Link href="/project">
