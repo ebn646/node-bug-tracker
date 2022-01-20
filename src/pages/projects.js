@@ -2,14 +2,14 @@ import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
 import { ProductListToolbar } from '../components/project/project-list-toolbar';
-import { ProductCard } from '../components/project/project-card';
+import { ProjectCard } from '../components/project/project-card';
 import { DashboardLayout } from '../components/dashboard-layout';
 
 const Projects = () => (
   <>
     <Head>
       <title>
-        Projects
+        Projects | Node Bug Tracker
       </title>
     </Head>
     <Box
@@ -34,7 +34,8 @@ const Projects = () => (
                 md={6}
                 xs={12}
               >
-                <ProductCard project={project} />
+                <ProjectCard project={project} />
+                hi
               </Grid>
             ))}
           </Grid>
