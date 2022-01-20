@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -12,7 +11,7 @@ import {
 import { Clock as ClockIcon } from '../../icons/clock';
 import { Download as DownloadIcon } from '../../icons/download';
 
-export const ProductCard = ({ project, ...rest }) => (
+export const ProjectCard = ({ project, ...rest }) => (
   <Link href="/project">
     <a style={{textDecoration: 'none'}}>
     <Card
@@ -88,6 +87,6 @@ export const ProductCard = ({ project, ...rest }) => (
   </Link>
 );
 
-ProductCard.propTypes = {
+ProjectCard.propTypes = {
   project: PropTypes.object.isRequired,
 };

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
 import { ProductListToolbar } from '../components/project/project-list-toolbar';
-import { ProductCard } from '../components/project/project-card';
+import { ProjectCard } from '../components/project/project-card';
 import { DashboardLayout } from '../components/dashboard-layout';
 
 const Projects = () => (
@@ -26,15 +26,16 @@ const Projects = () => (
             container
             spacing={3}
           >
-            {projects.map((product) => (
+            {projects.map((project) => (
               <Grid
                 item
-                key={product.id}
+                key={project.id}
                 lg={4}
                 md={6}
                 xs={12}
               >
-                <ProductCard product={product} />
+                <ProjectCard project={project} />
+                hi
               </Grid>
             ))}
           </Grid>
