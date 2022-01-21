@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { Search as SearchIcon } from '../../icons/search';
+import BoardDragList from './project-board-draglist'
 
 export const ProductBoardToolbar = (props) => {
   const [open, setOpen] = useState(false);
@@ -28,19 +29,6 @@ export const ProductBoardToolbar = (props) => {
   };
   return (
     <Box {...props}>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          m: -1,
-        }}
-      >
-        <Typography sx={{ m: 1 }} variant="h4">
-          Project Name
-        </Typography>
-      </Box>
       <Box sx={{ mt: 3 }}>
         <Card>
           <CardContent>
@@ -56,13 +44,14 @@ export const ProductBoardToolbar = (props) => {
                     </InputAdornment>
                   ),
                 }}
-                placeholder="Search projects"
+                placeholder="Search"
                 variant="outlined"
               />
             </Box>
           </CardContent>
         </Card>
       </Box>
+      <BoardDragList />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create A New Project</DialogTitle>
         <DialogContent>

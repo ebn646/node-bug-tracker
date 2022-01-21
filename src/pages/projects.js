@@ -35,7 +35,6 @@ const Projects = () => (
                 xs={12}
               >
                 <ProjectCard project={project} />
-                hi
               </Grid>
             ))}
           </Grid>

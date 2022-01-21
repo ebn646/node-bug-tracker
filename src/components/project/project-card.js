@@ -11,7 +11,7 @@ import {
 import { Clock as ClockIcon } from '../../icons/clock';
 
 export const ProjectCard = ({ project, ...rest }) => (
-  <Link href="/project">
+  <Link href="/project/111">
     <a style={{textDecoration: 'none'}}>
     <Card
       sx={{
@@ -23,7 +23,7 @@ export const ProjectCard = ({ project, ...rest }) => (
     >
       <CardContent>
         <Typography
-          align="center"
+          align="left"
           color="textPrimary"
           gutterBottom
           variant="h5"
