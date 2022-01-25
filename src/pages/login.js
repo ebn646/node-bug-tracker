@@ -31,7 +31,6 @@ const Login = () => {
           'Password is required')
     }),
     onSubmit: () => {
-      console.log('poop')
       // router.push('/');
     }
   });
