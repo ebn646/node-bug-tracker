@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getSession } from 'next-auth/client';
 import {useRouter} from 'next/router';
 import Head from 'next/head';
 import Typography from '@mui/material/Typography';
@@ -7,7 +8,6 @@ import Link from '@mui/material/Link';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { ProductBoardToolbar } from '../../components/project/project-board-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
-import "@asseinfo/react-kanban/dist/styles.css";
 
 const board = {
     columns: [
@@ -126,5 +126,23 @@ const Project = () => {
 };
 
 Project.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+
+export async function getServerSideProps(context){
+  const session = await getSession({req: context.req});
+
+  if(!session){
+    return {
+      redirect:{
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: { session },
+  }
+}
 
 export default Project;

@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { getSession } from 'next-auth/client';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
 import { ProductListToolbar } from '../components/project/project-list-toolbar';
@@ -62,5 +63,22 @@ Projects.getLayout = (page) => (
     {page}
   </DashboardLayout>
 );
+
+export async function getServerSideProops(context){
+  const session = await getSession({req: context.reg});
+
+  if(!session){
+    return {
+      redirect:{
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: { session },
+  }
+}
 
 export default Projects;
