@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
+import { useSession, signOut } from 'next-auth/client';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
 import styled from '@emotion/styled';
 import {
   AppBar,
@@ -16,9 +16,11 @@ import {
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
+import { NavItem } from './nav-item';
 import { Bell as BellIcon } from '../icons/bell';
+import { User as UserIcon } from '../icons/user';
 import { UserCircle as UserCircleIcon } from '../icons/user-circle';
+import { Cog as CogIcon } from '../icons/cog';
 // components
 import MenuPopover from './MenuPopover';
 import account from '../__mocks__/account';
@@ -28,19 +30,21 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   boxShadow: theme.shadows[3],
 }));
 
-const MENU_OPTIONS = [
+const items = [
   {
-    label: 'Profile',
-    linkTo: '#'
+    href: '/account',
+    icon: (<UserIcon fontSize="small" />),
+    title: 'Account'
   },
   {
-    label: 'Settings',
-    linkTo: '#'
+    href: '/settings',
+    icon: (<CogIcon fontSize="small" />),
+    title: 'Settings'
   }
 ];
-
 export const DashboardNavbar = (props) => {
   const { onSidebarOpen, ...other } = props;
+  const [session, loading] = useSession();
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -49,6 +53,9 @@ export const DashboardNavbar = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  function logoutHandler() {
+    signOut();
+  }
   return (
     <>
       <DashboardNavbarRoot
@@ -82,13 +89,13 @@ export const DashboardNavbar = (props) => {
             <MenuIcon fontSize="small" />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Notifications">
+          {/* <Tooltip title="Notifications">
             <IconButton sx={{ ml: 1 }}>
               <Badge badgeContent={4} color="primary" variant="dot">
                 <BellIcon fontSize="small" />
               </Badge>
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
           <IconButton
             ref={anchorRef}
             onClick={handleOpen}
@@ -120,49 +127,45 @@ export const DashboardNavbar = (props) => {
             </Avatar>
           </IconButton>
           <MenuPopover
-        open={open}
-        onClose={handleClose}
-        anchorEl={anchorRef.current}
-        sx={{ width: 220 }}
-      >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle1" noWrap>
-            {account.displayName}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
-          </Typography>
-        </Box>
-
-        <Divider sx={{ my: 1 }} />
-
-        {/* {MENU_OPTIONS.map((option) => (
-          <MenuItem
-            key={option.label}
-            to={option.linkTo}
-            component={Link}
-            onClick={handleClose}
-            sx={{ typography: 'body2', py: 1, px: 2.5 }}
+            open={open}
+            onClose={handleClose}
+            anchorEl={anchorRef.current}
+            sx={{ width: 220 }}
           >
-            <Box
-              icon={option.icon}
-              sx={{
-                mr: 2,
-                width: 24,
-                height: 24
-              }}
+            <Box sx={{ my: 1.5, px: 2.5 }}>
+              <Typography variant="subtitle1" noWrap>
+                {account.displayName}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: 'text.secondary' }}
+                noWrap
+              >
+                {account.email}
+              </Typography>
+            </Box>
+
+            <Divider sx={{ my: 1 }} />
+            {items.map((item) => (
+            <NavItem
+              key={item.title}
+              icon={item.icon}
+              href={item.href}
+              title={item.title}
             />
+          ))}
 
-            {option.label}
-          </MenuItem>
-        ))} */}
-
-        <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
-            Logout
-          </Button>
-        </Box>
-      </MenuPopover>
+            <Box sx={{ p: 2, pt: 1.5 }}>
+              <Button
+                fullWidth
+                color="inherit"
+                variant="outlined"
+                onClick={logoutHandler}
+              >
+                Logout
+              </Button>
+            </Box>
+          </MenuPopover>
         </Toolbar>
       </DashboardNavbarRoot>
     </>

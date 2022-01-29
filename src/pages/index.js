@@ -40,19 +40,6 @@ const Index = () => (
             ))}
           </Grid>
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            pt: 3
-          }}
-        >
-          <Pagination
-            color="primary"
-            count={3}
-            size="small"
-          />
-        </Box>
       </Container>
     </Box>
   </>

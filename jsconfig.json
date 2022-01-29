@@ -2,7 +2,12 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "include": [
-    "src"
-, "lib"  ]
+  "paths": {
+    "@/components/*": ["components/*"],
+    "@/page-components/*": ["page-components/*"],
+    "@/lib/*": ["lib/*"],
+    "@/api-lib/*": ["api-lib/*"],
+    "@/assets/*": ["assets/*"]
+  },
+  "include": ["src", "lib"  ]
 }
