@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/client';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
@@ -47,6 +47,11 @@ export const DashboardNavbar = (props) => {
   const [session, loading] = useSession();
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    console.log('Hi Eric ', session)
+  }, [session]);
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -96,6 +101,11 @@ export const DashboardNavbar = (props) => {
               </Badge>
             </IconButton>
           </Tooltip> */}
+            {
+              session && session.user.email && (
+                <p style={{ color: 'black',  fontSize: 12 }}>Hello {session.user.email}!</p>
+              )
+            }
           <IconButton
             ref={anchorRef}
             onClick={handleOpen}

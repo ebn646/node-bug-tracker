@@ -1,6 +1,5 @@
 import { connectToDatabase } from '../../../../lib/db';
 import nc from 'next-connect';
-import { findDOMNode } from 'react-dom';
 
 const ncOpts = {
     onError(err, req, res) {
@@ -16,7 +15,7 @@ const handler = nc(ncOpts);
 handler.get(async (req, res) => {
     let client = await connectToDatabase();
     let db = client.db();
-    
+
     let projects = await db
       .collection("boards")
       .find()

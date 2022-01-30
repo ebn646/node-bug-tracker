@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import Head from 'next/head';
 import { CacheProvider } from '@emotion/react';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -6,6 +7,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
+
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -18,13 +20,14 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Material Kit Pro
+          Node Bug Tracker
         </title>
         <meta
           name="viewport"
           content="initial-scale=1, width=device-width"
         />
       </Head>
+      
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
