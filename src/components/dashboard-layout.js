@@ -1,9 +1,8 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DashboardNavbar } from './dashboard-navbar';
 import { DashboardSidebar } from './dashboard-sidebar';
-import UserContext from '../utils/context/UserContext';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
