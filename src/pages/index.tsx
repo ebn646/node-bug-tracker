@@ -1,3 +1,4 @@
+import {useContext, useEffect} from 'react';
 import { getSession } from 'next-auth/client';
 import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
@@ -5,8 +6,16 @@ import { projects } from '../__mocks__/projects';
 import { ProductListToolbar } from '../components/project/project-list-toolbar';
 import { ProjectCard } from '../components/project/project-card';
 import { DashboardLayout } from '../components/dashboard-layout';
+import UserContext from '../context/UserContext';
 
-const Index = () => (
+const Index = () => {
+  const user = useContext(UserContext);
+
+  useEffect(() => {
+    console.log('user = ', user)
+  },[user])
+  
+  return (
   <>
     <Head>
       <title>
@@ -44,6 +53,7 @@ const Index = () => (
     </Box>
   </>
 );
+            }
 
 Index.getLayout = (page) => (
   <DashboardLayout>

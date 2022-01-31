@@ -1,20 +1,27 @@
-import { useState, useRef } from 'react';
 import Head from 'next/head';
-import { signIn } from 'next-auth/client';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  FormHelperText,
+  Link,
+  TextField,
+  Typography
+} from '@mui/material';
 
-const Login = () => {
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
+const Register = () => {
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      email: 'test@test.com',
-      password: 'password1234'
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      policy: false
     },
     validationSchema: Yup.object({
       email: Yup
@@ -31,34 +38,40 @@ const Login = () => {
           'Password is required')
     }),
     onSubmit: () => {
-      // router.push('/');
+      console.log('sumbit me')
     }
   });
 
-  async function submitHandler(e){
+  async function createUser(e) {
     e.preventDefault()
     const enteredEmail = formik.values.email;
     const enteredPassword = formik.values.password;
     console.log('enteredEmail ', enteredEmail)
     console.log('enteredPassword ', enteredPassword)
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: enteredEmail,
-      password: enteredPassword,
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ enteredEmail, enteredPassword}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-
-    console.log('res = ', result)
-    if (!result.error) {
-        // set some auth state
-        router.replace('/');
-      }
+  
+    const data = await response.json();
+  
+    if (!response.ok) {
+      throw new Error(data.message || 'Something went wrong!');
+    }
+  
+    return data;
   }
 
   return (
     <>
       <Head>
-        <title>Login | Material Kit</title>
+        <title>
+          Register | Material Kit
+        </title>
       </Head>
       <Box
         component="main"
@@ -70,17 +83,23 @@ const Login = () => {
         }}
       >
         <Container maxWidth="sm">
-          <form onSubmit={(e) => {submitHandler(e)}}>
+          <form onSubmit={(e) => {createUser(e)}}>
             <Box sx={{ my: 3 }}>
               <Typography
                 color="textPrimary"
                 variant="h4"
               >
-                Sign in
+                Create a new account
+              </Typography>
+              <Typography
+                color="textSecondary"
+                gutterBottom
+                variant="body2"
+              >
+                Use your email to create a new account
               </Typography>
             </Box>
             <TextField
-              ref={emailInputRef}
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
               helperText={formik.touched.email && formik.errors.email}
@@ -94,7 +113,6 @@ const Login = () => {
               variant="outlined"
             />
             <TextField
-              ref={passwordInputRef}
               error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
               helperText={formik.touched.password && formik.errors.password}
@@ -107,6 +125,11 @@ const Login = () => {
               value={formik.values.password}
               variant="outlined"
             />
+            {Boolean(formik.touched.policy && formik.errors.policy) && (
+              <FormHelperText error>
+                {formik.errors.policy}
+              </FormHelperText>
+            )}
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
@@ -116,27 +139,24 @@ const Login = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign In Now
+                Sign Up Now
               </Button>
             </Box>
             <Typography
               color="textSecondary"
               variant="body2"
             >
-              Don&apos;t have an account?
+              Have an account?
               {' '}
               <NextLink
-                href="/register"
+                href="/login"
+                passHref
               >
                 <Link
-                  to="/register"
                   variant="subtitle2"
                   underline="hover"
-                  sx={{
-                    cursor: 'pointer'
-                  }}
                 >
-                  Sign Up
+                  Sign In
                 </Link>
               </NextLink>
             </Typography>
@@ -147,4 +167,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

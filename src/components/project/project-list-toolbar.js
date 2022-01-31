@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   Box,
   Button,
@@ -15,9 +17,48 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { Search as SearchIcon } from '../../icons/search';
+import { fetcher } from '../../../lib/fetch';
 
 export const ProductListToolbar = (props) => {
   const [open, setOpen] = useState(false);
+  const nameInputRef = useRef();
+  const descriptionRef = useRef();
+  const formik = useFormik({
+    initialValues: {
+      name: 'test project',
+      description: 'test description'
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required(''),
+      description: Yup.string().required(''),
+    }),
+  });
+
+  async function submitHandler(e) {
+    e.preventDefault();
+    const name = formik.values.name;
+    const description = formik.values.description;
+    const content = { name, description }
+    let result;
+    try {
+      // setIsLoading(true);
+      result = await fetcher('/api/projects?', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( content ),
+      });
+      // toast.success('You have posted successfully');
+      // contentRef.current.value = '';
+      // refresh post lists
+      //mutate();
+    } catch (e) {
+      //toast.error(e.message);
+      console.log(e)
+    } finally {
+      console.log('Finally')
+    }
+    console.log('result ', result);
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -74,26 +115,36 @@ export const ProductListToolbar = (props) => {
           <DialogContentText>
             To create a new project, please enter a name and description.
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            fullWidth
-            variant="standard"
-          />
+          <form
+            onSubmit={(e) => {
+              submitHandler(e);
+            }}
+          >
             <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
+              ref={nameInputRef}
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              fullWidth
+              variant="standard"
+              value={formik.values.name}
+            />
+            <TextField
+              ref={descriptionRef}
+              autoFocus
+              margin="dense"
+              id="description"
+              label="Description"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={formik.values.description}
+            />
+          </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Create</Button>
+          <Button onClick={submitHandler}>Create</Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>

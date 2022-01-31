@@ -24,4 +24,28 @@ handler.get(async (req, res) => {
     res.json( projects );
   });
 
+  handler.post(
+    // ...auths,
+    // validateBody({
+    //   type: 'object',
+    //   properties: {
+    //     content: ValidateProps.post.content,
+    //   },
+    //   required: ['content'],
+    //   additionalProperties: false,
+    // }),
+    async (req, res) => {
+      let client = await connectToDatabase();
+      let db = client.db();
+      const data = req.body;
+      const project = {
+        ...data,
+        ...{createdAt: new Date()},
+      };
+      const { insertedId } = await db.collection('projects').insertOne(project);
+      project._id = insertedId;
+      return project;
+    }
+  );
+
   export default handler;
