@@ -3,8 +3,8 @@ import { getSession } from 'next-auth/client';
 import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
-import { ProductListToolbar } from '../components/project/project-list-toolbar';
-import { ProjectCard } from '../components/project/project-card';
+import { ProjectListToolbar } from '../components/project/ProjectList';
+import { ProjectCard } from '../components/project/ProjectCard';
 import { DashboardLayout } from '../components/dashboard-layout';
 import UserContext from '../context/UserContext';
 
@@ -30,8 +30,8 @@ const Index = () => {
       }}
     >
       <Container maxWidth={false}>
-        <ProductListToolbar />
-        <Box sx={{ pt: 3 }}>
+        <ProjectListToolbar />
+        {/* <Box sx={{ pt: 3 }}>
           <Grid
             container
             spacing={3}
@@ -48,7 +48,7 @@ const Index = () => {
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Box> */}
       </Container>
     </Box>
   </>

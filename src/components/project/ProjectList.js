@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import useSWR from 'swr';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -15,11 +16,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
 } from '@mui/material';
 import { Search as SearchIcon } from '../../icons/search';
+import { ProjectCard } from './ProjectCard';
+
 import { fetcher } from '../../../lib/fetch';
 
-export const ProductListToolbar = (props) => {
+export const ProjectListToolbar = (props) => {
+  console.log("CRAP")
+  const { data, error } = useSWR(`http://localhost:3000/api/projects/`, fetcher);
   const [open, setOpen] = useState(false);
   const nameInputRef = useRef();
   const descriptionRef = useRef();
@@ -109,6 +115,24 @@ export const ProductListToolbar = (props) => {
           </CardContent>
         </Card>
       </Box>
+      <Box sx={{ pt: 3 }}>
+          <Grid
+            container
+            spacing={3}
+          >
+            {data && data.map((project) => (
+              <Grid
+                item
+                key={project.id}
+                lg={4}
+                md={6}
+                xs={12}
+              >
+                <ProjectCard project={project} />
+              </Grid>
+            ))}
+          </Grid>
+      </Box> 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create A New Project</DialogTitle>
         <DialogContent>

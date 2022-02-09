@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import {useRouter} from 'next/router';
+import useSWR from 'swr';
 import {
   Box,
   Button,
@@ -16,8 +18,12 @@ import {
 } from '@mui/material';
 import { Search as SearchIcon } from '../../icons/search';
 import BoardDragList from './project-board-draglist'
+import { fetcher } from '../../../lib/fetch';
 
-export const ProductBoardToolbar = (props) => {
+export const ProjectBoard = (props) => {
+  const router = useRouter();
+  const { data, error } = useSWR(`http://localhost:3000/api/projects/${router.query.id}`, fetcher);
+
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -32,6 +38,7 @@ export const ProductBoardToolbar = (props) => {
       <Box sx={{ mt: 3 }}>
         <Card>
           <CardContent>
+            <pre>{JSON.stringify(data, null, 2)}</pre>
             <Box sx={{ maxWidth: 500 }}>
               <TextField
                 fullWidth
