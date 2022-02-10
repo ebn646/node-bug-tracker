@@ -37,15 +37,15 @@ const Login = () => {
 
   async function submitHandler(e){
     e.preventDefault()
-    const enteredEmail = formik.values.email;
-    const enteredPassword = formik.values.password;
-    console.log('enteredEmail ', enteredEmail)
-    console.log('enteredPassword ', enteredPassword)
+    const email = formik.values.email;
+    const password = formik.values.password;
+    console.log('enteredEmail ', email)
+    console.log('enteredPassword ', password)
 
     const result = await signIn('credentials', {
       redirect: false,
-      email: enteredEmail,
-      password: enteredPassword,
+      email,
+      password,
     });
 
     if (!result.error) {

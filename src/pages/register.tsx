@@ -44,25 +44,29 @@ const Register = () => {
 
   async function createUser(e) {
     e.preventDefault()
-    const enteredEmail = formik.values.email;
-    const enteredPassword = formik.values.password;
-    console.log('enteredEmail ', enteredEmail)
-    console.log('enteredPassword ', enteredPassword)
+    const email = formik.values.email;
+    const password = formik.values.password;
+    console.log('enteredEmail ', email)
+    console.log('enteredPassword ', password)
 
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
-      body: JSON.stringify({ enteredEmail, enteredPassword}),
+      body: JSON.stringify({ email, password}),
       headers: {
         'Content-Type': 'application/json',
       },
     });
   
-    const data = await response.json();
-  
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong!');
+    const data = await response;
+    console.log('data =', data)
+    const { status, message } = data;
+    console.log('satus = ', status)
+    if(status === 201){
+      router.replace('/');
     }
-  
+    else if (message) {
+      throw new Error(message || 'Something went wrong!');
+    }
     return data;
   }
 

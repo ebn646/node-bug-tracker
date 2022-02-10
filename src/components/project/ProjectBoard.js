@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import {useRouter} from 'next/router';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import {
   Box,
@@ -16,13 +16,29 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Search as SearchIcon } from '../../icons/search';
-import BoardDragList from './project-board-draglist'
+import { makeStyles, InputBase } from '@material-ui/core';
+import Column from './ListColumn';
 import { fetcher } from '../../../lib/fetch';
+
+const useStyles = makeStyles((theme) => ({
+  listContainer: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginTop: theme.spacing(0.5),
+  },
+}))
 
 export const ProjectBoard = (props) => {
   const router = useRouter();
-  const { data, error } = useSWR(`http://localhost:3000/api/projects/${router.query.id}`, fetcher);
+  const { data, error } = useSWR(
+    `http://localhost:3000/api/projects/${router.query.id}`,
+    fetcher
+  );
+
+  const classes = useStyles()
 
   const [open, setOpen] = useState(false);
 
@@ -33,6 +49,9 @@ export const ProjectBoard = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const onDragEnd= (result) => {
+    console.log('onDragEnd called')
+  }
   return (
     <Box {...props}>
       <Box sx={{ mt: 3 }}>
@@ -58,7 +77,23 @@ export const ProjectBoard = (props) => {
           </CardContent>
         </Card>
       </Box>
-      <BoardDragList />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="all-columns" direction="horizontal" type="list">
+        {(provided) => (
+                <div
+                  className={classes.listContainer}
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+          {data &&
+            data.length &&
+            data.map((d) => {
+              return <Column key={d._id} />;
+            })}
+            </div>
+        )}
+        </Droppable>
+      </DragDropContext>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create A New Project</DialogTitle>
         <DialogContent>
@@ -73,7 +108,7 @@ export const ProjectBoard = (props) => {
             fullWidth
             variant="standard"
           />
-            <TextField
+          <TextField
             autoFocus
             margin="dense"
             id="name"

@@ -7,8 +7,8 @@ async function handler(req, res) {
   }
 
   const data = req.body;
-
   const { email, password } = data;
+  console.log(email, password)
 
   if (
     !email ||
@@ -42,7 +42,7 @@ async function handler(req, res) {
     password: hashedPassword,
   });
 
-  res.status(201).json({ message: 'Created user!' });
+  res.send({ status: 201, message: null });
   client.close();
 }
 
