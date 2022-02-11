@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardContent,
+  Container,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -16,20 +17,44 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Search as SearchIcon } from '../../icons/search';
-import { makeStyles, InputBase } from '@material-ui/core';
-import Column from './ListColumn';
+import Column from './BoardColumn';
 import { fetcher } from '../../../lib/fetch';
 
-const useStyles = makeStyles((theme) => ({
-  listContainer: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    width: '100%',
-    marginTop: theme.spacing(0.5),
+// const useStyles = makeStyles((theme) => ({
+//   listContainer: {
+//     display: 'flex',
+//     alignItems: 'flex-start',
+//     width: '100%',
+//     marginTop: theme.spacing(0.5),
+//     border: '1px solid red'
+//   },
+// }))
+
+const initialData = {
+  tasks: {
+    'task-1': { id: 'task-1', content: 'Take out the garbage' },
+    'task-2': { id: 'task-2', content: 'Watch my favorite show' },
+    'task-3': { id: 'task-3', content: 'Charge my phone' },
+    'task-4': { id: 'task-4', content: 'Cook dinner' },
   },
-}))
+  columns: {
+    'column-1': {
+      id: 'column-1',
+      title: 'To do',
+      taskIds: ['task-1', 'task-2', 'task-3', 'task-4'],
+    },
+    'column-2': {
+      id: 'column-2',
+      title: 'In progress',
+      taskIds: [],
+    },
+  },
+  // Facilitate reordering of the columns
+  columnOrder: ['column-1', 'column-2'],
+};
 
 export const ProjectBoard = (props) => {
   const router = useRouter();
@@ -38,7 +63,7 @@ export const ProjectBoard = (props) => {
     fetcher
   );
 
-  const classes = useStyles()
+  // const classes = useStyles()
 
   const [open, setOpen] = useState(false);
 
@@ -54,10 +79,10 @@ export const ProjectBoard = (props) => {
   }
   return (
     <Box {...props}>
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ mt: 3, border: '1px solid red' }}>
         <Card>
           <CardContent>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
             <Box sx={{ maxWidth: 500 }}>
               <TextField
                 fullWidth
@@ -78,18 +103,25 @@ export const ProjectBoard = (props) => {
         </Card>
       </Box>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="all-columns" direction="horizontal" type="list">
+        <Droppable 
+          droppableId="all-columns" 
+          direction="horizontal" 
+          type="column"
+        >
         {(provided) => (
                 <div
-                  className={classes.listContainer}
+                  style={{display: 'flex'}}
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-          {data &&
-            data.length &&
-            data.map((d) => {
-              return <Column key={d._id} />;
+          {
+            initialData.columnOrder.map((columnId, index) => {
+              const column = initialData.columns[columnId];
+              const tasks = column.taskIds.map(taskId => initialData.tasks[taskId]);
+  
+              return <Column key={column.id} column={column} tasks={tasks} index={index} />;
             })}
+              {provided.placeholder}
             </div>
         )}
         </Droppable>

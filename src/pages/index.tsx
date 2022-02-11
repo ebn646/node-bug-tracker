@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
 import { ProjectListToolbar } from '../components/project/ProjectList';
-import { ProjectCard } from '../components/project/ProjectCard';
 import { DashboardLayout } from '../components/dashboard-layout';
 import UserContext from '../context/UserContext';
 
@@ -31,24 +30,6 @@ const Index = () => {
     >
       <Container maxWidth={false}>
         <ProjectListToolbar />
-        {/* <Box sx={{ pt: 3 }}>
-          <Grid
-            container
-            spacing={3}
-          >
-            {projects.map((project) => (
-              <Grid
-                item
-                key={project.id}
-                lg={4}
-                md={6}
-                xs={12}
-              >
-                <ProjectCard project={project} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box> */}
       </Container>
     </Box>
   </>

@@ -59,13 +59,14 @@ const Register = () => {
   
     const data = await response;
     console.log('data =', data)
-    const { status, message } = data;
+    const { status, ok } = data;
     console.log('satus = ', status)
-    if(status === 201){
+    if(ok){
       router.replace('/');
     }
-    else if (message) {
-      throw new Error(message || 'Something went wrong!');
+    else if (status == 422) {
+      // throw new Error('User already exists!');
+      router.replace('/login');
     }
     return data;
   }

@@ -2,7 +2,8 @@ import { Children } from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
 import { createEmotionCache } from '../utils/create-emotion-cache';
-
+import { extractCritical } from "@emotion/server";
+import { resetServerContext } from "react-beautiful-dnd";
 class CustomDocument extends Document {
   render() {
     return (
@@ -74,6 +75,9 @@ CustomDocument.getInitialProps = async (ctx) => {
   });
 
   const initialProps = await Document.getInitialProps(ctx);
+  const page = await ctx.renderPage()
+  const styles = extractCritical(page.html);
+  resetServerContext();
   const emotionStyles = extractCriticalToChunks(initialProps.html);
   const emotionStyleTags = emotionStyles.styles.map((style) => (
     <style
@@ -86,6 +90,8 @@ CustomDocument.getInitialProps = async (ctx) => {
 
   return {
     ...initialProps,
+    ...page,
+    ...styles,
     styles: [...Children.toArray(initialProps.styles), ...emotionStyleTags]
   };
 };
