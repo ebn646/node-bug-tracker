@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 import ProjectList from '../page-components/projects/ProjectList';
 
 const Projects = () => {

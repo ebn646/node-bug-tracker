@@ -4,7 +4,6 @@ import Stack from '@mui/material/Stack';
 import Card from './Card';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import { providers } from 'next-auth/client';
 
 const Title = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,

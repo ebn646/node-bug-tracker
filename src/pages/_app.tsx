@@ -13,8 +13,6 @@ import UserContext from '../context/UserContext';
 
 const clientSideEmotionCache = createEmotionCache();
 
-type user = {}
-
 const App = (props) => {
   const [currentUser, setCurrentUser] = useState();
 

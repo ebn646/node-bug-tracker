@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import { signIn } from 'next-auth/client';
 import NextLink from 'next/link';
