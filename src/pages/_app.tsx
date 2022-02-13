@@ -13,12 +13,13 @@ import UserContext from '../context/UserContext';
 
 const clientSideEmotionCache = createEmotionCache();
 
+type user = {}
+
 const App = (props) => {
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
     if(pageProps.session){
-      console.log('asfdafsd')
       const {email} = pageProps.session.user;
       getUser(email)
     }
