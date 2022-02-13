@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/components/dashboard-navbar.tsx"  ],
+, "src/components/dashboard-navbar.jsx", "src/pages/login.jsx", "src/pages/_document.jsx", "src/components/dashboard-sidebar.jsx"  ],
   "exclude": [
     "node_modules"
   ]
