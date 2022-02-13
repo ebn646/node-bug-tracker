@@ -97,9 +97,6 @@ const initial = {
 export const ProjectBoard = (props) => {
   const router = useRouter();
   const getData = (endpoint) => {
-    console.log(process.env.ENDPOINTS_URL)
-    console.log(process.env.NEXTAUTH_URL)
-
     const { data } = useSWR(`${endpoint}`, fetcher)
     return data
   }
