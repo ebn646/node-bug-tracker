@@ -24,7 +24,7 @@ import { ProjectCard } from './ProjectCard';
 import { fetcher } from '../../../lib/fetch';
 
 export const ProjectListToolbar = (props) => {
-  const { data, error } = useSWR(`http://localhost:3000/api/projects/`, fetcher);
+  const { data, error } = useSWR(`/api/projects/`, fetcher);
   const [open, setOpen] = useState(false);
   const nameInputRef = useRef();
   const descriptionRef = useRef();

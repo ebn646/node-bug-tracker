@@ -94,13 +94,13 @@ const initial = {
   columnOrder: ['column-1', 'column-2'],
 };
 
-const ENDPOINTS_URL = 'http://localhost:3000/api/'
-
-
 export const ProjectBoard = (props) => {
   const router = useRouter();
   const getData = (endpoint) => {
-    const { data } = useSWR(`${ENDPOINTS_URL}${endpoint}`, fetcher)
+    console.log(process.env.ENDPOINTS_URL)
+    console.log(process.env.NEXTAUTH_URL)
+
+    const { data } = useSWR(`${endpoint}`, fetcher)
     return data
   }
   // const getCards = async () => {
@@ -115,8 +115,8 @@ export const ProjectBoard = (props) => {
   //   `http://localhost:3000/api/boards/${router.query.id}`,
   //   fetcher
   // );
-  const cards = getData(`cards/${router.query.id}`);
-  const lists = getData(`lists/${router.query.id}`); 
+  const cards = getData(`/api/cards/${router.query.id}`);
+  const lists = getData(`/api/lists/${router.query.id}`); 
 
   useEffect(() => {
     if(lists && cards){
