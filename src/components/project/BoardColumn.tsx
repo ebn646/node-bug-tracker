@@ -15,21 +15,22 @@ const Title = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Column({ column, tasks, index }) {
+    console.log('tasks ', tasks)
     return (
-        <Draggable draggableId={column.id} index={index}>
+        <Draggable draggableId={column._id} index={index}>
             {
                 (provided) => (
                     <Box ref={provided.innerRef}
                         {...provided.draggableProps} 
                         sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', border: '1px solid blue', marginLeft: 1 }}>
-                        <Title elevation={0} {...provided.dragHandleProps}>{column.title}</Title>
+                        <Title elevation={0} {...provided.dragHandleProps}>{column.name}</Title>
                         <Stack spacing={2}>
-                            <Droppable droppableId={column.id} index={index} type="card">
+                            <Droppable droppableId={column._id} index={index} type="card">
                                 {
                                     (provided) => (
                                         <div ref={provided.innerRef} {...provided.droppableProps}>
                                             {tasks.map((task, index) => (
-                                                <Card key={task.id} task={task} index={index} />
+                                                <Card key={task._id} task={task} index={index} />
                                             ))}
                                             {provided.placeholder}
                                         </div>

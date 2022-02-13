@@ -14,6 +14,7 @@ const handler = nc(ncOpts);
 
 
 handler.get(async (req, res) => {
+  console.log('req = ', req.query)
   let client = await connectToDatabase();
   let db = client.db();
 
@@ -24,5 +25,11 @@ handler.get(async (req, res) => {
 
   res.json( cards );
 });
+
+handler.patch(async (req, res) => {
+  console.log(req.body)
+  throw new Error('Not Allowed')
+});
+
 
 export default handler;

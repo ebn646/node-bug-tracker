@@ -11,15 +11,16 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
   
 export default function Card({task, index}){
+    console.log('task = ', task)
     return (
-        <Draggable draggableId={task.id} index={index}>
+        <Draggable draggableId={task._id} index={index}>
           {provided => (
             <Item
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
             >
-              {task.content}
+              {task.name}
             </Item>
           )}
         </Draggable>
