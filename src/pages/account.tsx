@@ -1,3 +1,4 @@
+import React from 'react';
 import Head from 'next/head';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { AccountProfile } from '../components/account/account-profile';

@@ -1,3 +1,4 @@
+import React from 'react';
 import {useContext, useEffect} from 'react';
 import { getSession } from 'next-auth/client';
 import Head from 'next/head';

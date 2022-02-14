@@ -1,3 +1,4 @@
+import React from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
