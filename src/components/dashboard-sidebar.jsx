@@ -86,7 +86,7 @@ export const DashboardSidebar = (props) => {
                   color="inherit"
                   variant="subtitle1"
                 >
-                  Node Bug Tracker
+                  Trell Node
                 </Typography>
               </div>
               <SelectorIcon

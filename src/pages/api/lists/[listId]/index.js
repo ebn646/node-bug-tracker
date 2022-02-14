@@ -1,5 +1,6 @@
 import { connectToDatabase } from '../../../../../lib/db';
 import nc from 'next-connect';
+import { ObjectId } from 'mongodb';
 
 const ncOpts = {
     onError(err, req, res) {
@@ -33,23 +34,21 @@ handler.get(async (req, res) => {
   let db = client.db();
 
   let lists = await db
-    .collection("cards")
+    .collection("lists")
     .find()
     .toArray();
 
   res.json( lists );
 });
 
+handler.patch(async (req, res) => {
+  let client = await connectToDatabase();
+  let db = client.db();
+
+  let list = await db
+    .collection("lists")
+    .updateOne({_id: ObjectId(req.query.listId)}, {$set:{ order: req.body.order }})
+  res.json( list );
+});
+
 export default handler;
-
-// import posts from "./posts.json";
-
-// export default async (req, res) => {
-//     const post = posts.find(({ id }) => id === req.query.projectId);
-//   console.log('1154545454')
-//     if (post) {
-//         res.status(200).json({ message: "success", post });
-//     } else {
-//         res.status(400).json({ message: "post not found" });
-//     }
-// }

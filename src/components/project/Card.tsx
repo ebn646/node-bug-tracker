@@ -12,7 +12,6 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
   
 export default function Card({task, index}){
-    console.log('task = ', task)
     return (
         <Draggable draggableId={task._id} index={index}>
           {provided => (

@@ -15,7 +15,6 @@ const Title = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Column({ column, tasks, index }) {
-    console.log('tasks ', tasks)
     return (
         <Draggable draggableId={column._id} index={index}>
             {

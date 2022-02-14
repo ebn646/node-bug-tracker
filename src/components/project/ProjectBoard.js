@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import axios from 'axios';
 import _ from 'lodash'
 import {
@@ -23,16 +23,6 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Search as SearchIcon } from '../../icons/search';
 import Column from './BoardColumn';
 import { fetcher } from '../../../lib/fetch';
-
-// const useStyles = makeStyles((theme) => ({
-//   listContainer: {
-//     display: 'flex',
-//     alignItems: 'flex-start',
-//     width: '100%',
-//     marginTop: theme.spacing(0.5),
-//     border: '1px solid red'
-//   },
-// }))
 
 const midString = (prev, next) => {
   var p
@@ -69,31 +59,6 @@ const midString = (prev, next) => {
   return str + String.fromCharCode(Math.ceil((p + n) / 2)) // append middle character
 }
 
-const initial = {
-  tasks: {
-    'task-1': { id: 'task-1', content: 'Take out the garbage', order: 'a' },
-    'task-2': { id: 'task-2', content: 'Watch my favorite show', order: 'b' },
-    'task-3': { id: 'task-3', content: 'Charge my phone', order: 'c' },
-    'task-4': { id: 'task-4', content: 'Cook dinner', order: 'c' },
-  },
-  columns: {
-    'column-1': {
-      id: 'column-1',
-      title: 'To do',
-      taskIds: ['task-1', 'task-2', 'task-3', 'task-4'],
-      order: 'n'
-    },
-    'column-2': {
-      id: 'column-2',
-      title: 'In progress',
-      taskIds: [],
-      order: 'p'
-    },
-  },
-  // Facilitate reordering of the columns
-  columnOrder: ['column-1', 'column-2'],
-};
-
 export const ProjectBoard = (props) => {
   const router = useRouter();
   const getData = (endpoint) => {
@@ -104,8 +69,10 @@ export const ProjectBoard = (props) => {
   //   await axios
   //   .get('https://jsonplaceholder.typicode.com/posts/1');
   // }
-  const [initialData, setInitialData] = useState(initial)
-  const [data, setData] = useState()
+  const [data, setData] = useState({
+    list: null,
+    cards: null,
+  })
   // const [cards, setCards] = useState();
 
   // const { data, error } = useSWR(
@@ -137,6 +104,50 @@ export const ProjectBoard = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const reorderColumns = (source, destination, draggableId) => {
+    // change th eorder of gthe clluns, reset in stage to rerender
+    console.log('s = ', source)
+    console.log('d = ', destination)
+    let newOrder;
+    const target = data.lists.filter((i) => i._id === draggableId)[0];
+    console.log('t = ', target)
+
+    if(destination.index === 0){
+      newOrder = midString('',data.lists[destination.index].order)
+    } else if(destination.index === data.lists.length - 1){
+      newOrder = midString(data.lists[destination.index].order, '')
+    }else if (destination.index > source.index){
+      newOrder = midString(
+        data.lists[destination.index -1].order,
+        data.lists[destination.index].order
+      )
+    }else {
+      newOrder = midString(
+        data.lists[destination.index].order,
+        data.lists[destination.index + 1].order,
+      )
+    }
+
+      // 2. update in db
+      axios.patch(`/api/lists/${draggableId}`,
+        {
+          id: draggableId,
+          order: newOrder
+        })
+        .then((response) => console.log(response));
+      // reorder list
+      target.order = newOrder;
+      console.log('reorder the list', data.lists)
+      const sorted = _.orderBy(data.lists, ['order'], ['asc'])
+      console.log('sorted = ', sorted);
+      // reset data to rereder
+      setData((prev) => ({
+        ...prev,
+        lists: sorted,
+      }))
+  }
+
   const onDragEnd = (result) => {
     console.log('onDragEnd called ', result)
     let newOrder;
@@ -157,91 +168,72 @@ export const ProjectBoard = (props) => {
     ) {
       return;
     }
+    if(type === 'column'){
+      console.log('column has moved...')
+      reorderColumns(source, destination, draggableId)
+      return;
+    }
     // 
-    const startList = initialData.columns[source.droppableId]
-    const endList = initialData.columns[destination.droppableId]
+    const startList = data.lists.filter((i) => i._id === source.droppableId);
+    const endList = data.lists.filter((i) => i._id === destination.droppableId);
+    const targetCard = data.cards.filter((i) => i._id === draggableId)[0];
+    console.log('I am first', startList)
+    console.log('I am last', endList)
 
     // dropped in same column
-    if (startList === endList) {
+    if (startList._id === endList._id) {
       // 1. get new order for this card
       // first
       const column = startList
       if (destination.index === 0) {
-        console.log('I am first', initialData.tasks[column.taskIds[destination.index]].order)
-        newOrder = midString('', initialData.tasks[column.taskIds[0]].order)
+        console.log('I am first', column)
+        // 1. find the card 
+        console.log('I am targetCard', targetCard);
+        // 2. assign card new order
+        newOrder = midString('', data.cards[destination.index].order)
       }
       else if (destination.index === column.taskIds.length - 1) {
         console.log('I am last')
-        newOrder = midString(
-          initialData.tasks[column.taskIds[destination.index]].order,
-          '',
-        )
+        newOrder = midString(data.cards[destination.index].order, '')
       }
       // move closer to top, decrease index
       else if (destination.index < source.index) {
-        console.log('I moved closer to the top', initialData.tasks[column.taskIds[destination.index - 1]].order, initialData.tasks[column.taskIds[destination.index]].order)
+        console.log('I moved closer to the top')
         newOrder = midString(
-          initialData.tasks[column.taskIds[destination.index - 1]].order,
-          initialData.tasks[column.taskIds[destination.index]].order,
+          data.cards[destination.index - 1].order,
+          data.cards[destination.index].order,
         )
       }
       // move closer to bottom, increase index
       else {
         console.log('I moved closer to the bottom')
         newOrder = midString(
-          initialData.tasks[column.taskIds[destination.index]].order,
-          initialData.tasks[column.taskIds[destination.index + 1]].order,
+          data.cards[destination.index].order,
+          data.cards[destination.index + 1].order,
         )
       }
       // 2. update in db
-      // fetch('http://localhost:3000/api/projects/6203f4d62fd12676b72aa6a0/cards', {
-      //   method: 'PATCH',
-      //   body: JSON.stringify({
-      //     id: draggableId,
-      //     order: newOrder
-      //   }),
-      //   headers: {
-      //     'Content-type': 'application/json; charset=UTF-8',
-      //   },
-      // })
-      //   .then((response) => response.json())
-      //   .then((json) => console.log(json));
+      axios.patch(`/api/cards/${draggableId}`,
+        {
+          id: draggableId,
+          order: newOrder
+        })
+        .then((response) => console.log(response));
       // reorder list
-      const newTaskIds = Array.from(column.taskIds)
-      console.log('1. newTaskIds = ', newTaskIds)
-      newTaskIds.splice(source.index, 1)
-      console.log('2. newTaskIds = ', newTaskIds)
-      newTaskIds.splice(destination.index, 0, draggableId)
-      console.log('3. newTaskIds = ', newTaskIds)
-      const destinationTask = initialData.tasks[draggableId]
-
-      destinationTask.order = newOrder;
-      // create a new updated column
-      const newColumn = {
-        ...column,
-        taskIds: newTaskIds,
-      }
-      console.log('newColumn =', newColumn)
-      // update the initialData with new tasks order
-      const newData = {
-        ...initialData,
-        columns: {
-          ...initialData.columns,
-          [newColumn._id]: newColumn,
-        },
-        // tasks: {
-        //   ...initialData.tasks,
-        //   draggableId: destinationTask,
-        // },
-      }
-      console.log('new data = ', newData)
-      // reset the initial data
-      setInitialData(newData)
+      targetCard.order = newOrder;
+      console.log('reorder the list', data.cards)
+      const sorted = _.orderBy(data.cards, ['order'], ['asc'])
+      console.log('sorted = ', sorted);
+      setData((prev) => ({
+        ...prev,
+        cards: sorted,
+      }))
+      return;
     }
   }
   return (
     <Box {...props}>
-      <Box sx={{ mt: 3, border: '1px solid red' }}>
+      <Box sx={{ mt: 3 }}>
         <Card>
           <CardContent>
             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
@@ -277,7 +269,7 @@ export const ProjectBoard = (props) => {
               ref={provided.innerRef}
             >
               {
-                data && data.lists.map((list, index) => {
+                data.lists && data.cards && data.lists.map((list, index) => {
                   const cards = data.cards.filter(card => card.listId === list._id);
                   return <Column key={list._id} column={list} tasks={cards} index={index} />;
                 })}
