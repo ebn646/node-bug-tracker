@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/client';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
