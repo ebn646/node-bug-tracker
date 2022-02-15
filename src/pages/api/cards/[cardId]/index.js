@@ -13,21 +13,19 @@ const ncOpts = {
 
 const handler = nc(ncOpts);
 
-// handler.get('/:id', async(req,res) => {
-//     console.log('FUCKER', req)
-//     let client = await connectToDatabase();
-//     let db = client.db();
-//     const { id } = req.query;
+handler.get('/:id', async(req,res) => {
+    console.log('FUCKER', req)
+    let client = await connectToDatabase();
+    let db = client.db();
+    const { id } = req.query;
 
     
-//     let lists = await db
-//       .lists.find(
-//         { _id: { $in: [ 5, ObjectId("61eded116eb36158a18bd024") ] } }
-//      )
-  
-  
-//     res.json( lists );
-// });
+    let lists = await db
+      .lists.find(
+        { _id: { $in: [ 5, ObjectId("61eded116eb36158a18bd024") ] } }
+     )
+    res.json( lists );
+});
 
 handler.get(async (req, res) => {
   let client = await connectToDatabase();
@@ -42,13 +40,13 @@ handler.get(async (req, res) => {
 });
 
 handler.patch(async (req, res) => {
-  console.log('patch')
+  console.log('patch', req.body)
   let client = await connectToDatabase();
   let db = client.db();
 
   let card = await db
     .collection("cards")
-    .updateOne({_id: ObjectId(req.query.cardId)}, {$set:{ order: req.body.order }})
+    .updateOne({_id: ObjectId(req.query.cardId)}, {$set:{ order: req.body.order, listId: req.body.listId }})
   res.json( card );
 });
 

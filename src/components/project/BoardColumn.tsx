@@ -21,9 +21,10 @@ export default function Column({ column, tasks, index }) {
                 (provided) => (
                     <Box ref={provided.innerRef}
                         {...provided.draggableProps} 
-                        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', border: '1px solid blue', marginLeft: 1 }}>
+                        sx={{ width: '100%', maxWidth: 360, marginLeft: 1 }}>
                         <Title elevation={0} {...provided.dragHandleProps}>{column.name}</Title>
-                        <Stack spacing={2}>
+                        {/* <p>{column._id}</p> */}
+                        <div style={{height: 'auto', background: '#fff'}}>
                             <Droppable droppableId={column._id} index={index} type="card">
                                 {
                                     (provided) => (
@@ -36,7 +37,7 @@ export default function Column({ column, tasks, index }) {
                                     )
                                 }
                             </Droppable>
-                        </Stack>
+                        </div>
                     </Box>
                 )
             }

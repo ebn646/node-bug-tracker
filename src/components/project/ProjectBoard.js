@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   CardContent,
-  Container,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -65,32 +64,24 @@ export const ProjectBoard = (props) => {
     const { data } = useSWR(`${endpoint}`, fetcher)
     return data
   }
-  // const getCards = async () => {
-  //   await axios
-  //   .get('https://jsonplaceholder.typicode.com/posts/1');
-  // }
+
   const [data, setData] = useState({
     list: null,
     cards: null,
   })
-  // const [cards, setCards] = useState();
 
-  // const { data, error } = useSWR(
-  //   `http://localhost:3000/api/boards/${router.query.id}`,
-  //   fetcher
-  // );
   const cards = getData(`/api/cards/${router.query.id}`);
-  const lists = getData(`/api/lists/${router.query.id}`); 
+  const lists = getData(`/api/lists/${router.query.id}`);
 
   useEffect(() => {
-    if(lists && cards){
+    if (lists && cards) {
       console.log('lists = ', lists)
       console.log('cards = ', cards)
       setData({
         lists,
         cards,
       })
-    }else{
+    } else {
       console.log('not yet...')
     }
   }, [cards, lists])
@@ -113,39 +104,87 @@ export const ProjectBoard = (props) => {
     const target = data.lists.filter((i) => i._id === draggableId)[0];
     console.log('t = ', target)
 
-    if(destination.index === 0){
-      newOrder = midString('',data.lists[destination.index].order)
-    } else if(destination.index === data.lists.length - 1){
+    if (destination.index === 0) {
+      newOrder = midString('', data.lists[destination.index].order)
+    } else if (destination.index === data.lists.length - 1) {
       newOrder = midString(data.lists[destination.index].order, '')
-    }else if (destination.index > source.index){
+    } else if (destination.index > source.index) {
       newOrder = midString(
-        data.lists[destination.index -1].order,
+        data.lists[destination.index - 1].order,
         data.lists[destination.index].order
       )
-    }else {
+    } else {
       newOrder = midString(
         data.lists[destination.index].order,
         data.lists[destination.index + 1].order,
       )
     }
 
-      // 2. update in db
-      axios.patch(`/api/lists/${draggableId}`,
-        {
-          id: draggableId,
-          order: newOrder
-        })
-        .then((response) => console.log(response));
-      // reorder list
-      target.order = newOrder;
-      console.log('reorder the list', data.lists)
-      const sorted = _.orderBy(data.lists, ['order'], ['asc'])
-      console.log('sorted = ', sorted);
-      // reset data to rereder
-      setData((prev) => ({
-        ...prev,
-        lists: sorted,
-      }))
+    // 2. update in db
+    axios.patch(`/api/lists/${draggableId}`,
+      {
+        id: draggableId,
+        order: newOrder
+      })
+      .then((response) => console.log(response));
+    // reorder list
+    target.order = newOrder;
+    console.log('reorder the list', data.lists)
+    const sorted = _.orderBy(data.lists, ['order'], ['asc'])
+    console.log('sorted = ', sorted);
+    // reset data to rereder
+    setData((prev) => ({
+      ...prev,
+      lists: sorted,
+    }))
+  }
+
+  const moveToNewList = (source, destination, draggableId) => {
+    // console.log('I need to move card to a new list ', source, destination, draggableId);
+    console.log('I need to move card to a new list ', source.droppableId, destination.droppableId);
+
+    // 1. 
+    let copy = [...cards];
+
+    const target = copy.filter((c) => c._id === draggableId)[0];
+    const taskLength = copy.filter((c) => c.listId === source.droppableId).length;
+    console.log('target index ',copy.indexOf(target), 'leng ',taskLength, 'source index ', source.index)
+    let newOrder;
+
+    if (source.index === 0) {
+        console.log('i am first...')
+      newOrder = midString('', target.order)
+    } else if (source.index > destination.index) {
+        console.log('i just moved down...')
+        newOrder = midString(destination.index, source.index + 1)
+
+    }else if(source.index < destination.index){
+        console.log('i just moved up...')
+        newOrder = midString(source.index - 1, destination.index)
+    }else{
+      console.log('i am last...')
+      newOrder = midString(target.order, '')
+    }
+
+    // assign order and listId
+    copy = copy.filter((c) => c._id !== target._id);
+    copy = [...copy, Object.assign(target, { listId: source.droppableId, order: newOrder })];
+
+    console.log('target = ', target)
+    // call api
+    axios.patch(`/api/cards/${draggableId}`,
+      {
+        ...target,
+        order: newOrder,
+      })
+      .then((response) => console.log('resp = ', response));
+    console.log('copy after upate ', copy)
+    const sorted = _.orderBy(copy, ['order'], ['asc'])
+    // reorder cards to rerender 
+    setData((prev) => ({
+      ...prev,
+      cards: sorted,
+    }))
   }
 
   const onDragEnd = (result) => {
@@ -168,7 +207,7 @@ export const ProjectBoard = (props) => {
     ) {
       return;
     }
-    if(type === 'column'){
+    if (type === 'column') {
       console.log('column has moved...')
       reorderColumns(source, destination, draggableId)
       return;
@@ -179,26 +218,32 @@ export const ProjectBoard = (props) => {
     const targetCard = data.cards.filter((i) => i._id === draggableId)[0];
     console.log('I am first', startList)
     console.log('I am last', endList)
+    if (source.droppableId !== destination.droppableId) {
+      // move card to a new list
+      moveToNewList(destination, source, draggableId);
+      return;
+    }
 
     // dropped in same column
-    if (startList._id === endList._id) {
+    if (source.droppableId === destination.droppableId) {
       // 1. get new order for this card
       // first
       const column = startList
+      const taskLength = cards.filter((c) => c.listId === source.droppableId).length;
+      console.log('l = ', taskLength);
       if (destination.index === 0) {
         console.log('I am first', column)
         // 1. find the card 
-        console.log('I am targetCard', targetCard);
         // 2. assign card new order
         newOrder = midString('', data.cards[destination.index].order)
       }
-      else if (destination.index === column.taskIds.length - 1) {
+      else if (destination.index === taskLength - 1) {
         console.log('I am last')
         newOrder = midString(data.cards[destination.index].order, '')
       }
       // move closer to top, decrease index
       else if (destination.index < source.index) {
-        console.log('I moved closer to the top')
+        console.log('I moved closer to the top', data.cards[destination.index - 1].order, data.cards[destination.index].order);
         newOrder = midString(
           data.cards[destination.index - 1].order,
           data.cards[destination.index].order,
@@ -212,11 +257,12 @@ export const ProjectBoard = (props) => {
           data.cards[destination.index + 1].order,
         )
       }
+      console.log('neworder ', newOrder)
       // 2. update in db
       axios.patch(`/api/cards/${draggableId}`,
         {
-          id: draggableId,
-          order: newOrder
+          ...targetCard,
+          order: newOrder,
         })
         .then((response) => console.log(response));
       // reorder list
