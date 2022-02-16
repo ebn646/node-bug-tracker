@@ -141,14 +141,12 @@ export const ProjectBoard = (props) => {
 
   const moveToNewList = (source, destination, draggableId) => {
     // console.log('I need to move card to a new list ', source, destination, draggableId);
-    console.log('I need to move card to a new list ', source.droppableId, destination.droppableId);
+    console.log('I need to move card to a new list ', source.index, destination.index);
 
-    // 1. 
     let copy = [...cards];
 
-    const target = copy.filter((c) => c._id === draggableId)[0];
+    let target = copy.filter((c) => c._id === draggableId)[0];
     const taskLength = copy.filter((c) => c.listId === source.droppableId).length;
-    console.log('target index ',copy.indexOf(target), 'leng ',taskLength, 'source index ', source.index)
     let newOrder;
 
     if (source.index === 0) {
@@ -156,26 +154,25 @@ export const ProjectBoard = (props) => {
       newOrder = midString('', target.order)
     } else if (source.index > destination.index) {
         console.log('i just moved down...')
-        newOrder = midString(destination.index, source.index + 1)
-
+        newOrder = midString(cards[source.index].order, cards[source.index].order + 1)
     }else if(source.index < destination.index){
         console.log('i just moved up...')
-        newOrder = midString(source.index - 1, destination.index)
+        newOrder = midString(cards[source.index].order - 1, cards[source.index].order)
     }else{
-      console.log('i am last...')
+      console.log('i am last...', target)
       newOrder = midString(target.order, '')
     }
 
     // assign order and listId
     copy = copy.filter((c) => c._id !== target._id);
-    copy = [...copy, Object.assign(target, { listId: source.droppableId, order: newOrder })];
+    target = Object.assign(...target, { listId: source.droppableId, order: newOrder })
+    copy = [...copy, target];
 
     console.log('target = ', target)
     // call api
     axios.patch(`/api/cards/${draggableId}`,
       {
-        ...target,
-        order: newOrder,
+        target
       })
       .then((response) => console.log('resp = ', response));
     console.log('copy after upate ', copy)
@@ -279,29 +276,7 @@ export const ProjectBoard = (props) => {
   }
   return (
     <Box {...props}>
-      <Box sx={{ mt: 3 }}>
-        <Card>
-          <CardContent>
-            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-            <Box sx={{ maxWidth: 500 }}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  ),
-                }}
-                placeholder="Search"
-                variant="outlined"
-              />
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
+      <p style={{padding: 10}}>Project Name</p>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable
           droppableId="all-columns"

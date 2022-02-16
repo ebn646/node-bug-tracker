@@ -20,11 +20,11 @@ export default function Column({ column, tasks, index }) {
             {
                 (provided) => (
                     <Box ref={provided.innerRef}
-                        {...provided.draggableProps} 
+                        {...provided.draggableProps}
                         sx={{ width: '100%', maxWidth: 360, marginLeft: 1 }}>
-                        <Title elevation={0} {...provided.dragHandleProps}>{column.name}</Title>
-                        {/* <p>{column._id}</p> */}
-                        <div style={{height: 'auto', background: '#fff'}}>
+                        <div style={{ height: 'auto', background: '#ebecf0', padding: 10 }}>
+                            <p style={{padding: 10}} {...provided.dragHandleProps}>{column.name}</p>
+                            {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
                             <Droppable droppableId={column._id} index={index} type="card">
                                 {
                                     (provided) => (

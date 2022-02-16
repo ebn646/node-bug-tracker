@@ -14,22 +14,6 @@ const Project = () => {
 
   return (
     <>
-      <Box>
-        <Grid container>
-          <Grid item>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                  underline="hover"
-                  color="inherit"
-                  href="/"
-                >
-                  Projects
-                </Link>
-                <Typography color="text.primary">Project Name</Typography>
-              </Breadcrumbs>
-          </Grid>
-        </Grid>
-      </Box>
       <Head>
         <title>Project Name</title>
       </Head>
