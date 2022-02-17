@@ -22,46 +22,14 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Search as SearchIcon } from '../../icons/search';
 import Column from './BoardColumn';
 import { fetcher } from '../../../lib/fetch';
+import midString from '../../utils/ordering';
 
-const midString = (prev, next) => {
-  var p
-  var n
-  var pos
-  let str
-  for (pos = 0; p === n; pos++) {
-    // find leftmost non-matching character
-    p = pos < prev.length ? prev.charCodeAt(pos) : 96
-    n = pos < next.length ? next.charCodeAt(pos) : 123
-  }
-  str = prev.slice(0, pos - 1) // copy identical part of string
-  if (p === 96) {
-    // prev string equals beginning of next
-    while (n === 97) {
-      // next character is 'a'
-      n = pos < next.length ? next.charCodeAt(pos++) : 123 // get char from next
-      str += 'a' // insert an 'a' to match the 'a'
-    }
-    if (n === 98) {
-      // next character is 'b'
-      str += 'a' // insert an 'a' to match the 'b'
-      n = 123 // set to end of alphabet
-    }
-  } else if (p + 1 === n) {
-    // found consecutive characters
-    str += String.fromCharCode(p) // insert character from prev
-    n = 123 // set to end of alphabet
-    while ((p = pos < prev.length ? prev.charCodeAt(pos++) : 96) === 122) {
-      // p='z'
-      str += 'z' // insert 'z' to match 'z'
-    }
-  }
-  return str + String.fromCharCode(Math.ceil((p + n) / 2)) // append middle character
-}
 
 export const ProjectBoard = (props) => {
   const router = useRouter();
-  const getData = (endpoint) => {
-    const { data } = useSWR(`${endpoint}`, fetcher)
+
+  const getData = (endpoint,cb) => {
+    const { data } = useSWR(`${endpoint}`, fetcher, cb)
     return data
   }
 
@@ -70,13 +38,20 @@ export const ProjectBoard = (props) => {
     cards: null,
   })
 
-  const cards = getData(`/api/cards/${router.query.id}`);
+  function mutateCards(data){
+    setData((prev) =>({
+      ...prev,
+      cards: [...cards, data]
+    }))
+  }
+
+  const project = getData(`/api/projects/${router.query.id}`);
+  const cards = getData(`/api/cards/${router.query.id}`, mutateCards);
   const lists = getData(`/api/lists/${router.query.id}`);
 
   useEffect(() => {
     if (lists && cards) {
-      console.log('lists = ', lists)
-      console.log('cards = ', cards)
+
       setData({
         lists,
         cards,
@@ -84,11 +59,7 @@ export const ProjectBoard = (props) => {
     } else {
       console.log('not yet...')
     }
-  }, [cards, lists])
-
-  useEffect(() => {
-    console.log('Data = ', data)
-  }, [data])
+  }, [cards, lists, project])
 
   const [open, setOpen] = useState(false);
 
@@ -126,13 +97,14 @@ export const ProjectBoard = (props) => {
         id: draggableId,
         order: newOrder
       })
-      .then((response) => console.log(response));
+      .then((response) => mutate());
     // reorder list
     target.order = newOrder;
     console.log('reorder the list', data.lists)
     const sorted = _.orderBy(data.lists, ['order'], ['asc'])
     console.log('sorted = ', sorted);
     // reset data to rereder
+    
     setData((prev) => ({
       ...prev,
       lists: sorted,
@@ -154,10 +126,10 @@ export const ProjectBoard = (props) => {
       newOrder = midString('', target.order)
     } else if (source.index > destination.index) {
         console.log('i just moved down...')
-        newOrder = midString(cards[source.index].order, cards[source.index].order + 1)
+        newOrder = midString(data.cards[source.index].order, data.cards[source.index].order + 1)
     }else if(source.index < destination.index){
         console.log('i just moved up...')
-        newOrder = midString(cards[source.index].order - 1, cards[source.index].order)
+        newOrder = midString(data.cards[source.index].order - 1, data.cards[source.index].order)
     }else{
       console.log('i am last...', target)
       newOrder = midString(target.order, '')
@@ -165,7 +137,7 @@ export const ProjectBoard = (props) => {
 
     // assign order and listId
     copy = copy.filter((c) => c._id !== target._id);
-    target = Object.assign(...target, { listId: source.droppableId, order: newOrder })
+    target = Object.assign({...target}, { listId: source.droppableId, order: newOrder })
     copy = [...copy, target];
 
     console.log('target = ', target)
@@ -175,7 +147,7 @@ export const ProjectBoard = (props) => {
         target
       })
       .then((response) => console.log('resp = ', response));
-    console.log('copy after upate ', copy)
+
     const sorted = _.orderBy(copy, ['order'], ['asc'])
     // reorder cards to rerender 
     setData((prev) => ({
@@ -186,9 +158,8 @@ export const ProjectBoard = (props) => {
 
   const onDragEnd = (result) => {
     console.log('onDragEnd called ', result)
-    let newOrder;
     const { destination, source, draggableId, type } = result;
-
+    let newOrder;
     // dropped outside the list
     if (!destination) {
       return;
@@ -205,7 +176,6 @@ export const ProjectBoard = (props) => {
       return;
     }
     if (type === 'column') {
-      console.log('column has moved...')
       reorderColumns(source, destination, draggableId)
       return;
     }
@@ -213,8 +183,7 @@ export const ProjectBoard = (props) => {
     const startList = data.lists.filter((i) => i._id === source.droppableId);
     const endList = data.lists.filter((i) => i._id === destination.droppableId);
     const targetCard = data.cards.filter((i) => i._id === draggableId)[0];
-    console.log('I am first', startList)
-    console.log('I am last', endList)
+
     if (source.droppableId !== destination.droppableId) {
       // move card to a new list
       moveToNewList(destination, source, draggableId);
@@ -266,7 +235,7 @@ export const ProjectBoard = (props) => {
       targetCard.order = newOrder;
       console.log('reorder the list', data.cards)
       const sorted = _.orderBy(data.cards, ['order'], ['asc'])
-      console.log('sorted = ', sorted);
+      // console.log('sorted = ', sorted);
       setData((prev) => ({
         ...prev,
         cards: sorted,
@@ -276,7 +245,11 @@ export const ProjectBoard = (props) => {
   }
   return (
     <Box {...props}>
-      <p style={{padding: 10}}>Project Name</p>
+      {
+        project && (
+          <p style={{padding: 10}}>{project.name}</p>
+        )
+      }
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable
           droppableId="all-columns"
@@ -292,7 +265,7 @@ export const ProjectBoard = (props) => {
               {
                 data.lists && data.cards && data.lists.map((list, index) => {
                   const cards = data.cards.filter(card => card.listId === list._id);
-                  return <Column key={list._id} column={list} tasks={cards} index={index} />;
+                  return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} />;
                 })}
               {provided.placeholder}
             </div>

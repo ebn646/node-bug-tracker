@@ -16,12 +16,12 @@ handler.get(async (req, res) => {
     let client = await connectToDatabase();
     let db = client.db();
 
-    let projects = await db
+    let cards = await db
       .collection("cards")
       .find()
       .toArray();
   
-    res.json( projects );
+    res.json( cards );
   });
 
   handler.post(
@@ -38,13 +38,13 @@ handler.get(async (req, res) => {
       let client = await connectToDatabase();
       let db = client.db();
       const data = req.body;
-      const project = {
+      const card = {
         ...data,
         ...{createdAt: new Date()},
       };
-      const { insertedId } = await db.collection('cards').insertOne(project);
-      project._id = insertedId;
-      return project;
+      const { insertedId } = await db.collection('cards').insertOne(card);
+      card._id = insertedId;
+      res.json(card);
     }
   );
 
