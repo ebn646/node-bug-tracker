@@ -28,7 +28,7 @@ const App = (props) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   const getUser = useCallback(async (email) => {
-    const result = await fetcher(`http://localhost:3000/api/users?email=${email}`);
+    const result = await fetcher(`/api/users?email=${email}`);
     setCurrentUser(result)
   },[])
 
