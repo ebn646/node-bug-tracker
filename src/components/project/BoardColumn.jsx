@@ -43,7 +43,7 @@ export default function Column({ column, tasks, index, callback }) {
        const response = await axios.post('/api/cards/', obj);
        // TODO:  Add error handling...
        console.log('afsfsadf', response);
-       callback(response.data);
+       callback(response.data, 'ADD');
        setValue('');
     }
 
@@ -62,7 +62,7 @@ export default function Column({ column, tasks, index, callback }) {
                                     (provided) => (
                                         <div ref={provided.innerRef} {...provided.droppableProps}>
                                             {tasks.map((task, index) => (
-                                                <Card key={task._id} task={task} index={index} />
+                                                <Card key={task._id} task={task} index={index} callback={callback} />
                                             ))}
                                             {provided.placeholder}
                                         </div>

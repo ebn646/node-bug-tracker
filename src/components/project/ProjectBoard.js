@@ -38,10 +38,21 @@ export const ProjectBoard = (props) => {
     cards: null,
   })
 
-  function mutateCards(data){
+  function mutateCards(data, type){
+    let newCards;
+    switch(type){
+      case 'ADD':
+        newCards = [...cards, data];
+        break;
+      case 'DELETE':
+        newCards = cards.filter((c) => c._id !== data._id);
+        break;
+      default:
+        throw new Error('Your type was not found!');
+    }
     setData((prev) =>({
       ...prev,
-      cards: [...cards, data]
+      cards: newCards
     }))
   }
 

@@ -40,7 +40,6 @@ handler.get(async (req, res) => {
 });
 
 handler.patch(async (req, res) => {
-  console.log('patch', req.body)
   let client = await connectToDatabase();
   let db = client.db();
 
@@ -49,6 +48,16 @@ handler.patch(async (req, res) => {
     .updateOne({_id: ObjectId(req.query.cardId)}, {$set:{ order: req.body.order, listId: req.body.listId }})
   res.json( card );
 });
+
+handler.delete(async (req, res) => {
+  let client = await connectToDatabase();
+  let db = client.db();
+
+  let card = await db
+    .collection("cards")
+    .deleteOne({_id: ObjectId(req.query.cardId)})
+  res.json( card );
+})
 
 
 
