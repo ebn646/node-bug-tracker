@@ -14,7 +14,6 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get('/:id', async(req,res) => {
-    console.log('FUCKER', req)
     let client = await connectToDatabase();
     let db = client.db();
     const { id } = req.query;
@@ -22,7 +21,7 @@ handler.get('/:id', async(req,res) => {
     
     let lists = await db
       .lists.find(
-        { _id: { $in: [ 5, ObjectId("61eded116eb36158a18bd024") ] } }
+        { _id: { $in: [ 5, ObjectId(req.query.cardId) ] } }
      )
     res.json( lists );
 });
@@ -35,17 +34,17 @@ handler.get(async (req, res) => {
     .collection("cards")
     .find()
     .toArray();
-
   res.json( lists );
 });
 
 handler.patch(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
-
+  var updateObject = req.body;
+  console.log(req.body, req.query.cardId)
   let card = await db
     .collection("cards")
-    .updateOne({_id: ObjectId(req.query.cardId)}, {$set:{ order: req.body.order, listId: req.body.listId }})
+    .updateOne({_id: ObjectId(req.query.cardId)}, {$set: updateObject })
   res.json( card );
 });
 

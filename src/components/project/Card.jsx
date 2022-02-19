@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
-import Paper from '@mui/material/Paper';
+import {TextField, Paper }from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Draggable } from 'react-beautiful-dnd';
@@ -29,18 +29,34 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Card({ task, index, callback }) {
 
-  async function submitHandler() {
+  const [edit, showEdit] = useState(false);
+  // const [taskName, setTaskName]
+
+  async function deleteSubmitHandler() {
     const response = await axios.delete(`/api/cards/${task._id}`);
     // TODO:  Add error handling...
-    console.log('afsfsadf', response);
-
     if(response.status === 200){
       console.log('delete was a success!')
       callback({_id: task._id}, 'DELETE');
     }else{
       throw new Error('There was an error deleting your card!')
     }
+  }
 
+  async function editSubmitHandler(e) {
+    console.log(e.target.value)
+    const response = await axios.patch(`/api/cards/${task._id}`, {name: e.target.value});
+    // TODO:  Add error handling...
+    if(response.status === 200){
+      console.log('update was a success!')
+      task.name = e.target.value;
+    }else{
+      throw new Error('There was an error deleting your card!')
+    }
+  }
+
+  function toggleEdit(){
+    showEdit(!edit)
   }
 
   return (
@@ -50,9 +66,19 @@ export default function Card({ task, index, callback }) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          onClick={() => showEdit(true)}
         >
-          {task.name}
-          <DeleteIcon className='delete' onClick={submitHandler} />
+          {
+            edit ? (
+              <TextField
+              id="task-name"
+              defaultValue={task.name}
+              autoFocus
+              onBlur={(e) => {showEdit(false); editSubmitHandler(e)}}
+            />
+            ) : <p>{task.name}</p>
+          }
+          <DeleteIcon className='delete' onClick={() => deleteSubmitHandler} />
         </Item>
       )}
     </Draggable>
