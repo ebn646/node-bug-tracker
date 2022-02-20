@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import axios from 'axios';
@@ -17,9 +17,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
 } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { Search as SearchIcon } from '../../icons/search';
 import Column from './BoardColumn';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
@@ -28,19 +28,14 @@ import midString from '../../utils/ordering';
 export const ProjectBoard = (props) => {
   const router = useRouter();
 
-  const getData = (endpoint,cb) => {
+  const getData = (endpoint, cb) => {
     const { data } = useSWR(`${endpoint}`, fetcher, cb)
     return data
   }
 
-  const [data, setData] = useState({
-    list: null,
-    cards: null,
-  })
-
-  function mutateCards(data, type){
+  function mutateCards(data, type) {
     let newCards;
-    switch(type){
+    switch (type) {
       case 'ADD':
         newCards = [...cards, data];
         break;
@@ -50,15 +45,66 @@ export const ProjectBoard = (props) => {
       default:
         throw new Error('Your type was not found!');
     }
-    setData((prev) =>({
+    setData((prev) => ({
       ...prev,
       cards: newCards
     }))
   }
 
+  function mutateLists(data, type) {
+    let newLists;
+    switch (type) {
+      case 'ADD':
+        newLists = [...lists, data];
+        break;
+      case 'DELETE':
+        newCards = lists.filter((l) => l._id !== data._id);
+        break;
+      default:
+        throw new Error('Your type was not found!');
+    }
+    setData((prev) => ({
+      ...prev,
+      lists: newLists
+    }))
+  }
+
   const project = getData(`/api/projects/${router.query.id}`);
   const cards = getData(`/api/cards/${router.query.id}`, mutateCards);
-  const lists = getData(`/api/lists/${router.query.id}`);
+  const lists = getData(`/api/lists/${router.query.id}`, mutateLists);
+
+  // refs
+  const ref = useRef();
+
+  // local state
+  const [open, setOpen] = useState(false);
+  const [addList, setAddList] = useState(false);
+  const [data, setData] = useState({
+    list: null,
+    cards: null,
+  })
+
+
+  function getListsOrder(){
+    if(lists.length){
+      return midString(lists[lists.length - 1].order, '')
+    } else {
+      return 'n'
+    }
+  }
+
+ async function addNewList(e) {
+    const obj ={
+      name: ref.current.value,
+      boardId: router.query.id,
+      order: getListsOrder(),
+    }
+
+    const response = await axios.post('/api/lists', obj);
+    console.log('responese = ', response);
+    mutateLists(response.data, 'ADD')
+    setAddList(false);
+  }
 
   useEffect(() => {
     if (lists && cards) {
@@ -72,7 +118,7 @@ export const ProjectBoard = (props) => {
     }
   }, [cards, lists, project])
 
-  const [open, setOpen] = useState(false);
+
 
   const handleClose = () => {
     setOpen(false);
@@ -115,7 +161,7 @@ export const ProjectBoard = (props) => {
     const sorted = _.orderBy(data.lists, ['order'], ['asc'])
     console.log('sorted = ', sorted);
     // reset data to rereder
-    
+
     setData((prev) => ({
       ...prev,
       lists: sorted,
@@ -133,22 +179,22 @@ export const ProjectBoard = (props) => {
     let newOrder;
 
     if (source.index === 0) {
-        console.log('i am first...')
+      console.log('i am first...')
       newOrder = midString('', target.order)
     } else if (source.index > destination.index) {
-        console.log('i just moved down...')
-        newOrder = midString(data.cards[source.index].order, data.cards[source.index].order + 1)
-    }else if(source.index < destination.index){
-        console.log('i just moved up...')
-        newOrder = midString(data.cards[source.index].order - 1, data.cards[source.index].order)
-    }else{
+      console.log('i just moved down...')
+      newOrder = midString(data.cards[source.index].order, data.cards[source.index].order + 1)
+    } else if (source.index < destination.index) {
+      console.log('i just moved up...')
+      newOrder = midString(data.cards[source.index].order - 1, data.cards[source.index].order)
+    } else {
       console.log('i am last...', target)
       newOrder = midString(target.order, '')
     }
 
     // assign order and listId
     copy = copy.filter((c) => c._id !== target._id);
-    target = Object.assign({...target}, { listId: source.droppableId, order: newOrder })
+    target = Object.assign({ ...target }, { listId: source.droppableId, order: newOrder })
     copy = [...copy, target];
 
     console.log('target = ', target)
@@ -255,10 +301,10 @@ export const ProjectBoard = (props) => {
     }
   }
   return (
-    <Box {...props}>
+    <Box sx={{ minWidth: '100vw' }}>
       {
         project && (
-          <p style={{padding: 10}}>{project.name}</p>
+          <p style={{ padding: 10 }}>{project.name}</p>
         )
       }
       <DragDropContext onDragEnd={onDragEnd}>
@@ -268,17 +314,43 @@ export const ProjectBoard = (props) => {
           type="column"
         >
           {(provided) => (
-            <div
-              style={{ display: 'flex' }}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {
-                data.lists && data.cards && data.lists.map((list, index) => {
-                  const cards = data.cards.filter(card => card.listId === list._id);
-                  return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} />;
-                })}
-              {provided.placeholder}
+            <div>
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                <div style={{display: 'flex'}}>
+                {
+                  data.lists && data.cards && data.lists.map((list, index) => {
+                    const cards = data.cards.filter(card => card.listId === list._id);
+                    return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} />;
+                  })}
+                <Stack
+                  spacing={1}
+                  sx={{ marginLeft: 1 }}
+                >
+                  {
+                    addList ? (
+                      <>
+                        <TextField
+                          id="new-list"
+                          placeholder="Enter list title..."
+                          inputRef={ref}
+                          autoFocus
+                          onBlur={(e) => { addNewList(e); }}
+                        />
+                        <Button variant="contained">Add list</Button>
+                      </>
+                    ) : <div>
+                      <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                    </div>
+                  }
+                </Stack>
+                {provided.placeholder}
+                <div>
+                </div>
+              </div>
+            </div>
             </div>
           )}
         </Droppable>

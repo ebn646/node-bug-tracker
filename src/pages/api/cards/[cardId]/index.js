@@ -41,7 +41,7 @@ handler.patch(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
   var updateObject = req.body;
-  console.log(req.body, req.query.cardId)
+  
   let card = await db
     .collection("cards")
     .updateOne({_id: ObjectId(req.query.cardId)}, {$set: updateObject })

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
@@ -7,7 +7,8 @@ import Card from './Card';
 import Paper from '@mui/material/Paper';
 import {
     Button,
-    TextField
+    TextField,
+    Stack,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -33,18 +34,18 @@ export default function Column({ column, tasks, index, callback }) {
         setValue('');
     }
 
-    async function submitHandler(){
-        const obj ={
+    async function submitHandler() {
+        const obj = {
             name: ref.current.value,
             boardId: router.query.id,
             listId: column._id,
             order: tasks.length === 0 ? 'n' : midString(tasks[tasks.length - 1].order, ''),
         }
-       const response = await axios.post('/api/cards/', obj);
-       // TODO:  Add error handling...
-       console.log('afsfsadf', response);
-       callback(response.data, 'ADD');
-       setValue('');
+        const response = await axios.post('/api/cards/', obj);
+        // TODO:  Add error handling...
+        console.log('afsfsadf', response);
+        callback(response.data, 'ADD');
+        setValue('');
     }
 
     return (
@@ -53,7 +54,7 @@ export default function Column({ column, tasks, index, callback }) {
                 (provided) => (
                     <Box ref={provided.innerRef}
                         {...provided.draggableProps}
-                        sx={{ width: '100%', maxWidth: 360, marginLeft: 1 }}>
+                        sx={{ width: 280, marginLeft: 1 }}>
                         <div style={{ height: 'auto', background: '#ebecf0', padding: 10 }}>
                             <p style={{ padding: 10 }} {...provided.dragHandleProps}>{column.name}</p>
                             {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
@@ -72,21 +73,25 @@ export default function Column({ column, tasks, index, callback }) {
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 {
                                     addCard ? (
-                                        <>
-                                            <TextField 
-                                            id="outlined-basic" 
-                                            label="Enter a title for this card..." 
-                                            variant="filled" 
-                                            inputRef={ref} 
-                                            value={value} 
-                                            onChange={(e) => {setValue(e.target.value)}} />
-                                            <div style={{ display: 'flex', marginTop: 8}}>
+                                        <Stack
+                                            spacing={2}
+                                            sx={{ marginLeft: 1 , border: '1px solid red'}}
+                                        >
+                                            <TextField
+                                                id="outlined-basic"
+                                                label="Enter a title for this card..."
+                                                variant="filled"
+                                                inputRef={ref}
+                                                value={value}
+                                                onChange={(e) => { setValue(e.target.value) }} 
+                                                />
+                                            <div style={{ display: 'flex', marginTop: 8 }}>
                                                 <Button variant="contained" onClick={submitHandler}>
                                                     Add card
                                                 </Button>
                                                 <Button variant="text" endIcon={<CloseIcon />} onClick={toggleAddCard} />
                                             </div>
-                                        </>
+                                        </Stack>
 
                                     ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />}>Add a card</Button>
                                 }

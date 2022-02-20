@@ -44,6 +44,7 @@ export default function Card({ task, index, callback }) {
   }
 
   async function editSubmitHandler(e) {
+    if(e.target.value === task.name) return;
     console.log(e.target.value)
     const response = await axios.patch(`/api/cards/${task._id}`, {name: e.target.value});
     // TODO:  Add error handling...
@@ -53,10 +54,6 @@ export default function Card({ task, index, callback }) {
     }else{
       throw new Error('There was an error deleting your card!')
     }
-  }
-
-  function toggleEdit(){
-    showEdit(!edit)
   }
 
   return (
