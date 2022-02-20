@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
 import Card from './Card';
-import Paper from '@mui/material/Paper';
 import {
     Button,
     TextField,
@@ -12,18 +11,17 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import midString from '../../utils/ordering';
 
-const Title = styled(Paper)(({ theme }) => ({
+const DraggableHeader = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
-    padding: theme.spacing(2),
-    margin: theme.spacing(1),
     textAlign: 'left',
     color: theme.palette.text.secondary,
 }));
 
-export default function Column({ column, tasks, index, callback }) {
+export default function Column({ column, tasks, index, callback, listsCallback }) {
     const router = useRouter();
     const ref = useRef();
     const [addCard, showAddCard] = useState(false);
@@ -34,7 +32,7 @@ export default function Column({ column, tasks, index, callback }) {
         setValue('');
     }
 
-    async function submitHandler() {
+    async function addCardSubmitHandler() {
         const obj = {
             name: ref.current.value,
             boardId: router.query.id,
@@ -43,9 +41,16 @@ export default function Column({ column, tasks, index, callback }) {
         }
         const response = await axios.post('/api/cards/', obj);
         // TODO:  Add error handling...
-        console.log('afsfsadf', response);
+        console.log('add card response is...', response);
         callback(response.data, 'ADD');
         setValue('');
+    }
+
+    async function deleteListSubmitHandler() {
+        listsCallback({_id: column._id}, 'DELETE');
+        const response = await axios.delete(`/api/lists/${column._id}`);
+        // TODO:  Add error handling...
+        console.log('delete response is...', response);
     }
 
     return (
@@ -56,7 +61,13 @@ export default function Column({ column, tasks, index, callback }) {
                         {...provided.draggableProps}
                         sx={{ width: 280, marginLeft: 1 }}>
                         <div style={{ height: 'auto', background: '#ebecf0', padding: 10 }}>
-                            <p style={{ padding: 10 }} {...provided.dragHandleProps}>{column.name}</p>
+                            <DraggableHeader 
+                                style={{display: 'flex', justifyContent: 'space-between'}} 
+                                {...provided.dragHandleProps}
+                            >
+                                <p style={{ padding: 10 }}>{column.name}</p>
+                                <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
+                            </DraggableHeader>
                             {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
                             <Droppable droppableId={column._id} index={index} type="card">
                                 {
@@ -86,14 +97,14 @@ export default function Column({ column, tasks, index, callback }) {
                                                 onChange={(e) => { setValue(e.target.value) }} 
                                                 />
                                             <div style={{ display: 'flex', marginTop: 8 }}>
-                                                <Button variant="contained" onClick={submitHandler}>
+                                                <Button variant="contained" onClick={addCardSubmitHandler}>
                                                     Add card
                                                 </Button>
                                                 <Button variant="text" endIcon={<CloseIcon />} onClick={toggleAddCard} />
                                             </div>
                                         </Stack>
 
-                                    ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />}>Add a card</Button>
+                                    ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />} style={{width: 270}}>Add a card</Button>
                                 }
                             </div>
                         </div>

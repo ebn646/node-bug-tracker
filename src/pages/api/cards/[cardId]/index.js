@@ -16,12 +16,11 @@ const handler = nc(ncOpts);
 handler.get('/:id', async(req,res) => {
     let client = await connectToDatabase();
     let db = client.db();
-    const { id } = req.query;
+    const { cardId } = req.query;
 
-    
     let lists = await db
-      .lists.find(
-        { _id: { $in: [ 5, ObjectId(req.query.cardId) ] } }
+      .cards.find(
+        { _id: { $in: [ 5, ObjectId(cardId) ] } }
      )
     res.json( lists );
 });
@@ -30,11 +29,11 @@ handler.get(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
 
-  let lists = await db
+  let cards = await db
     .collection("cards")
     .find()
     .toArray();
-  res.json( lists );
+  res.json( cards );
 });
 
 handler.patch(async (req, res) => {

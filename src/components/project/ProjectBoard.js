@@ -58,7 +58,7 @@ export const ProjectBoard = (props) => {
         newLists = [...lists, data];
         break;
       case 'DELETE':
-        newCards = lists.filter((l) => l._id !== data._id);
+        newLists = lists.filter((l) => l._id !== data._id);
         break;
       default:
         throw new Error('Your type was not found!');
@@ -323,7 +323,7 @@ export const ProjectBoard = (props) => {
                 {
                   data.lists && data.cards && data.lists.map((list, index) => {
                     const cards = data.cards.filter(card => card.listId === list._id);
-                    return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} />;
+                    return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} />;
                   })}
                 <Stack
                   spacing={1}
@@ -341,9 +341,9 @@ export const ProjectBoard = (props) => {
                         />
                         <Button variant="contained">Add list</Button>
                       </>
-                    ) : <div>
+                    ) : <Box sx={{width: 280}}>
                       <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
-                    </div>
+                    </Box>
                   }
                 </Stack>
                 {provided.placeholder}

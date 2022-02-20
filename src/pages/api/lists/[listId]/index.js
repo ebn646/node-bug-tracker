@@ -51,4 +51,14 @@ handler.patch(async (req, res) => {
   res.json( list );
 });
 
+handler.delete(async (req, res) => {
+  let client = await connectToDatabase();
+  let db = client.db();
+
+  let card = await db
+    .collection("lists")
+    .deleteOne({_id: ObjectId(req.query.listId)})
+  res.json( card );
+})
+
 export default handler;
