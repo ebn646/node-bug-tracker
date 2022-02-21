@@ -13,22 +13,6 @@ const ncOpts = {
 
 const handler = nc(ncOpts);
 
-// handler.get('/:id', async(req,res) => {
-//     console.log('FUCKER', req)
-//     let client = await connectToDatabase();
-//     let db = client.db();
-//     const { id } = req.query;
-
-    
-//     let lists = await db
-//       .lists.find(
-//         { _id: { $in: [ 5, ObjectId("61eded116eb36158a18bd024") ] } }
-//      )
-  
-  
-//     res.json( lists );
-// });
-
 handler.get(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
