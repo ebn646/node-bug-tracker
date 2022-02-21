@@ -94,7 +94,8 @@ export const Board = (props) => {
     }
   }
 
- async function addNewList(e) {
+ async function addNewList() {
+   
     const obj ={
       name: ref.current.value,
       boardId: router.query.id,
@@ -105,6 +106,18 @@ export const Board = (props) => {
     console.log('responese = ', response);
     mutateLists(response.data, 'ADD')
     setAddList(false);
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (ref.current.value === ''){
+        setAddList(false);
+      } 
+      else {
+        addNewList();
+      }
+    }
   }
 
   useEffect(() => {
@@ -336,7 +349,8 @@ export const Board = (props) => {
                           placeholder="Enter list title..."
                           inputRef={ref}
                           autoFocus
-                          onBlur={() => { addNewList(); }}
+                          onKeyDown={handleKeyDown}
+                          onBlur={handleKeyDown}
                         />
                         <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
                       </>

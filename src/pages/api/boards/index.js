@@ -14,7 +14,6 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
-  console.log('req = ', req.query.id)
     let client = await connectToDatabase();
     let db = client.db();
 

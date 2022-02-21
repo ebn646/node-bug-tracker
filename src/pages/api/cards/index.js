@@ -36,7 +36,6 @@ handler.get(async (req, res) => {
     //   additionalProperties: false,
     // }),
     async (req, res) => {
-      console.log('req q = ', req)
       let client = await connectToDatabase();
       let db = client.db();
       const data = req.body;

@@ -32,6 +32,7 @@ export default function Column({ column, tasks, index, callback, listsCallback }
         setValue('');
     }
 
+
     async function addCardSubmitHandler() {
         const obj = {
             name: ref.current.value,
@@ -52,6 +53,18 @@ export default function Column({ column, tasks, index, callback, listsCallback }
         // TODO:  Add error handling...
         console.log('delete response is...', response);
     }
+
+    function handleKeyDown(e){
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          if (ref.current.value === ''){
+            setValue('');;
+          } 
+          else {
+            addCardSubmitHandler();
+          }
+        }
+      }
 
     return (
         <Draggable draggableId={column._id} index={index}>
@@ -86,7 +99,7 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                                     addCard ? (
                                         <Stack
                                             spacing={2}
-                                            sx={{ marginLeft: 1 , border: '1px solid red'}}
+                                            sx={{ marginLeft: 1 }}
                                         >
                                             <TextField
                                                 id="outlined-basic"
@@ -95,6 +108,7 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                                                 inputRef={ref}
                                                 value={value}
                                                 autoFocus
+                                                onKeyDown={handleKeyDown}
                                                 onChange={(e) => { setValue(e.target.value) }} 
                                                 />
                                             <div style={{ display: 'flex', marginTop: 8 }}>
