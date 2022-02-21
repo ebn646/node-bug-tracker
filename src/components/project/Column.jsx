@@ -32,7 +32,6 @@ export default function Column({ column, tasks, index, callback, listsCallback }
         setValue('');
     }
 
-
     async function addCardSubmitHandler() {
         const obj = {
             name: ref.current.value,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import {useRouter} from 'next/router';
 import Head from 'next/head';
 import { CacheProvider } from '@emotion/react';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -14,14 +15,20 @@ import UserContext from '../context/UserContext';
 const clientSideEmotionCache = createEmotionCache();
 
 const App = (props) => {
+  const router = useRouter();
   const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
-    if(pageProps.session){
-      const {email} = pageProps.session.user;
-      getUser(email)
+    if(!currentUser){
+      if(pageProps.session){
+        console.log('session is...')
+        const {email} = pageProps.session.user;
+        getUser(email)
+      }else{
+        console.log('Aint no sessions.....')
+      }
     }
-  },[])
+  },[router])
 
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 

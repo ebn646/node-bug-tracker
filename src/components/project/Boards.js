@@ -19,7 +19,6 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material';
-import { Search as SearchIcon } from '../../icons/search';
 import { ProjectCard } from './ProjectCard';
 import UserContext from '../../context/UserContext';
 import { fetcher } from '../../../lib/fetch';

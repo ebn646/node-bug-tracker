@@ -30,7 +30,6 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Card({ task, index, callback }) {
 
   const [edit, showEdit] = useState(false);
-  // const [taskName, setTaskName]
 
   async function deleteSubmitHandler() {
     const response = await axios.delete(`/api/cards/${task._id}`);
