@@ -1,6 +1,7 @@
 import { connectToDatabase } from '../../../../../lib/db';
 import nc from 'next-connect';
 import { ObjectId } from 'mongodb';
+import { update } from 'lodash';
 
 const ncOpts = {
     onError(err, req, res) {
@@ -40,10 +41,22 @@ handler.patch(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
   var updateObject = req.body;
-  
+  console.log('update obj = ', updateObject)
+  let obj;
+  if(updateObject['listId']){
+    obj = {
+      ...updateObject,
+      listId: new ObjectId(updateObject.listId),
+    }
+  } else {
+    obj = {...updateObject}
+  }
+
+  console.log('obj = ', obj)
+
   let card = await db
     .collection("cards")
-    .updateOne({_id: ObjectId(req.query.cardId)}, {$set: updateObject })
+    .updateOne({_id: ObjectId(req.query.cardId)}, {$set: obj })
   res.json( card );
 });
 

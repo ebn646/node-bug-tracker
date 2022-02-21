@@ -14,15 +14,22 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
+  console.log('req = ', req.query.id)
     let client = await connectToDatabase();
     let db = client.db();
 
-    let cards = await db
-      .collection("cards")
-      .find()
+    let projects = await db
+      .collection("boards")
+      .aggregate([
+        {
+          $match: {
+            userId : new ObjectId(req.query.id)
+          }
+        }
+      ])
       .toArray();
   
-    res.json( cards );
+    res.json( projects );
   });
 
   handler.post(
@@ -36,18 +43,17 @@ handler.get(async (req, res) => {
     //   additionalProperties: false,
     // }),
     async (req, res) => {
-      console.log('req q = ', req)
       let client = await connectToDatabase();
       let db = client.db();
       const data = req.body;
-      const card = {
+      const board = {
         ...data,
-        boardId: new ObjectId(data.boardId),
+        userId: new ObjectId(data.userId),
         createdAt: new Date(),
       };
-      const { insertedId } = await db.collection('cards').insertOne(card);
-      card._id = insertedId;
-      res.json(card);
+      const { insertedId } = await db.collection('boards').insertOne(board);
+      board._id = insertedId;
+      res.json( board );
     }
   );
 

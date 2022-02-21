@@ -68,7 +68,7 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                                 <p style={{ padding: 10 }}>{column.name}</p>
                                 <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
                             </DraggableHeader>
-                            {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
+                            <p style={{ fontSize: 10 }}>{column._id}</p>
                             <Droppable droppableId={column._id} index={index} type="card">
                                 {
                                     (provided) => (
@@ -94,6 +94,7 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                                                 variant="filled"
                                                 inputRef={ref}
                                                 value={value}
+                                                autoFocus
                                                 onChange={(e) => { setValue(e.target.value) }} 
                                                 />
                                             <div style={{ display: 'flex', marginTop: 8 }}>

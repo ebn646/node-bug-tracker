@@ -70,7 +70,7 @@ export const Board = (props) => {
     }))
   }
 
-  const project = getData(`/api/boards/${router.query.id}`);
+  const project = getData(`/api/board/${router.query.id}`);
   const cards = getData(`/api/cards/${router.query.id}`, mutateCards);
   const lists = getData(`/api/lists?id=${router.query.id}`, mutateLists);
 
@@ -201,10 +201,8 @@ export const Board = (props) => {
     console.log('target = ', target)
     // call api
     axios.patch(`/api/cards/${draggableId}`,
-      {
-        target
-      })
-      .then((response) => console.log('resp = ', response));
+    { listId: source.droppableId, order: newOrder })
+    .then((response) => console.log('resp = ', response));
 
     const sorted = _.orderBy(copy, ['order'], ['asc'])
     // reorder cards to rerender 

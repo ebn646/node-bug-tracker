@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-import { Box, Container, Grid, Pagination } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { Board }  from '../../components/project/Board';
 import { DashboardLayout } from '../../components/dashboard-layout';
 import useSWR from 'swr';
