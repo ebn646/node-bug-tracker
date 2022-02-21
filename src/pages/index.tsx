@@ -4,7 +4,7 @@ import { getSession } from 'next-auth/client';
 import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
-import { ProjectListToolbar } from '../components/project/ProjectList';
+import { Boards } from '../components/project/Boards';
 import { DashboardLayout } from '../components/dashboard-layout';
 import UserContext from '../context/UserContext';
 
@@ -30,7 +30,7 @@ const Index = () => {
       }}
     >
       <Container maxWidth={false}>
-        <ProjectListToolbar />
+        <Boards />
       </Container>
     </Box>
   </>
@@ -45,6 +45,7 @@ Index.getLayout = (page) => (
 
 export async function getServerSideProps(context){
   const session = await getSession({req: context.req});
+  console.log('req session = ',session)
 
   if(!session){
     return {

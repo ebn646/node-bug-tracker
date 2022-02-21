@@ -20,12 +20,12 @@ import {
   Stack,
 } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import Column from './BoardColumn';
+import Column from './Column';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 
 
-export const ProjectBoard = (props) => {
+export const Board = (props) => {
   const router = useRouter();
 
   const getData = (endpoint, cb) => {

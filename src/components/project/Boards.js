@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import useSWR from 'swr';
+import React, { useState, useRef, useContext, useEffect } from 'react';
+import useSWR, {mutate} from 'swr';
+import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -20,14 +21,21 @@ import {
 } from '@mui/material';
 import { Search as SearchIcon } from '../../icons/search';
 import { ProjectCard } from './ProjectCard';
-
+import UserContext from '../../context/UserContext';
 import { fetcher } from '../../../lib/fetch';
 
-export const ProjectListToolbar = (props) => {
-  const { data, error } = useSWR(`/api/projects/`, fetcher);
+export const Boards = (props) => {
+  const user = useContext(UserContext);
+  const { data, error } = useSWR(user ? `/api/boards?id=${user._id}` : null, fetcher);
   const [open, setOpen] = useState(false);
   const nameInputRef = useRef();
   const descriptionRef = useRef();
+
+  useEffect(() => {
+    console.log('user from boards = ', user)
+    console.log('data = ', data)
+  },[user, data])
+
   const formik = useFormik({
     initialValues: {
       name: 'test project',
@@ -43,26 +51,12 @@ export const ProjectListToolbar = (props) => {
     e.preventDefault();
     const name = formik.values.name;
     const description = formik.values.description;
-    const content = { name, description }
-    let result;
-    try {
-      // setIsLoading(true);
-      result = await fetcher('/api/projects?', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( content ),
-      });
-      // toast.success('You have posted successfully');
-      // contentRef.current.value = '';
-      // refresh post lists
-      //mutate();
-    } catch (e) {
-      //toast.error(e.message);
-      console.log(e)
-    } finally {
-      console.log('Finally')
-    }
+    const userId = user._id;
+    const obj = { name, description, userId }
+    const result = await axios.post('/api/boards/', obj)
+    mutate(`/api/boards?id=${user._id}`);
     console.log('result ', result);
+    setOpen(false);
   }
 
   const handleClickOpen = () => {
@@ -91,28 +85,6 @@ export const ProjectListToolbar = (props) => {
             Add project
           </Button>
         </Box>
-      </Box>
-      <Box sx={{ mt: 3 }}>
-        <Card>
-          <CardContent>
-            <Box sx={{ maxWidth: 500 }}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  ),
-                }}
-                placeholder="Search projects"
-                variant="outlined"
-              />
-            </Box>
-          </CardContent>
-        </Card>
       </Box>
       <Box sx={{ pt: 3 }}>
           <Grid

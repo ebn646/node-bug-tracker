@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/components/dashboard-navbar.jsx", "src/pages/login.jsx", "src/pages/_document.jsx", "src/components/dashboard-sidebar.jsx", "src/components/project/BoardColumn.jsx", "src/components/project/Card.jsx"  ],
+, "src/components/dashboard-navbar.jsx", "src/pages/login.jsx", "src/pages/_document.jsx", "src/components/dashboard-sidebar.jsx", "src/components/project/Column.jsx", "src/components/project/Card.jsx"  ],
   "exclude": [
     "node_modules"
   ]

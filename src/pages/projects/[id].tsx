@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { Box, Container, Grid, Pagination } from '@mui/material';
-import { ProjectBoard } from '../../components/project/ProjectBoard';
+import { Board }  from '../../components/project/Board';
 import { DashboardLayout } from '../../components/dashboard-layout';
 import useSWR from 'swr';
 import { fetcher } from '../../../lib/fetch';
@@ -25,7 +25,7 @@ const Project = () => {
         }}
       >
         <Container maxWidth={false}>
-          <ProjectBoard />
+          <Board />
         </Container>
       </Box>
     </>
