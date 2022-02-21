@@ -19,7 +19,7 @@ handler.get(async (req, res) => {
   let boards = await db
     .collection("boards")
     .aggregate([
-      { $match: { _id: new ObjectId( req.query.projectId )}},
+      { $match: { _id: new ObjectId( req.query.boardId )}},
       { $limit: 1},
     ])
     .toArray();

@@ -1,5 +1,6 @@
 import { connectToDatabase } from '../../../../lib/db';
 import nc from 'next-connect';
+import { ObjectId } from 'mongodb';
 
 const ncOpts = {
     onError(err, req, res) {
@@ -13,12 +14,19 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
+  const { query: { id }} = req;
     let client = await connectToDatabase();
     let db = client.db();
 
     let lists = await db
       .collection("lists")
-      .find()
+      .aggregate([
+        {
+          $match: {
+            boardId : new ObjectId(id),
+          }
+        }
+      ])
       .toArray();
   
     res.json( lists );
@@ -35,12 +43,16 @@ handler.get(async (req, res) => {
     //   additionalProperties: false,
     // }),
     async (req, res) => {
+      const { query : { id }} = req;
       let client = await connectToDatabase();
       let db = client.db();
       const data = req.body;
+      console.log('data = ', data)
+
       const list = {
         ...data,
-        ...{createdAt: new Date()},
+        boardId: new ObjectId(data.boardId),
+        createdAt: new Date(),
       };
       const { insertedId } = await db.collection('lists').insertOne(list);
       list._id = insertedId;

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 
 export const ProjectCard = ({ project, ...rest }) => (
-  <Link href={`/projects/${project._id}`}>
+  <Link href={`/boards/${project._id}`}>
     <a style={{textDecoration: 'none'}}>
     <Card
       sx={{

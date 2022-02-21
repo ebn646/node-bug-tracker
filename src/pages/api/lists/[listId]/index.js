@@ -35,7 +35,13 @@ handler.get(async (req, res) => {
 
   let lists = await db
     .collection("lists")
-    .find()
+    .aggregate([
+      {
+        $match: {
+          userId: new ObjectId(id)
+        }
+      }
+    ])
     .toArray();
 
   res.json( lists );

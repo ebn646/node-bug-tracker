@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import axios from 'axios';
@@ -23,13 +23,14 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
-
+import UserContext from '../../context/UserContext';
 
 export const Board = (props) => {
+  const user = useContext(UserContext);
   const router = useRouter();
 
   const getData = (endpoint, cb) => {
-    const { data } = useSWR(`${endpoint}`, fetcher, cb)
+    const { data } = useSWR(user ? `${endpoint}` : null, fetcher, cb)
     return data
   }
 
@@ -69,9 +70,9 @@ export const Board = (props) => {
     }))
   }
 
-  const project = getData(`/api/projects/${router.query.id}`);
+  const project = getData(`/api/boards/${router.query.id}`);
   const cards = getData(`/api/cards/${router.query.id}`, mutateCards);
-  const lists = getData(`/api/lists/${router.query.id}`, mutateLists);
+  const lists = getData(`/api/lists?id=${router.query.id}`, mutateLists);
 
   // refs
   const ref = useRef();
@@ -80,8 +81,8 @@ export const Board = (props) => {
   const [open, setOpen] = useState(false);
   const [addList, setAddList] = useState(false);
   const [data, setData] = useState({
-    list: null,
-    cards: null,
+    list: [],
+    cards: [],
   })
 
 
@@ -116,7 +117,7 @@ export const Board = (props) => {
     } else {
       console.log('not yet...')
     }
-  }, [cards, lists, project])
+  }, [cards, lists, project, user])
 
 
 
@@ -337,9 +338,9 @@ export const Board = (props) => {
                           placeholder="Enter list title..."
                           inputRef={ref}
                           autoFocus
-                          onBlur={(e) => { addNewList(e); }}
+                          onBlur={() => { addNewList(); }}
                         />
-                        <Button variant="contained">Add list</Button>
+                        <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
                       </>
                     ) : <Box sx={{width: 280}}>
                       <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
