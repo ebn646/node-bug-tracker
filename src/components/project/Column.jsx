@@ -27,7 +27,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
     const titleRef = useRef();
     const [addCard, showAddCard] = useState(false);
     const [value, setValue] = useState('');
-    const [edit, setEdit] = useState(true);
+    const [edit, setEdit] = useState(false);
 
     function toggleAddCard() {
         showAddCard(!addCard)
