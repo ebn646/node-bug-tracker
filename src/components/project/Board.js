@@ -31,7 +31,7 @@ export const Board = (props) => {
   const router = useRouter();
 
   const getData = (endpoint, cb) => {
-    const { data } = useSWR(user ? `${endpoint}` : null, fetcher, cb)
+    const { data } = useSWR(user ? `${endpoint}` : null, fetcher)
     return data
   }
 
@@ -113,18 +113,24 @@ export const Board = (props) => {
 
     const response = await axios.post('/api/lists', obj);
     console.log('responese = ', response);
-    mutateLists(response.data, 'ADD')
+    mutateLists(response.data, 'ADD');
     setAddList(false);
+  }
+
+  async function editList(data, id){
+   //  mutate(`/api/lists?id=${router.query.id}`, [data], false);
+    const response = await axios.patch(`/api/lists/${id}`, {name: data.name});
+    mutate(`/api/lists?id=${router.query.id}`);
   }
 
   async function editBoard(e) {
     if (e.target.value === '') return;
     const name = e.target.value;
     const obj = { ...project, name: name }
-    mutate(`/api/board/${router.query.id}`, obj, false)
+    mutate(`/api/board/${router.query.id}`, obj, false);
     const result = axios.patch(`/api/board/${router.query.id}`, { name });
     console.log('result = ', result);
-    mutate(`/api/board/${router.query.id}`, result)
+    mutate(`/api/board/${router.query.id}`, result);
   }
 
   const handleKeyDown = (e) => {
@@ -141,7 +147,7 @@ export const Board = (props) => {
 
   useEffect(() => {
     if (lists && cards && project) {
-      console.log('crap', project)
+      console.log('lists', lists)
 
       setData({
         lists,
@@ -370,7 +376,7 @@ export const Board = (props) => {
                     {
                       data.lists && data.cards && data.lists.map((list, index) => {
                         const cards = data.cards.filter(card => card.listId === list._id);
-                        return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} />;
+                        return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} editList={editList} />;
                       })}
                     <Stack
                       spacing={1}

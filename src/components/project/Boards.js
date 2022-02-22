@@ -19,7 +19,7 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material';
-import { ProjectCard } from './ProjectCard';
+import { ProjectCard } from './HomeCard';
 import UserContext from '../../context/UserContext';
 import { fetcher } from '../../../lib/fetch';
 

@@ -21,11 +21,13 @@ const DraggableHeader = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function Column({ column, tasks, index, callback, listsCallback }) {
+export default function Column({ column, tasks, index, callback, listsCallback, editList }) {
     const router = useRouter();
     const ref = useRef();
+    const titleRef = useRef();
     const [addCard, showAddCard] = useState(false);
     const [value, setValue] = useState('');
+    const [edit, setEdit] = useState(true);
 
     function toggleAddCard() {
         showAddCard(!addCard)
@@ -47,23 +49,42 @@ export default function Column({ column, tasks, index, callback, listsCallback }
     }
 
     async function deleteListSubmitHandler() {
-        listsCallback({_id: column._id}, 'DELETE');
+        listsCallback({ _id: column._id }, 'DELETE');
         const response = await axios.delete(`/api/lists/${column._id}`);
         // TODO:  Add error handling...
         console.log('delete response is...', response);
     }
 
-    function handleKeyDown(e){
+    function handleKeyDown(e) {
         if (e.key === 'Enter') {
-          e.preventDefault()
-          if (ref.current.value === ''){
-            setValue('');;
-          } 
-          else {
-            addCardSubmitHandler();
-          }
+            e.preventDefault()
+            if (ref.current.value === '') {
+                setValue('');;
+            }
+            else {
+                addCardSubmitHandler();
+            }
         }
-      }
+    }
+
+    function updateListName(){
+        const obj = {...column, name: titleRef.current.value}
+        editList(obj, column._id)
+    }
+
+    function handleKeyDown2(e) {
+
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            if (titleRef.current.value === '') {
+                return
+            }
+            else {
+                setEdit(false);
+                updateListName();
+            }
+        }
+    }
 
     return (
         <Draggable draggableId={column._id} index={index}>
@@ -73,11 +94,21 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                         {...provided.draggableProps}
                         sx={{ width: 280, marginLeft: 1 }}>
                         <div style={{ height: 'auto', background: '#ebecf0', padding: 10 }}>
-                            <DraggableHeader 
-                                style={{display: 'flex', justifyContent: 'space-between'}} 
+                            <DraggableHeader
+                                style={{ display: 'flex', justifyContent: 'space-between' }}
                                 {...provided.dragHandleProps}
                             >
-                                <p style={{ padding: 10 }}>{column.name}</p>
+                                {
+                                    edit ? (
+                                        <TextField
+                                            id="list-name"
+                                            inputRef={titleRef}
+                                            autoFocus
+                                            onKeyDown={handleKeyDown2}
+                                            onBlur={() =>  setEdit(false)}
+                                        />
+                                    ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name}</Button>
+                                }
                                 <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
                             </DraggableHeader>
                             {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
@@ -109,8 +140,8 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                                                 autoFocus
                                                 onKeyDown={handleKeyDown}
                                                 onBlur={toggleAddCard}
-                                                onChange={(e) => { setValue(e.target.value) }} 
-                                                />
+                                                onChange={(e) => { setValue(e.target.value) }}
+                                            />
                                             <div style={{ display: 'flex', marginTop: 8 }}>
                                                 <Button variant="contained" onClick={addCardSubmitHandler}>
                                                     Add card
@@ -119,7 +150,7 @@ export default function Column({ column, tasks, index, callback, listsCallback }
                                             </div>
                                         </Stack>
 
-                                    ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />} style={{width: 270}}>Add a card</Button>
+                                    ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />} style={{ width: 270 }}>Add a card</Button>
                                 }
                             </div>
                         </div>

@@ -34,10 +34,11 @@ handler.get(async (req, res) => {
 handler.patch(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
-
+  const obj = req.body;
+  console.log('list update pob = ', obj, req.query.listId)
   let list = await db
     .collection("lists")
-    .updateOne({_id: ObjectId(req.query.listId)}, {$set:{ order: req.body.order }})
+    .updateOne({_id: ObjectId(req.query.listId)}, { $set: obj })
   res.json( list );
 });
 
