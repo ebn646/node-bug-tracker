@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
 
 const Login = () => {
+  const [error, setError] = useState();
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const router = useRouter();
@@ -51,6 +52,8 @@ const Login = () => {
     if (!result.error) {
         // set some auth state
         router.replace('/');
+      } else {
+        setError(result.error)
       }
   }
 
@@ -69,6 +72,12 @@ const Login = () => {
         }}
       >
         <Container maxWidth="sm">
+          {
+            error && (
+              <p style={{color: 'red'}}>{error}</p>
+            )
+          }
+
           <form onSubmit={(e) => {submitHandler(e)}}>
             <Box sx={{ my: 3 }}>
               <Typography

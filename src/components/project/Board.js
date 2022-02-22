@@ -5,6 +5,7 @@ import axios from 'axios';
 import _ from 'lodash'
 import {
   Box,
+  Container,
   Button,
   Card,
   CardContent,
@@ -70,7 +71,15 @@ export const Board = (props) => {
     }))
   }
 
-  const project = getData(`/api/board/${router.query.id}`);
+  function mutateBoard(name) {
+    console.log('fuck')
+    return {
+      ...project,
+      name,
+    }
+  }
+
+  const project = getData(`/api/board/${router.query.id}`, mutateBoard);
   const cards = getData(`/api/cards/${router.query.id}`, mutateCards);
   const lists = getData(`/api/lists?id=${router.query.id}`, mutateLists);
 
@@ -78,25 +87,25 @@ export const Board = (props) => {
   const ref = useRef();
 
   // local state
+  const [editable, setEditable] = useState(false);
   const [open, setOpen] = useState(false);
   const [addList, setAddList] = useState(false);
   const [data, setData] = useState({
-    list: [],
-    cards: [],
+    list: null,
+    cards: null,
   })
 
 
-  function getListsOrder(){
-    if(lists.length){
+  function getListsOrder() {
+    if (lists.length) {
       return midString(lists[lists.length - 1].order, '')
     } else {
       return 'n'
     }
   }
 
- async function addNewList() {
-   
-    const obj ={
+  async function addNewList() {
+    const obj = {
       name: ref.current.value,
       boardId: router.query.id,
       order: getListsOrder(),
@@ -108,12 +117,22 @@ export const Board = (props) => {
     setAddList(false);
   }
 
+  async function editBoard(e) {
+    if (e.target.value === '') return;
+    const name = e.target.value;
+    const obj = { ...project, name: name }
+    mutate(`/api/board/${router.query.id}`, obj, false)
+    const result = axios.patch(`/api/board/${router.query.id}`, { name });
+    console.log('result = ', result);
+    mutate(`/api/board/${router.query.id}`, result)
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      if (ref.current.value === ''){
+      if (ref.current.value === '') {
         setAddList(false);
-      } 
+      }
       else {
         addNewList();
       }
@@ -121,7 +140,8 @@ export const Board = (props) => {
   }
 
   useEffect(() => {
-    if (lists && cards) {
+    if (lists && cards && project) {
+      console.log('crap', project)
 
       setData({
         lists,
@@ -214,8 +234,8 @@ export const Board = (props) => {
     console.log('target = ', target)
     // call api
     axios.patch(`/api/cards/${draggableId}`,
-    { listId: source.droppableId, order: newOrder })
-    .then((response) => console.log('resp = ', response));
+      { listId: source.droppableId, order: newOrder })
+      .then((response) => console.log('resp = ', response));
 
     const sorted = _.orderBy(copy, ['order'], ['asc'])
     // reorder cards to rerender 
@@ -312,91 +332,107 @@ export const Board = (props) => {
       return;
     }
   }
+  if (!project) {
+    return (
+      <></>
+    )
+  }
   return (
-    <Box sx={{ minWidth: '100vw' }}>
-      {
-        project && (
-          <p style={{ padding: 10 }}>{project.name}</p>
-        )
-      }
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="all-columns"
-          direction="horizontal"
-          type="column"
-        >
-          {(provided) => (
-            <div>
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                <div style={{display: 'flex'}}>
-                {
-                  data.lists && data.cards && data.lists.map((list, index) => {
-                    const cards = data.cards.filter(card => card.listId === list._id);
-                    return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} />;
-                  })}
-                <Stack
-                  spacing={1}
-                  sx={{ marginLeft: 1 }}
+    <Container>
+    <Box sx={{marginBottom: 1}}>
+        {
+          !editable ? (
+            <Button variant="text" onClick={() => setEditable(true)}>{project.name}</Button>
+          ) : <TextField
+            autoFocus
+            margin="dense"
+            id="boardname"
+            label="Name"
+            variant="standard"
+            onBlur={(e) => { editBoard(e); setEditable(false); }}
+          />
+        }
+      </Box>
+      <Box sx={{ minWidth: '100vw' }}>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable
+            droppableId="all-columns"
+            direction="horizontal"
+            type="column"
+          >
+            {(provided) => (
+              <div>
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
                 >
-                  {
-                    addList ? (
-                      <>
-                        <TextField
-                          id="new-list"
-                          placeholder="Enter list title..."
-                          inputRef={ref}
-                          autoFocus
-                          onKeyDown={handleKeyDown}
-                          onBlur={handleKeyDown}
-                        />
-                        <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
-                      </>
-                    ) : <Box sx={{width: 280}}>
-                      <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
-                    </Box>
-                  }
-                </Stack>
-                {provided.placeholder}
-                <div>
+                  <div style={{ display: 'flex' }}>
+                    {
+                      data.lists && data.cards && data.lists.map((list, index) => {
+                        const cards = data.cards.filter(card => card.listId === list._id);
+                        return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} />;
+                      })}
+                    <Stack
+                      spacing={1}
+                      sx={{ marginLeft: 1 }}
+                    >
+                      {
+                        addList ? (
+                          <>
+                            <TextField
+                              id="new-list"
+                              placeholder="Enter list title..."
+                              inputRef={ref}
+                              autoFocus
+                              onKeyDown={handleKeyDown}
+                              onBlur={handleKeyDown}
+                            />
+                            <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
+                          </>
+                        ) : <Box sx={{ width: 280 }}>
+                          <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                        </Box>
+                      }
+                    </Stack>
+                    {provided.placeholder}
+                    <div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create A New Project</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To create a new project, please enter a name and description.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Create</Button>
-          <Button onClick={handleClose}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Create A New Project</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To create a new project, please enter a name and description.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              fullWidth
+              variant="standard"
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Description"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Create</Button>
+            <Button onClick={handleClose}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </Container>
   );
 };

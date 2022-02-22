@@ -27,4 +27,18 @@ handler.get(async (req, res) => {
   res.json( boards[0] );
 });
 
+handler.patch(async (req, res) => {
+  let client = await connectToDatabase();
+  let db = client.db();
+  var updateObject = req.body;
+
+
+  console.log('updateObject = ', updateObject)
+
+  let board = await db
+    .collection("boards")
+    .updateOne({_id: ObjectId(req.query.boardId)}, {$set: updateObject })
+  res.json( board );
+});
+
 export default handler;

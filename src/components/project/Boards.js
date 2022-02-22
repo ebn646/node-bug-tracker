@@ -77,11 +77,11 @@ export const Boards = (props) => {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h4">
-          Projects
+          Boards
         </Typography>
         <Box sx={{ m: 1 }}>
           <Button color="primary" variant="contained" onClick={handleClickOpen}>
-            Add project
+            Add board
           </Button>
         </Box>
       </Box>
@@ -104,7 +104,7 @@ export const Boards = (props) => {
           </Grid>
       </Box> 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create A New Project</DialogTitle>
+        <DialogTitle>Create A New Board</DialogTitle>
         <DialogContent>
           <DialogContentText>
             To create a new project, please enter a name and description.
