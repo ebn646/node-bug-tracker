@@ -83,12 +83,12 @@ export const UserHeader = () => {
                 padding: 1
             }}
             >
-                {/* <Grid container
+                <Grid container
                     direction='row'
                     alignItems='center'
                     spacing={1}
                 >
-                    <Grid item>
+                   {/*  <Grid item>
                         <ButtonBase>
                             <AppsIcon />
                         </ButtonBase>
@@ -116,8 +116,8 @@ export const UserHeader = () => {
                                 Boards
                             </Typography>
                         </ButtonBase>
-                    </Grid>
-                </Grid> */}
+                    </Grid>*/}
+                </Grid> 
                 {/* <Grid container
                     direction='row'
                     alignItems='center'
