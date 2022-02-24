@@ -18,18 +18,18 @@ import {
     Menu,
     MenuItem,
 } from '@mui/material';
-// import {
-//     Home,
-//     Dashboard,
-//     Notifications,
-// } from '@mui/icons-material';
-// import AppsIcon from '@mui/icons-material/Apps';
-// import { NavItem } from './nav-item';
-// import { Bell as BellIcon } from '../icons/bell';
-// import { User as UserIcon } from '../icons/user';
-// import { UserCircle as UserCircleIcon } from '../icons/user-circle';
-// import { Cog as CogIcon } from '../icons/cog';
-// import MenuPopover from './MenuPopover';
+import {
+    Home,
+    Dashboard,
+    Notifications,
+} from '@mui/icons-material';
+import AppsIcon from '@mui/icons-material/Apps';
+import { NavItem } from './nav-item';
+import { Bell as BellIcon } from '../icons/bell';
+import { User as UserIcon } from '../icons/user';
+import { UserCircle as UserCircleIcon } from '../icons/user-circle';
+import { Cog as CogIcon } from '../icons/cog';
+import MenuPopover from './MenuPopover';
 
 // const account = {
 //     displayName: 'Jaydon Frankie',
