@@ -88,7 +88,7 @@ export const UserHeader = () => {
                     alignItems='center'
                     spacing={1}
                 >
-                   {/*  <Grid item>
+                    {/*  <Grid item>
                         <ButtonBase>
                             <AppsIcon />
                         </ButtonBase>
@@ -117,7 +117,7 @@ export const UserHeader = () => {
                             </Typography>
                         </ButtonBase>
                     </Grid>*/}
-                </Grid> 
+                </Grid>
                 {/* <Grid container
                     direction='row'
                     alignItems='center'
@@ -138,7 +138,7 @@ export const UserHeader = () => {
                             Trell-node
                         </Typography>
                     </Grid>
-                </Grid>
+                </Grid>*/}
                 <Grid container
                     direction='row'
                     alignItems='center'
@@ -158,26 +158,35 @@ export const UserHeader = () => {
                             aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
+                        // onClick={handleClick}
                         >
-                            <Avatar 
-                                sx={{ width: 30, height: 30 }} 
+                            <Avatar
+                                sx={{ width: 30, height: 30 }}
                             />
                         </Button>
                         <Menu
                             id="basic-menu"
                             anchorEl={anchorEl}
                             open={open}
-                            onClose={handleClose}
+                            // onClose={handleClose}
                             MenuListProps={{
                                 'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem disabled onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+                            <MenuItem
+                                disabled
+                               // onClick={handleClose}
+                            >
+                                Profile
+                            </MenuItem>
+                            <MenuItem
+                                // onClick={logoutHandler}
+                            >
+                                Logout
+                            </MenuItem>
                         </Menu>
                     </Grid>
-                </Grid> */}
+                </Grid>
             </AppBar>
         </React.Fragment>
     )
