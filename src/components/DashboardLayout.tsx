@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import UserHeader from './UserHeader';
+import {UserHeader} from './UserHeader';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',

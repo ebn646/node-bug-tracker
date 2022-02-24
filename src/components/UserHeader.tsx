@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-// import { useRouter } from 'next/router';
-// import { useSession, signOut } from 'next-auth/client';
-// import PropTypes from 'prop-types';
-// import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
+import { useSession, signOut } from 'next-auth/client';
+import styled from '@emotion/styled';
 import {
     AppBar,
     Avatar,
@@ -52,7 +51,7 @@ import {
 // ];
 
 
-export default function UserHeader() {
+export const UserHeader = () => {
     // const router = useRouter();
     // // const [session, loading] = useSession();
     // const anchorRef = useRef(null);
