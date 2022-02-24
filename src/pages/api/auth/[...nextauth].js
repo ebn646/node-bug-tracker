@@ -34,7 +34,7 @@ export default NextAuth({
         }
 
         client.close();
-        return { email: user.email, username: user.username };
+        return { email: user.email, name: user.username };
       },
     }),
   ],
