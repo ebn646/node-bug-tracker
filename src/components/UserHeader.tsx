@@ -83,7 +83,7 @@ export const UserHeader = () => {
                 padding: 1
             }}
             >
-                 <Grid container
+                {/* <Grid container
                     direction='row'
                     alignItems='center'
                     spacing={1}
@@ -117,7 +117,7 @@ export const UserHeader = () => {
                             </Typography>
                         </ButtonBase>
                     </Grid>
-                </Grid> 
+                </Grid> */}
                 {/* <Grid container
                     direction='row'
                     alignItems='center'
