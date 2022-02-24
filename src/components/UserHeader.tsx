@@ -31,32 +31,32 @@ import { UserCircle as UserCircleIcon } from '../icons/user-circle';
 import { Cog as CogIcon } from '../icons/cog';
 import MenuPopover from './MenuPopover';
 
-// const account = {
-//     displayName: 'Jaydon Frankie',
-//     email: 'demo@minimals.cc',
-//     photoURL: '/static/mock-images/avatars/avatar_default.jpg'
-// };
+const account = {
+    displayName: 'Jaydon Frankie',
+    email: 'demo@minimals.cc',
+    photoURL: '/static/mock-images/avatars/avatar_default.jpg'
+};
 
-// const items = [
-//     {
-//         href: '/account',
-//         icon: (<UserIcon fontSize="small" />),
-//         title: 'Account'
-//     },
-//     {
-//         href: '/settings',
-//         icon: (<CogIcon fontSize="small" />),
-//         title: 'Settings'
-//     }
-// ];
+const items = [
+    {
+        href: '/account',
+        icon: (<UserIcon fontSize="small" />),
+        title: 'Account'
+    },
+    {
+        href: '/settings',
+        icon: (<CogIcon fontSize="small" />),
+        title: 'Settings'
+    }
+];
 
 
 export const UserHeader = () => {
-    // const router = useRouter();
-    // // const [session, loading] = useSession();
-    // const anchorRef = useRef(null);
-    // // local state
-    // const [anchorEl, setAnchorEl] = useState(null);
+    const router = useRouter();
+    // const [session, loading] = useSession();
+    const anchorRef = useRef(null);
+    // local state
+    const [anchorEl, setAnchorEl] = useState(null);
     // const open = Boolean(anchorEl);
     // const handleClick = (event) => {
     //     console.log(true)
