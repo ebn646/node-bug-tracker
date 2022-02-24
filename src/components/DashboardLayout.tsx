@@ -14,6 +14,7 @@ export const DashboardLayout = (props) => {
 
   return (
     <>
+      <UserHeader />
       <DashboardLayoutRoot>
         <Box
           sx={{
@@ -26,7 +27,6 @@ export const DashboardLayout = (props) => {
           {children}
         </Box>
       </DashboardLayoutRoot>
-      <UserHeader />
     </>
   );
 };

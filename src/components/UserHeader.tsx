@@ -1,193 +1,139 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useSession, signOut } from 'next-auth/client';
-import styled from '@emotion/styled';
-import {
-    AppBar,
-    Avatar,
-    Badge,
-    Box,
-    Button,
-    ButtonBase,
-    Divider,
-    IconButton,
-    Toolbar,
-    Tooltip,
-    Typography,
-    Grid,
-    Menu,
-    MenuItem,
-} from '@mui/material';
-import {
-    Home,
-    Dashboard,
-    Notifications,
-} from '@mui/icons-material';
-import AppsIcon from '@mui/icons-material/Apps';
-import { NavItem } from './nav-item';
-import { Bell as BellIcon } from '../icons/bell';
-import { User as UserIcon } from '../icons/user';
-import { UserCircle as UserCircleIcon } from '../icons/user-circle';
-import { Cog as CogIcon } from '../icons/cog';
-import MenuPopover from './MenuPopover';
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
 
-const account = {
-    displayName: 'Jaydon Frankie',
-    email: 'demo@minimals.cc',
-    photoURL: '/static/mock-images/avatars/avatar_default.jpg'
-};
-
-const items = [
-    {
-        href: '/account',
-        icon: (<UserIcon fontSize="small" />),
-        title: 'Account'
-    },
-    {
-        href: '/settings',
-        icon: (<CogIcon fontSize="small" />),
-        title: 'Settings'
-    }
-];
-
+const pages = ['Products', 'Pricing', 'Blog'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const UserHeader = () => {
-    const router = useRouter();
-    const [session, loading] = useSession();
-    const anchorRef = useRef(null);
-    // local state
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        console.log(true)
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    function logoutHandler() {
-        signOut();
-    }
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
-    useEffect(() => {
-        console.log('session ', session)
-    }, [session]);
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
-    return (
-        <React.Fragment>
-            <AppBar sx={{
-                flexDirection: 'row',
-                minHeight: 40,
-                padding: 1
-            }}
+  return (
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+          >
+            LOGO
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-                <Grid container
-                    direction='row'
-                    alignItems='center'
-                    spacing={1}
-                >
-                    {/*  <Grid item>
-                        <ButtonBase>
-                            <AppsIcon />
-                        </ButtonBase>
-                    </Grid>
-                    <Grid item>
-                        <ButtonBase
-                            onClick={() => router.push(`/`)}
-                        >
-                            <Home />
-                        </ButtonBase>
-                    </Grid>
-                    <Grid item>
-                        <ButtonBase
-                            onClick={() => router.push(`/boards`)}
-                        >
-                            <Dashboard
-                                style={{ marginRight: '8px', paddingLeft: '4px' }}
-                            />
-                            <Typography
-                                style={{
-                                    fontWeight: 700,
-                                    paddingRight: '8px',
-                                }}
-                            >
-                                Boards
-                            </Typography>
-                        </ButtonBase>
-                    </Grid>*/}
-                </Grid>
-                {/* <Grid container
-                    direction='row'
-                    alignItems='center'
-                    justifyContent="center"
-                >
-                    <Grid item>
-                        <Dashboard
-                            style={{ marginRight: '8px', paddingLeft: '4px' }}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Typography
-                            style={{
-                                fontWeight: 700,
-                                paddingRight: '8px',
-                            }}
-                        >
-                            Trell-node
-                        </Typography>
-                    </Grid>
-                </Grid>*/}
-                <Grid container
-                    direction='row'
-                    alignItems='center'
-                    justifyContent='right'
-                    spacing={1}
-                >
-                    <Grid item>
-                        <ButtonBase>
-                            <Notifications
-                                style={{ marginRight: '8px', paddingLeft: '4px' }}
-                            />
-                        </ButtonBase>
-                    </Grid>
-                    <Grid item sx={{ position: 'relative' }}>
-                        <Button
-                            id="basic-button"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                        // onClick={handleClick}
-                        >
-                            <Avatar
-                                sx={{ width: 30, height: 30 }}
-                            />
-                        </Button>
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            // onClose={handleClose}
-                            MenuListProps={{
-                                'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <MenuItem
-                                disabled
-                               // onClick={handleClose}
-                            >
-                                Profile
-                            </MenuItem>
-                            <MenuItem
-                                // onClick={logoutHandler}
-                            >
-                                Logout
-                            </MenuItem>
-                        </Menu>
-                    </Grid>
-                </Grid>
-            </AppBar>
-        </React.Fragment>
-    )
-}
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
+  );
+};
