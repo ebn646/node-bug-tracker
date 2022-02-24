@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-// import { useRouter } from 'next/router';
-// import { useSession, signOut } from 'next-auth/client';
-// import PropTypes from 'prop-types';
-// import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
+import { useSession, signOut } from 'next-auth/client';
+import PropTypes from 'prop-types';
+import styled from '@emotion/styled';
 import {
     AppBar,
     Avatar,
@@ -19,58 +19,58 @@ import {
     Menu,
     MenuItem,
 } from '@mui/material';
-// import {
-//     Home,
-//     Dashboard,
-//     Notifications,
-// } from '@mui/icons-material';
-// import AppsIcon from '@mui/icons-material/Apps';
-// import { NavItem } from './nav-item';
-// import { Bell as BellIcon } from '../icons/bell';
-// import { User as UserIcon } from '../icons/user';
-// import { UserCircle as UserCircleIcon } from '../icons/user-circle';
-// import { Cog as CogIcon } from '../icons/cog';
-// import MenuPopover from './MenuPopover';
+import {
+    Home,
+    Dashboard,
+    Notifications,
+} from '@mui/icons-material';
+import AppsIcon from '@mui/icons-material/Apps';
+import { NavItem } from './nav-item';
+import { Bell as BellIcon } from '../icons/bell';
+import { User as UserIcon } from '../icons/user';
+import { UserCircle as UserCircleIcon } from '../icons/user-circle';
+import { Cog as CogIcon } from '../icons/cog';
+import MenuPopover from './MenuPopover';
 
-// const account = {
-//     displayName: 'Jaydon Frankie',
-//     email: 'demo@minimals.cc',
-//     photoURL: '/static/mock-images/avatars/avatar_default.jpg'
-// };
+const account = {
+    displayName: 'Jaydon Frankie',
+    email: 'demo@minimals.cc',
+    photoURL: '/static/mock-images/avatars/avatar_default.jpg'
+};
 
-// const items = [
-//     {
-//         href: '/account',
-//         icon: (<UserIcon fontSize="small" />),
-//         title: 'Account'
-//     },
-//     {
-//         href: '/settings',
-//         icon: (<CogIcon fontSize="small" />),
-//         title: 'Settings'
-//     }
-// ];
+const items = [
+    {
+        href: '/account',
+        icon: (<UserIcon fontSize="small" />),
+        title: 'Account'
+    },
+    {
+        href: '/settings',
+        icon: (<CogIcon fontSize="small" />),
+        title: 'Settings'
+    }
+];
 
 
 export default function UserHeader() {
-    // const router = useRouter();
-    // // const [session, loading] = useSession();
-    // const anchorRef = useRef(null);
-    // // local state
-    // const [anchorEl, setAnchorEl] = useState(null);
-    // const open = Boolean(anchorEl);
-    // const handleClick = (event) => {
-    //     console.log(true)
-    //     setAnchorEl(event.currentTarget);
-    // };
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
+    const router = useRouter();
+    // const [session, loading] = useSession();
+    const anchorRef = useRef(null);
+    // local state
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        console.log(true)
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
 
-    // function logoutHandler() {
-    //     signOut();
-    // }
+    function logoutHandler() {
+        signOut();
+    }
 
     // useEffect(() => {
     //     console.log('session ', session)
@@ -84,7 +84,7 @@ export default function UserHeader() {
                 padding: 1
             }}
             >
-                {/* <Grid container
+                <Grid container
                     direction='row'
                     alignItems='center'
                     spacing={1}
@@ -118,7 +118,7 @@ export default function UserHeader() {
                             </Typography>
                         </ButtonBase>
                     </Grid>
-                </Grid> */}
+                </Grid>
                 {/* <Grid container
                     direction='row'
                     alignItems='center'
