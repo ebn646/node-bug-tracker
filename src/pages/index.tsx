@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { Box, Container, Grid, Pagination } from '@mui/material';
 import { projects } from '../__mocks__/projects';
 import { Boards } from '../components/project/Boards';
-import { DashboardLayout } from '../components/dashboard-layout';
+import { DashboardLayout } from '../components/DashboardLayout';
 import UserContext from '../context/UserContext';
 
 const Index = () => {

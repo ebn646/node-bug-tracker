@@ -6,7 +6,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { Box, Container } from '@mui/material';
 import { Board }  from '../../components/project/Board';
-import { DashboardLayout } from '../../components/dashboard-layout';
+import { DashboardLayout } from '../../components/DashboardLayout';
 import useSWR from 'swr';
 import { fetcher } from '../../../lib/fetch';
 
