@@ -53,7 +53,7 @@ const items = [
 
 export const UserHeader = () => {
     const router = useRouter();
-    // const [session, loading] = useSession();
+    const [session, loading] = useSession();
     const anchorRef = useRef(null);
     // local state
     const [anchorEl, setAnchorEl] = useState(null);
