@@ -57,14 +57,14 @@ export const UserHeader = () => {
     const anchorRef = useRef(null);
     // local state
     const [anchorEl, setAnchorEl] = useState(null);
-    // const open = Boolean(anchorEl);
-    // const handleClick = (event) => {
-    //     console.log(true)
-    //     setAnchorEl(event.currentTarget);
-    // };
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        console.log(true)
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
 
     // function logoutHandler() {
