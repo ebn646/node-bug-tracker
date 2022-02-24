@@ -54,12 +54,13 @@ const items = [
 
 export default function UserHeader() {
     const router = useRouter();
-    const [session, loading] = useSession();
+    // const [session, loading] = useSession();
     const anchorRef = useRef(null);
     // local state
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
+        console.log(true)
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
@@ -71,9 +72,9 @@ export default function UserHeader() {
         signOut();
     }
 
-    useEffect(() => {
-        console.log('session ', session)
-    }, [session]);
+    // useEffect(() => {
+    //     console.log('session ', session)
+    // }, [session]);
 
     return (
         <React.Fragment>
@@ -118,7 +119,7 @@ export default function UserHeader() {
                         </ButtonBase>
                     </Grid>
                 </Grid>
-                <Grid container
+                {/* <Grid container
                     direction='row'
                     alignItems='center'
                     justifyContent="center"
@@ -177,7 +178,7 @@ export default function UserHeader() {
                             <MenuItem onClick={logoutHandler}>Logout</MenuItem>
                         </Menu>
                     </Grid>
-                </Grid>
+                </Grid> */}
             </AppBar>
         </React.Fragment>
     )
