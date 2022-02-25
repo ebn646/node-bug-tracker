@@ -22,7 +22,6 @@ import {
 } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
-import AddIcon from '@mui/icons-material/Add';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
@@ -145,16 +144,6 @@ export const Board = (props) => {
       }
     }
   }
-
-  const handleBlur = (e) => {
-    if (ref.current.value === '') {
-      e.preventDefault()
-        setAddList(false);
-    }
-      else {
-        addNewList();
-      }
-    }
 
   useEffect(() => {
     if (lists && cards && project) {
@@ -358,11 +347,12 @@ export const Board = (props) => {
     <Box sx={{marginBottom: 1}}>
         {
           !editable ? (
-            <Button variant="text"  size="large"onClick={() => setEditable(true)}>{project.name}</Button>
+            <Button variant="text" onClick={() => setEditable(true)}>{project.name}</Button>
           ) : <TextField
             autoFocus
             margin="dense"
             id="boardname"
+            label="Name"
             variant="standard"
             onBlur={(e) => { editBoard(e); setEditable(false); }}
           />
@@ -387,6 +377,8 @@ export const Board = (props) => {
                         const cards = data.cards.filter(card => card.listId === list._id);
                         return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} editList={editList} />;
                       })}
+                    {provided.placeholder}
+                    <div>
                     <Stack
                       spacing={1}
                       sx={{ marginLeft: 1 }}
@@ -396,22 +388,19 @@ export const Board = (props) => {
                           <>
                             <TextField
                               id="new-list"
-                              variant="standard"
                               placeholder="Enter list title..."
                               inputRef={ref}
                               autoFocus
                               onKeyDown={handleKeyDown}
-                              onBlur={handleBlur}
+                              onBlur={handleKeyDown}
                             />
                             <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
                           </>
                         ) : <Box sx={{ width: 280 }}>
-                          <Button sx={{ width: '100%', justifyContent: 'flex-start' }} startIcon={<AddIcon />} variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                          <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
                         </Box>
                       }
                     </Stack>
-                    {provided.placeholder}
-                    <div>
                     </div>
                   </div>
                 </div>

@@ -71,27 +71,22 @@ export const Boards = (props) => {
         sx={{
           alignItems: 'center',
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'space-around',
           flexWrap: 'wrap',
           m: -1,
         }}
       >
-        <Box sx={{ m: 1 }}>
-          <Button color="primary" variant="contained" onClick={handleClickOpen}>
-            Add board
-          </Button>
-        </Box>
       </Box>
       <Box sx={{ pt: 3 }}>
           <Grid
             container
-            spacing={3}
+            spacing={1}
           >
             {data && data.map((project) => (
               <Grid
                 item
                 key={project._id}
-                lg={4}
+                lg={3}
                 md={6}
                 xs={12}
               >
@@ -99,6 +94,11 @@ export const Boards = (props) => {
               </Grid>
             ))}
           </Grid>
+          <Box sx={{ m: 1 }}>
+          <Button color="primary" variant="contained" onClick={handleClickOpen}>
+            Add board
+          </Button>
+        </Box>
       </Box> 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create A New Board</DialogTitle>

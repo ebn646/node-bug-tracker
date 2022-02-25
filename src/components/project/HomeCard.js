@@ -5,7 +5,6 @@ import {
   Box,
   Card,
   CardContent,
-  Grid,
   Typography,
 } from '@mui/material';
 
@@ -17,6 +16,7 @@ export const ProjectCard = ({ project, ...rest }) => (
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
+        width: 270,
       }}
       {...rest}
     >
@@ -28,9 +28,6 @@ export const ProjectCard = ({ project, ...rest }) => (
           variant="h5"
         >
           {project.name}
-        </Typography>
-        <Typography align="left" color="textPrimary" variant="body1">
-          {project.description}
         </Typography>
       </CardContent>
       <Box sx={{ flexGrow: 1 }} />
