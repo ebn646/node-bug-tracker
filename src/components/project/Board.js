@@ -146,6 +146,16 @@ export const Board = (props) => {
     }
   }
 
+  const handleBlur = (e) => {
+    if (ref.current.value === '') {
+      e.preventDefault()
+        setAddList(false);
+    }
+      else {
+        addNewList();
+      }
+    }
+
   useEffect(() => {
     if (lists && cards && project) {
       console.log('lists', lists)
@@ -348,12 +358,11 @@ export const Board = (props) => {
     <Box sx={{marginBottom: 1}}>
         {
           !editable ? (
-            <Button variant="text" onClick={() => setEditable(true)}>{project.name}</Button>
+            <Button variant="text"  size="large"onClick={() => setEditable(true)}>{project.name}</Button>
           ) : <TextField
             autoFocus
             margin="dense"
             id="boardname"
-            label="Name"
             variant="standard"
             onBlur={(e) => { editBoard(e); setEditable(false); }}
           />
@@ -387,16 +396,17 @@ export const Board = (props) => {
                           <>
                             <TextField
                               id="new-list"
+                              variant="standard"
                               placeholder="Enter list title..."
                               inputRef={ref}
                               autoFocus
                               onKeyDown={handleKeyDown}
-                              onBlur={handleKeyDown}
+                              onBlur={handleBlur}
                             />
                             <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
                           </>
                         ) : <Box sx={{ width: 280 }}>
-                          <Button startIcon={<AddIcon />} variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                          <Button sx={{ width: '100%', justifyContent: 'flex-start' }} startIcon={<AddIcon />} variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
                         </Box>
                       }
                     </Stack>

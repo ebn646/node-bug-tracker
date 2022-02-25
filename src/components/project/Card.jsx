@@ -69,6 +69,7 @@ export default function Card({ task, index, callback }) {
             edit ? (
               <TextField
               id="task-name"
+              variant="standard"
               defaultValue={task.name}
               autoFocus
               onBlur={(e) => {showEdit(false); editSubmitHandler(e)}}

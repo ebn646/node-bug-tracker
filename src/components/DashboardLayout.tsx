@@ -6,7 +6,7 @@ import {UserHeader} from './UserHeader';
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
   maxWidth: '100%',
-  paddingTop: 64,
+  paddingTop: 0,
 }));
 
 export const DashboardLayout = (props) => {

@@ -95,13 +95,14 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
                         sx={{ width: 280, marginLeft: 1 }}>
                         <div style={{ height: 'auto', background: '#ebecf0', padding: 10 }}>
                             <DraggableHeader
-                                style={{ display: 'flex', justifyContent: 'space-between' }}
+                                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                                 {...provided.dragHandleProps}
                             >
                                 {
                                     edit ? (
                                         <TextField
                                             id="list-name"
+                                            variant="standard"
                                             inputRef={titleRef}
                                             autoFocus
                                             onKeyDown={handleKeyDown2}
