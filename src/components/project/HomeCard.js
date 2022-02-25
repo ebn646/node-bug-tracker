@@ -10,7 +10,7 @@ import {
 
 export const ProjectCard = ({ project, ...rest }) => (
   <Link href={`/b/${project._id}`}>
-    <a style={{textDecoration: 'none', height: '100%', width: '100%'}}>
+    <a style={{textDecoration: 'none', height: '100%', width: '100%',display: 'inline-flex', border: '1pz solid blue'}}>
     <Box
       sx={{
         display: 'flex',
@@ -20,9 +20,9 @@ export const ProjectCard = ({ project, ...rest }) => (
     >
         <Typography
           align="left"
-          color="textPrimary"
+          color="#fff"
           gutterBottom
-          variant="h5"
+          variant="subtitleBold"
         >
           {project.name}
         </Typography>

@@ -15,7 +15,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Grid,
 } from '@mui/material';
@@ -97,6 +96,8 @@ export const Boards = (props) => {
             <Box
               sx={{
                 mx: 1,
+                p: 1,
+                borderRadius: 1,
                 width: 200,
                 height: 100,
                 backgroundColor: 'primary.dark',
@@ -113,7 +114,7 @@ export const Boards = (props) => {
             mx: 1,
             width: 200,
             height: 100,
-            backgroundColor: 'primary.dark',
+            backgroundColor: 'primary.light',
             '&:hover': {
               backgroundColor: 'primary.main',
               opacity: [0.9, 0.8, 0.7],
