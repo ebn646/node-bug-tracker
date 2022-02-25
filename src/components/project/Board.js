@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
+import AddIcon from '@mui/icons-material/Add';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
@@ -276,7 +277,6 @@ export const Board = (props) => {
     }
     // 
     const startList = data.lists.filter((i) => i._id === source.droppableId);
-    const endList = data.lists.filter((i) => i._id === destination.droppableId);
     const targetCard = data.cards.filter((i) => i._id === draggableId)[0];
 
     if (source.droppableId !== destination.droppableId) {
@@ -344,7 +344,7 @@ export const Board = (props) => {
     )
   }
   return (
-    <Container>
+    <Container maxWidth={false}>
     <Box sx={{marginBottom: 1}}>
         {
           !editable ? (
@@ -396,7 +396,7 @@ export const Board = (props) => {
                             <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
                           </>
                         ) : <Box sx={{ width: 280 }}>
-                          <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                          <Button startIcon={<AddIcon />} variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
                         </Box>
                       }
                     </Stack>

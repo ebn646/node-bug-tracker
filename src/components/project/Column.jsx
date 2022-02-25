@@ -150,7 +150,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
                                             </div>
                                         </Stack>
 
-                                    ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />} style={{ width: 270 }}>Add a card</Button>
+                                    ) : <Button onClick={toggleAddCard} startIcon={<AddIcon />} sx={{ width: 270, justifyContent: 'flex-start' }}><span>Add a card</span></Button>
                                 }
                             </div>
                         </div>

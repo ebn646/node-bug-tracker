@@ -10,10 +10,7 @@ import Menu from '@mui/material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import AppsIcon from '@mui/icons-material/Apps';
-
-import {
-    Notifications,
-} from '@mui/icons-material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -21,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Logout'];
 
 export const UserHeader = () => {
     const router = useRouter();
@@ -58,7 +55,7 @@ export const UserHeader = () => {
                         </IconButton>
                     </Box>
                     {/* icons for large screen */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flex: 1, display: { xs: 'none', md: 'flex' } }}>
                         <IconButton>
                             <AppsIcon />
                         </IconButton>
@@ -86,7 +83,7 @@ export const UserHeader = () => {
                         LOGO
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flex: 1, display: { xs: 'none', md: 'flex', justifyContent: 'center' } }}>
                         <DashboardIcon />
                         <Typography
                             variant="h6"
@@ -98,10 +95,13 @@ export const UserHeader = () => {
                         </Typography>
                     </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                        <IconButton>
+                            <NotificationsIcon />
+                        </IconButton>
+                        <Tooltip title="Open settings" sx={{ display: 'flex' }}>
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt="Eric Nichols" src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip>
                         <Menu

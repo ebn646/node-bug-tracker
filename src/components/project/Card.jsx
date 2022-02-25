@@ -12,12 +12,13 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'left',
   display: 'flex',
   justifyContent: 'space-between',
+  minHeight: 40,
   color: theme.palette.text.secondary,
   '.delete': {
     display: 'none',
   },
   '&:hover, &.Mui-focusVisible': {
-    boxShadow: `0px 0px 0px 8px ${alpha(theme.palette.success.main, 0.16)}`,
+    background: '#f4f5f7',
     '.delete': {
       display: 'flex',
       '&:hover': {

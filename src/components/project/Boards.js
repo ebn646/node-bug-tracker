@@ -76,9 +76,6 @@ export const Boards = (props) => {
           m: -1,
         }}
       >
-        <Typography sx={{ m: 1 }} variant="h4">
-          Boards
-        </Typography>
         <Box sx={{ m: 1 }}>
           <Button color="primary" variant="contained" onClick={handleClickOpen}>
             Add board
