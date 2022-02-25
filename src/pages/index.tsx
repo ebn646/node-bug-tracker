@@ -1,19 +1,20 @@
-import React from 'react';
-import { useContext, useEffect } from 'react';
+/* eslint-disable react/jsx-filename-extension */
+import React, { useContext, useEffect } from 'react';
 import { getSession } from 'next-auth/client';
 import Head from 'next/head';
-import { Box, Container, Grid, Pagination } from '@mui/material';
-import { projects } from '../__mocks__/projects';
+import {
+  Box, Container,
+} from '@mui/material';
 import { Boards } from '../components/project/Boards';
 import { DashboardLayout } from '../components/DashboardLayout';
 import UserContext from '../context/UserContext';
 
-const Index = () => {
+function Index() {
   const user = useContext(UserContext);
 
   useEffect(() => {
-    console.log('user = ', user)
-  }, [user])
+    console.log('user = ', user);
+  }, [user]);
 
   return (
     <>
@@ -26,7 +27,7 @@ const Index = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          py: 8
+          py: 8,
         }}
       >
         <Container maxWidth={false}>
@@ -45,20 +46,20 @@ Index.getLayout = (page) => (
 
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
-  console.log('req session = ', session)
+  console.log('req session = ', session);
 
   if (!session) {
     return {
       redirect: {
         destination: '/login',
         permanent: false,
-      }
-    }
+      },
+    };
   }
 
   return {
     props: { session },
-  }
+  };
 }
 
 export default Index;

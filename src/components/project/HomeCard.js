@@ -10,17 +10,14 @@ import {
 
 export const ProjectCard = ({ project, ...rest }) => (
   <Link href={`/b/${project._id}`}>
-    <a style={{textDecoration: 'none'}}>
-    <Card
+    <a style={{textDecoration: 'none', height: '100%', width: '100%'}}>
+    <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        width: 270,
       }}
       {...rest}
     >
-      <CardContent>
         <Typography
           align="left"
           color="textPrimary"
@@ -29,9 +26,8 @@ export const ProjectCard = ({ project, ...rest }) => (
         >
           {project.name}
         </Typography>
-      </CardContent>
       <Box sx={{ flexGrow: 1 }} />
-    </Card>
+    </Box>
     </a>
   </Link>
 );

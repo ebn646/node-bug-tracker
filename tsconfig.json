@@ -1,6 +1,8 @@
+
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -22,7 +24,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/components/dashboard-navbar.jsx", "src/pages/login.jsx", "src/pages/_document.jsx", "src/components/dashboard-sidebar.jsx", "src/components/project/Column.jsx", "src/components/project/Card.jsx"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

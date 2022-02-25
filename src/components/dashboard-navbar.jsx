@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { NavItem } from './nav-item';
+import { NavItem } from './NavItem';
 import { Bell as BellIcon } from '../icons/bell';
 import { User as UserIcon } from '../icons/user';
 import { UserCircle as UserCircleIcon } from '../icons/user-circle';

@@ -1,3 +1,4 @@
+/* eslint-disable react/function-component-definition */
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -9,6 +10,7 @@ const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   paddingTop: 0,
 }));
 
+// eslint-disable-next-line import/prefer-default-export
 export const DashboardLayout = (props) => {
   const { children } = props;
 
