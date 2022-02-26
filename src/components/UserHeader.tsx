@@ -50,7 +50,9 @@ export function UserHeader() {
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton>
+            <IconButton onClick={() => {
+              return router.push('/');
+            }}>
               <HomeIcon />
             </IconButton>
           </Box>
@@ -59,10 +61,14 @@ export function UserHeader() {
             <IconButton>
               <AppsIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => {
+              router.push('/');
+            }}>
               <HomeIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => {
+              router.push('/');
+            }}>
               <DashboardIcon />
               <Typography
                 variant="h6"
