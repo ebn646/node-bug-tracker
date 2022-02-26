@@ -92,10 +92,14 @@ export const Boards = (props) => {
           container
           spacing={1}
         >
-          {data && data.map((project) => (
+          {data && data.map((board) => (
             <Box
+            key={board._id}
               sx={{
-                mx: 1,
+                mt: 0,
+                mr: '1%',
+                mb: '1%',
+                ml: 0,
                 p: 1,
                 borderRadius: 1,
                 width: 200,
@@ -107,11 +111,11 @@ export const Boards = (props) => {
                 },
               }}
             >
-              <ProjectCard project={project} />
+              <ProjectCard project={board} />
             </Box>
           ))}
           <Button sx={{
-            mx: 1,
+            x: 1,
             width: 200,
             height: 100,
             backgroundColor: 'primary.light',
