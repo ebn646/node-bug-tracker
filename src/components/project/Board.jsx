@@ -22,6 +22,7 @@ import {
   Stack,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
 import { fetcher } from '../../../lib/fetch';
@@ -37,14 +38,14 @@ export const Board = (props) => {
     return data
   }
 
-  function mutateCards(data, type) {
+  function mutateCards(card, type) {
     let newCards;
     switch (type) {
       case 'ADD':
-        newCards = [...cards, data];
+        newCards = [...data.cards, card];
         break;
       case 'DELETE':
-        newCards = cards.filter((c) => c._id !== data._id);
+        newCards = cards.filter((c) => c._id !== card._id);
         break;
       default:
         throw new Error('Your type was not found!');
@@ -420,7 +421,7 @@ export const Board = (props) => {
                               </Box>
                             </>
                           ) : <Box sx={{ width: 280 }}>
-                            <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                            <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
                           </Box>
                         }
                       </Stack>

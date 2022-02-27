@@ -21,6 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
     background: '#f4f5f7',
     '.delete': {
       display: 'flex',
+      border: '1px solid red',
       '&:hover': {
         fill: 'red',
       }
@@ -32,7 +33,7 @@ export default function Card({ task, index, callback }) {
 
   const [edit, showEdit] = useState(false);
 
-  async function deleteSubmitHandler() {
+  async function deleteSubmitHandler(e) {
     const response = await axios.delete(`/api/cards/${task._id}`);
     // TODO:  Add error handling...
     if(response.status === 200){
@@ -44,7 +45,8 @@ export default function Card({ task, index, callback }) {
   }
 
   async function editSubmitHandler(e) {
-    if(e.target.value === task.name) return;
+    e.preventDefault();
+    if(e.target.value === task.name) return
     console.log(e.target.value)
     const response = await axios.patch(`/api/cards/${task._id}`, {name: e.target.value});
     // TODO:  Add error handling...
@@ -76,7 +78,7 @@ export default function Card({ task, index, callback }) {
             />
             ) : <p>{task.name}</p>
           }
-          <DeleteIcon className='delete' onClick={() => deleteSubmitHandler} />
+          <DeleteIcon className='delete' onClick={(e) => deleteSubmitHandler(e)} />
         </Item>
       )}
     </Draggable>
