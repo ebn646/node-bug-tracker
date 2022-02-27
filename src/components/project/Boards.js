@@ -94,7 +94,7 @@ export const Boards = (props) => {
         >
           {data && data.map((board) => (
             <Box
-            key={board._id}
+             key={board._id}
               sx={{
                 mt: 0,
                 mr: '1%',

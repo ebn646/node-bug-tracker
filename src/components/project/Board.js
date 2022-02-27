@@ -7,6 +7,7 @@ import {
   Box,
   Container,
   Button,
+  IconButton,
   Card,
   CardContent,
   TextField,
@@ -20,6 +21,7 @@ import {
   DialogTitle,
   Stack,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
 import { fetcher } from '../../../lib/fetch';
@@ -117,9 +119,9 @@ export const Board = (props) => {
     setAddList(false);
   }
 
-  async function editList(data, id){
-   //  mutate(`/api/lists?id=${router.query.id}`, [data], false);
-    const response = await axios.patch(`/api/lists/${id}`, {name: data.name});
+  async function editList(data, id) {
+    //  mutate(`/api/lists?id=${router.query.id}`, [data], false);
+    const response = await axios.patch(`/api/lists/${id}`, { name: data.name });
     mutate(`/api/lists?id=${router.query.id}`);
   }
 
@@ -143,6 +145,11 @@ export const Board = (props) => {
         addNewList();
       }
     }
+  }
+
+  const resetAddList = () => {
+    setAddList(false);
+
   }
 
   useEffect(() => {
@@ -344,10 +351,14 @@ export const Board = (props) => {
   }
   return (
     <Container maxWidth={false}>
-    <Box sx={{marginBottom: 1}}>
+      <Box sx={{ marginBottom: 1 }}>
         {
           !editable ? (
-            <Button variant="text" onClick={() => setEditable(true)}>{project.name}</Button>
+            <Button variant="text" onClick={() => setEditable(true)}>
+              <Typography variant="h6">
+                {project.name}
+              </Typography>
+            </Button>
           ) : <TextField
             autoFocus
             margin="dense"
@@ -379,28 +390,40 @@ export const Board = (props) => {
                       })}
                     {provided.placeholder}
                     <div>
-                    <Stack
-                      spacing={1}
-                      sx={{ marginLeft: 1 }}
-                    >
-                      {
-                        addList ? (
-                          <>
-                            <TextField
-                              id="new-list"
-                              placeholder="Enter list title..."
-                              inputRef={ref}
-                              autoFocus
-                              onKeyDown={handleKeyDown}
-                              onBlur={handleKeyDown}
-                            />
-                            <Button variant="contained" onClick={() => addNewList()}>Add list</Button>
-                          </>
-                        ) : <Box sx={{ width: 280 }}>
-                          <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
-                        </Box>
-                      }
-                    </Stack>
+                      <Stack
+                        spacing={1}
+                        sx={{ marginLeft: 1 }}
+                      >
+                        {
+                          addList ? (
+                            <>
+                              <TextField
+                                id="new-list"
+                                variant="standard"
+                                placeholder="Enter list title..."
+                                inputRef={ref}
+                                autoFocus
+                                onKeyDown={handleKeyDown}
+                                onBlur={handleKeyDown}
+                              />
+                              <Box>
+                                <Button
+                                  variant="contained"
+                                  onClick={() => addNewList()}>Add list
+                                </Button>
+                                <IconButton
+                                  color="primary"
+                                  onClick={() => resetAddList()}
+                                >
+                                  <CloseIcon />
+                                </IconButton>
+                              </Box>
+                            </>
+                          ) : <Box sx={{ width: 280 }}>
+                            <Button variant="contained" onClick={() => setAddList(true)}>Add another list</Button>
+                          </Box>
+                        }
+                      </Stack>
                     </div>
                   </div>
                 </div>

@@ -50,25 +50,34 @@ export function UserHeader() {
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton onClick={() => {
-              return router.push('/');
-            }}>
+            <IconButton
+              color="secondary"
+              onClick={() => {
+                return router.push('/');
+              }}
+            >
               <HomeIcon />
             </IconButton>
           </Box>
           {/* icons for large screen */}
           <Box sx={{ flex: 1, display: { xs: 'none', md: 'flex' } }}>
-            <IconButton>
+            <IconButton
+              color="secondary"
+            >
               <AppsIcon />
             </IconButton>
-            <IconButton onClick={() => {
-              router.push('/');
-            }}>
+            <IconButton
+              color="secondary"
+              onClick={() => {
+                router.push('/');
+              }}>
               <HomeIcon />
             </IconButton>
-            <IconButton onClick={() => {
-              router.push('/');
-            }}>
+            <IconButton
+              color="secondary"
+              onClick={() => {
+                router.push('/');
+              }}>
               <DashboardIcon />
               <Typography
                 variant="h6"
@@ -102,7 +111,7 @@ export function UserHeader() {
           </Box>
 
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            <IconButton>
+            <IconButton color="secondary">
               <NotificationsIcon />
             </IconButton>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
@@ -126,15 +135,15 @@ export function UserHeader() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-                <MenuItem key={settings[0]} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{settings[0]}</Typography>
-                </MenuItem>
-                  <MenuItem key={settings[1]} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{settings[1]}</Typography>
-                </MenuItem>
-                  <MenuItem key={settings[2]} onClick={() => {signOut(); handleCloseUserMenu()}}>
-                  <Typography textAlign="center">{settings[2]}</Typography>
-                </MenuItem>
+              <MenuItem key={settings[0]} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">{settings[0]}</Typography>
+              </MenuItem>
+              <MenuItem key={settings[1]} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">{settings[1]}</Typography>
+              </MenuItem>
+              <MenuItem key={settings[2]} onClick={() => { signOut(); handleCloseUserMenu() }}>
+                <Typography textAlign="center">{settings[2]}</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
