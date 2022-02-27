@@ -21,7 +21,6 @@ const Item = styled(Paper)(({ theme }) => ({
     background: '#f4f5f7',
     '.delete': {
       display: 'flex',
-      border: '1px solid red',
       '&:hover': {
         fill: 'red',
       }

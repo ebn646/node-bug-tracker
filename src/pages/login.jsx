@@ -40,17 +40,17 @@ const Login = () => {
     e.preventDefault()
     const email = formik.values.email;
     const password = formik.values.password;
-    console.log('enteredEmail ', email)
-    console.log('enteredPassword ', password)
 
     const result = await signIn('credentials', {
       redirect: false,
       email,
       password,
     });
+ 
 
     if (!result.error) {
         // set some auth state
+        console.log('success = ', result)
         router.replace('/');
       } else {
         setError(result.error)

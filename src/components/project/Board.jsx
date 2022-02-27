@@ -56,14 +56,14 @@ export const Board = (props) => {
     }))
   }
 
-  function mutateLists(data, type) {
+  function mutateLists(lst, type) {
     let newLists;
     switch (type) {
       case 'ADD':
-        newLists = [...lists, data];
+        newLists = [...data.lists, lst];
         break;
       case 'DELETE':
-        newLists = lists.filter((l) => l._id !== data._id);
+        newLists = lists.filter((l) => l._id !== lst._id);
         break;
       default:
         throw new Error('Your type was not found!');
@@ -351,8 +351,9 @@ export const Board = (props) => {
     )
   }
   return (
-    <Container maxWidth={false}>
-      <Box sx={{ marginBottom: 1 }}>
+    <Container className="page-container" maxWidth={false} sx={{ position: 'relative', mt: 6 }}>
+      <Box sx={{ marginBottom: 1}}>
+        <Box sx={{ position: 'fixed', left: 0, right: 0, top: 70 }}>
         {
           !editable ? (
             <Button variant="text" onClick={() => setEditable(true)}>
@@ -369,99 +370,102 @@ export const Board = (props) => {
             onBlur={(e) => { editBoard(e); setEditable(false); }}
           />
         }
-      </Box>
-      <Box sx={{ minWidth: '100vw' }}>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable
-            droppableId="all-columns"
-            direction="horizontal"
-            type="column"
-          >
-            {(provided) => (
-              <div>
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
+        </Box>
+        <Box className="main-container" sx={{mt:14}}>
+          <Box className="all-columns-wrapper" sx={{ minWidth: '100vw', flexGrow: 1 }}>
+              <DragDropContext className="dropper" onDragEnd={onDragEnd} sx={{ flexGrow: 1, border: '2px solid purple'}}>
+                <Droppable
+                  droppableId="all-columns"
+                  direction="horizontal"
+                  type="column"
                 >
-                  <div style={{ display: 'flex' }}>
-                    {
-                      data.lists && data.cards && data.lists.map((list, index) => {
-                        const cards = data.cards.filter(card => card.listId === list._id);
-                        return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} editList={editList} />;
-                      })}
-                    {provided.placeholder}
+                  {(provided) => (
                     <div>
-                      <Stack
-                        spacing={1}
-                        sx={{ marginLeft: 1 }}
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
                       >
-                        {
-                          addList ? (
-                            <>
-                              <TextField
-                                id="new-list"
-                                variant="standard"
-                                placeholder="Enter list title..."
-                                inputRef={ref}
-                                autoFocus
-                                onKeyDown={handleKeyDown}
-                                onBlur={handleKeyDown}
-                              />
-                              <Box>
-                                <Button
-                                  variant="contained"
-                                  onClick={() => addNewList()}>Add list
-                                </Button>
-                                <IconButton
-                                  color="primary"
-                                  onClick={() => resetAddList()}
-                                >
-                                  <CloseIcon />
-                                </IconButton>
-                              </Box>
-                            </>
-                          ) : <Box sx={{ width: 280 }}>
-                            <Button sx={{width: 270, justifyContent: 'flex-start'}} variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
-                          </Box>
-                        }
-                      </Stack>
+                        <div style={{ display: 'flex' }}>
+                          {
+                            data.lists && data.cards && data.lists.map((list, index) => {
+                              const cards = data.cards.filter(card => card.listId === list._id);
+                              return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} editList={editList} />;
+                            })}
+                          {provided.placeholder}
+                          <div>
+                            <Stack
+                              spacing={1}
+                              sx={{ marginLeft: 1 }}
+                            >
+                              {
+                                addList ? (
+                                  <>
+                                    <TextField
+                                      id="new-list"
+                                      variant="standard"
+                                      placeholder="Enter list title..."
+                                      inputRef={ref}
+                                      autoFocus
+                                      onKeyDown={handleKeyDown}
+                                      onBlur={handleKeyDown}
+                                    />
+                                    <Box>
+                                      <Button
+                                        variant="contained"
+                                        onClick={() => addNewList()}>Add list
+                                      </Button>
+                                      <IconButton
+                                        color="primary"
+                                        onClick={() => resetAddList()}
+                                      >
+                                        <CloseIcon />
+                                      </IconButton>
+                                    </Box>
+                                  </>
+                                ) : <Box sx={{ width: 280 }}>
+                                  <Button sx={{ width: 270, justifyContent: 'flex-start' }} variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
+                                </Box>
+                              }
+                            </Stack>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Create A New Project</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To create a new project, please enter a name and description.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Description"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Create</Button>
-            <Button onClick={handleClose}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+                  )}
+                </Droppable>
+              </DragDropContext>
+          </Box>
+        </Box>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Create A New Project</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                To create a new project, please enter a name and description.
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Name"
+                fullWidth
+                variant="standard"
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Description"
+                type="text"
+                fullWidth
+                variant="standard"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Create</Button>
+              <Button onClick={handleClose}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
     </Container>
   );
 };
