@@ -421,7 +421,7 @@ export const Board = (props) => {
                               </Box>
                             </>
                           ) : <Box sx={{ width: 280 }}>
-                            <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
+                            <Button sx={{width: 270, justifyContent: 'flex-start'}} variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
                           </Box>
                         }
                       </Stack>
