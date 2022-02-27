@@ -8,11 +8,8 @@ import {
   Container,
   Button,
   IconButton,
-  Card,
-  CardContent,
   TextField,
   InputAdornment,
-  SvgIcon,
   Typography,
   Dialog,
   DialogActions,
@@ -220,21 +217,20 @@ export const Board = (props) => {
     // console.log('I need to move card to a new list ', source, destination, draggableId);
     console.log('I need to move card to a new list ', source.index, destination.index);
 
-    let copy = [...cards];
+    let copy = [...data.cards];
 
     let target = copy.filter((c) => c._id === draggableId)[0];
-    const taskLength = copy.filter((c) => c.listId === source.droppableId).length;
     let newOrder;
 
-    if (source.index === 0) {
+    if (destination.index === 0) {
       console.log('i am first...')
       newOrder = midString('', target.order)
-    } else if (source.index > destination.index) {
+    } else if (destination.index > source.index) {
       console.log('i just moved down...')
-      newOrder = midString(data.cards[source.index].order, data.cards[source.index].order + 1)
-    } else if (source.index < destination.index) {
+      newOrder = midString(data.cards[destination.index].order, data.cards[destination.index].order + 1)
+    } else if (deastination.index < source.index) {
       console.log('i just moved up...')
-      newOrder = midString(data.cards[source.index].order - 1, data.cards[source.index].order)
+      newOrder = midString(data.cards[destination.index].order - 1, data.cards[destination.index].order)
     } else {
       console.log('i am last...', target)
       newOrder = midString(target.order, '')
@@ -242,13 +238,13 @@ export const Board = (props) => {
 
     // assign order and listId
     copy = copy.filter((c) => c._id !== target._id);
-    target = Object.assign({ ...target }, { listId: source.droppableId, order: newOrder })
+    target = Object.assign({ ...target }, { listId: destination.droppableId, order: newOrder })
     copy = [...copy, target];
 
     console.log('target = ', target)
     // call api
     axios.patch(`/api/cards/${draggableId}`,
-      { listId: source.droppableId, order: newOrder })
+      { listId: destination.droppableId, order: newOrder })
       .then((response) => console.log('resp = ', response));
 
     const sorted = _.orderBy(copy, ['order'], ['asc'])
@@ -288,7 +284,7 @@ export const Board = (props) => {
 
     if (source.droppableId !== destination.droppableId) {
       // move card to a new list
-      moveToNewList(destination, source, draggableId);
+      moveToNewList(source, destination, draggableId);
       return;
     }
 

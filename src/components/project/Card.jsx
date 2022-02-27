@@ -75,7 +75,7 @@ export default function Card({ task, index, callback }) {
               autoFocus
               onBlur={(e) => {showEdit(false); editSubmitHandler(e)}}
             />
-            ) : <p>{task.name}</p>
+            ) : <p>{task.name} {task.order}</p>
           }
           <DeleteIcon className='delete' onClick={(e) => deleteSubmitHandler(e)} />
         </Item>
