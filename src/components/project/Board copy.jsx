@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
+import Drawer from './Drawer';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
@@ -87,6 +88,7 @@ export const Board = (props) => {
   const ref = useRef();
 
   // local state
+  const [showDrawer, setShowDrawer] = useState(false);
   const [editable, setEditable] = useState(false);
   const [open, setOpen] = useState(false);
   const [addList, setAddList] = useState(false);
@@ -343,13 +345,13 @@ export const Board = (props) => {
   }
   if (!project) {
     return (
-      <></>
+      <>Loading...</>
     )
   }
   return (
-    <Container className="page-container" maxWidth={false} sx={{ position: 'relative' }}>
-      <Box sx={{ marginBottom: 1}}>
-      <Box>
+    <Container className="page-container" maxWidth={false} sx={{minHeight: 'calc(100vh - 85px)', padding: '0 !important', border: '2px solid purple', position: 'relative' }}>
+       <Drawer show={showDrawer} />
+        <Box>
         {
           !editable ? (
             <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', justifyContent: 'space-between' }}>
@@ -370,8 +372,7 @@ export const Board = (props) => {
           />
         }
         </Box>
-        <Box className="main-container">
-          <Box className="all-columns-wrapper" sx={{ minWidth: '100vw', flexGrow: 1 }}>
+          <Box className="all-columns-wrapper" sx={{ overflowX: 'auto', border: '1px solid green' }}>
               <DragDropContext className="dropper" onDragEnd={onDragEnd}>
                 <Droppable
                   droppableId="all-columns"
@@ -434,7 +435,6 @@ export const Board = (props) => {
                 </Droppable>
               </DragDropContext>
           </Box>
-        </Box>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Create A New Project</DialogTitle>
             <DialogContent>
@@ -464,7 +464,6 @@ export const Board = (props) => {
               <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
           </Dialog>
-        </Box>
     </Container>
   );
 };
