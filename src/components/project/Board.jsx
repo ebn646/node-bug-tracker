@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
+import Drawer from './Drawer';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
@@ -87,6 +88,7 @@ export const Board = (props) => {
   const ref = useRef();
 
   // local state
+  const [showDrawer, setShowDrawer] = useState(false);
   const [editable, setEditable] = useState(false);
   const [open, setOpen] = useState(false);
   const [addList, setAddList] = useState(false);
@@ -348,6 +350,7 @@ export const Board = (props) => {
   }
   return (
     <Container className="page-container" maxWidth={false} sx={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 85px)', padding: '0 !important', border: '2px solid purple', overflow: 'hidden', position: 'relative' }}>
+       <Drawer show={showDrawer} />
         <Box sx={{ display: 'flex' }}>
         {
           !editable ? (
@@ -357,7 +360,7 @@ export const Board = (props) => {
                 {project.name}
               </Typography>
             </Button>
-            <Button>Show menu</Button>
+            <Button onClick={(e) => e.preventDefault()}>Show menu</Button>
             </Box>
           ) : <TextField
             autoFocus
