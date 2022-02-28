@@ -55,6 +55,13 @@ export const theme = createTheme({
         },
       },
     },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          padding: '0 !important',
+        },
+      },
+    },
     MuiCardHeader: {
       defaultProps: {
         titleTypographyProps: {

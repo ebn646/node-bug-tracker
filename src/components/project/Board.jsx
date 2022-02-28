@@ -343,13 +343,12 @@ export const Board = (props) => {
   }
   if (!project) {
     return (
-      <></>
+      <>Loading...</>
     )
   }
   return (
-    <Container className="page-container" maxWidth={false} sx={{ position: 'relative', mt: 6 }}>
-      <Box sx={{ marginBottom: 1}}>
-        <Box sx={{ position: 'fixed', left: 0, right: 0, top: 70 }}>
+    <Container className="page-container" maxWidth={false} sx={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 85px)', padding: '0 !important', border: '2px solid purple', overflow: 'hidden', position: 'relative' }}>
+        <Box sx={{ display: 'flex' }}>
         {
           !editable ? (
             <Button variant="text" onClick={() => setEditable(true)}>
@@ -367,8 +366,8 @@ export const Board = (props) => {
           />
         }
         </Box>
-        <Box className="main-container" sx={{mt:14}}>
-          <Box className="all-columns-wrapper" sx={{ minWidth: '100vw', flexGrow: 1 }}>
+        {/* <Box className="main-container" sx={{display: 'flex', mt:14}}> */}
+          <Box className="all-columns-wrapper" sx={{ display: 'flex', flexGrow: 1, overflowX: 'auto' }}>
               <DragDropContext className="dropper" onDragEnd={onDragEnd}>
                 <Droppable
                   droppableId="all-columns"
@@ -431,7 +430,7 @@ export const Board = (props) => {
                 </Droppable>
               </DragDropContext>
           </Box>
-        </Box>
+        {/* </Box> */}
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Create A New Project</DialogTitle>
             <DialogContent>
@@ -461,7 +460,6 @@ export const Board = (props) => {
               <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
           </Dialog>
-        </Box>
     </Container>
   );
 };
