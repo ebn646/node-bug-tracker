@@ -228,7 +228,7 @@ export const Board = (props) => {
     } else if (destination.index > source.index) {
       console.log('i just moved down...')
       newOrder = midString(data.cards[destination.index].order, data.cards[destination.index].order + 1)
-    } else if (deastination.index < source.index) {
+    } else if (destination.index < source.index) {
       console.log('i just moved up...')
       newOrder = midString(data.cards[destination.index].order - 1, data.cards[destination.index].order)
     } else {
