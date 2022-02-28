@@ -37,6 +37,8 @@ export const Board = (props) => {
   function mutateCards(card, type) {
     let newCards;
     switch (type) {
+      case 'UPDATE':
+        newCards = new Set([...data.cards, card])
       case 'ADD':
         newCards = [...data.cards, card];
         break;
@@ -71,7 +73,6 @@ export const Board = (props) => {
   }
 
   function mutateBoard(name) {
-    console.log('fuck')
     return {
       ...project,
       name,

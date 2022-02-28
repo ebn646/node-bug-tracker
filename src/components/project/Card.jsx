@@ -52,6 +52,7 @@ export default function Card({ task, index, callback }) {
     if(response.status === 200){
       console.log('update was a success!')
       task.name = e.target.value;
+      callback({_id: task._id}, 'UPDATE');
     }else{
       throw new Error('There was an error deleting your card!')
     }
@@ -75,7 +76,7 @@ export default function Card({ task, index, callback }) {
               autoFocus
               onBlur={(e) => {showEdit(false); editSubmitHandler(e)}}
             />
-            ) : <p>{task.name} {task.order}</p>
+            ) : <p>{task.name} ({task.order})</p>
           }
           <DeleteIcon className='delete' onClick={(e) => deleteSubmitHandler(e)} />
         </Item>
