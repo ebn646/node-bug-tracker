@@ -369,7 +369,6 @@ export const Board = (props) => {
           />
         }
         </Box>
-        {/* <Box className="main-container" sx={{display: 'flex', mt:14}}> */}
           <Box className="all-columns-wrapper" sx={{ display: 'flex', flexGrow: 1, overflowX: 'auto' }}>
               <DragDropContext className="dropper" onDragEnd={onDragEnd}>
                 <Droppable
@@ -433,7 +432,6 @@ export const Board = (props) => {
                 </Droppable>
               </DragDropContext>
           </Box>
-        {/* </Box> */}
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Create A New Project</DialogTitle>
             <DialogContent>
