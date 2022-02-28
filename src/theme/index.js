@@ -98,7 +98,7 @@ export const theme = createTheme({
           flexDirection: 'column',
           minHeight: '100%',
           width: '100%',
-          overflow: 'hidden',
+          overflowX: 'auto',
         },
         '#__next': {
           display: 'flex',

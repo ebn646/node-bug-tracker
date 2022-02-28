@@ -46,7 +46,7 @@ export function UserHeader() {
 
   return (
     // eslint-disable-next-line react/jsx-filename-extension
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

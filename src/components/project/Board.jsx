@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
+import Drawer from './Drawer';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
@@ -87,6 +88,7 @@ export const Board = (props) => {
   const ref = useRef();
 
   // local state
+  const [showDrawer, setShowDrawer] = useState(false);
   const [editable, setEditable] = useState(false);
   const [open, setOpen] = useState(false);
   const [addList, setAddList] = useState(false);
@@ -343,16 +345,17 @@ export const Board = (props) => {
   }
   if (!project) {
     return (
-      <></>
+      <>Loading...</>
     )
   }
   return (
-    <Container className="page-container" maxWidth={false} sx={{ position: 'relative' }}>
-      <Box sx={{ marginBottom: 1}}>
-      <Box>
+    <Container className="page-container" maxWidth={false} sx={{ display: 'flex', minHeight: 'calc(100vh - 85px)', padding: '0 !important', position: 'relative' }}>
+      <div style={{ width:'100%', marginTop: 60, position: 'relative'}}>
+       <Drawer show={showDrawer} />
+        <Box sx={{ position: 'fixed', left: 0, right: 0 }}>
         {
           !editable ? (
-            <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
             <Button variant="text" onClick={() => setEditable(true)}>
               <Typography variant="h6">
                 {project.name}
@@ -370,9 +373,9 @@ export const Board = (props) => {
           />
         }
         </Box>
-        <Box className="main-container">
-          <Box className="all-columns-wrapper" sx={{ minWidth: '100vw', flexGrow: 1 }}>
-              <DragDropContext className="dropper" onDragEnd={onDragEnd}>
+          <Box className="all-columns-wrapper" sx={{ display: 'flex', mt: 5}}>
+            <div>
+              <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable
                   droppableId="all-columns"
                   direction="horizontal"
@@ -433,8 +436,8 @@ export const Board = (props) => {
                   )}
                 </Droppable>
               </DragDropContext>
+              </div>
           </Box>
-        </Box>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Create A New Project</DialogTitle>
             <DialogContent>
@@ -464,7 +467,7 @@ export const Board = (props) => {
               <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
           </Dialog>
-        </Box>
+          </div>
     </Container>
   );
 };
