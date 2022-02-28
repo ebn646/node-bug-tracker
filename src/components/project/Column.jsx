@@ -108,7 +108,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
                                             onKeyDown={handleKeyDown2}
                                             onBlur={() =>  setEdit(false)}
                                         />
-                                    ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name}</Button>
+                                    ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name} {column.order}</Button>
                                 }
                                 <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
                             </DraggableHeader>

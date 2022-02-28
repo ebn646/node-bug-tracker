@@ -9,7 +9,6 @@ import {
   Button,
   IconButton,
   TextField,
-  InputAdornment,
   Typography,
   Dialog,
   DialogActions,
@@ -152,16 +151,16 @@ export const Board = (props) => {
 
   useEffect(() => {
     if (lists && cards && project) {
-      console.log('lists', lists)
-
+      const sortedLists = _.orderBy(lists, ['order'], ['asc'])
+      const sortedCards = _.orderBy(cards, ['order'], ['asc'])
       setData({
-        lists,
-        cards,
+        lists: sortedLists,
+        cards: sortedCards,
       })
     } else {
       console.log('not yet...')
     }
-  }, [cards, lists, project, user])
+  }, [cards, lists, project])
 
 
 
@@ -199,7 +198,7 @@ export const Board = (props) => {
         id: draggableId,
         order: newOrder
       })
-      .then((response) => mutate());
+      .then((response) =>{console.log('r = ', response);  mutate();});
     // reorder list
     target.order = newOrder;
     console.log('reorder the list', data.lists)
@@ -369,7 +368,7 @@ export const Board = (props) => {
         </Box>
         <Box className="main-container" sx={{mt:14}}>
           <Box className="all-columns-wrapper" sx={{ minWidth: '100vw', flexGrow: 1 }}>
-              <DragDropContext className="dropper" onDragEnd={onDragEnd} sx={{ flexGrow: 1, border: '2px solid purple'}}>
+              <DragDropContext className="dropper" onDragEnd={onDragEnd}>
                 <Droppable
                   droppableId="all-columns"
                   direction="horizontal"
