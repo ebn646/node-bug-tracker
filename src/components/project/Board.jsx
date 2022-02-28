@@ -351,11 +351,14 @@ export const Board = (props) => {
         <Box sx={{ display: 'flex' }}>
         {
           !editable ? (
+            <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
             <Button variant="text" onClick={() => setEditable(true)}>
               <Typography variant="h6">
                 {project.name}
               </Typography>
             </Button>
+            <Button>Show menu</Button>
+            </Box>
           ) : <TextField
             autoFocus
             margin="dense"
