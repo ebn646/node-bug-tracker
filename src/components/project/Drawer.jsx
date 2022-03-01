@@ -33,13 +33,11 @@ export default function TDrawer({ activities }) {
 
   const list = (anchor) => (
     <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      sx={{ width: 335 }}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        <ListItem sx={{ display: 'flex', wodth: '100%', justifyContent: 'space-between' }} button key="menu">Menu <CloseIcon /></ListItem>
+        <ListItem sx={{ display: 'flex', wodth: '100%', justifyContent: 'space-between' }} button key="menu" onClick={toggleDrawer(anchor, false)}>Menu <CloseIcon /></ListItem>
         <ListItem button key="change-background"><ListItemText primary="Change background" /></ListItem>
         <ListItem button key="delete"><ListItemText primary="Delete board" /></ListItem>
         <ListItem button key="activity"><ListItemText primary="Activity" /></ListItem>
@@ -51,7 +49,7 @@ export default function TDrawer({ activities }) {
             <ListItem button key={act._id}>
               <Box>
                 <p>{act.text}</p>
-                <p style={{fontSize: 10}}>{format(new Date(act.createdAt), "M/dd/yyyy' at 'HH:mm.aa")}</p>
+                <p style={{fontSize: 10}}>{format(new Date(act.createdAt), "M/d/yy' at 'HH:mm.aa")}</p>
               </Box>
             </ListItem>
           ))}

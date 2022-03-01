@@ -46,10 +46,10 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
         callback(response.data, 'ADD');
         // post activity
         axios.post(`/api/activities`,
-            { boardId: router.query.id, text: `user added a card` })
-            .then((response) => console.log('resp = ', response));
-
-        activitiescb(response.data)
+            { boardId: router.query.id, text: `user added card ${ref.current.value}` })
+            .then((response) => {
+                activitiescb(response.data)
+            });
         setValue('');
     }
 
@@ -58,6 +58,12 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
         const response = await axios.delete(`/api/lists/${column._id}`);
         // TODO:  Add error handling...
         console.log('delete response is...', response);
+        axios.post(`/api/activities`,
+            { boardId: router.query.id, text: `user deleted list ${column.name}` })
+            .then((response) => {
+                activitiescb(response.data)
+            });
+        setValue('');
     }
 
     function handleKeyDown(e) {
@@ -78,7 +84,6 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
     }
 
     function handleKeyDown2(e) {
-
         if (e.key === 'Enter') {
             e.preventDefault()
             if (titleRef.current.value === '') {

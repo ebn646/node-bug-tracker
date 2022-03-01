@@ -19,7 +19,13 @@ handler.get(async (req, res) => {
   
     const activities = await db
       .collection('activities')
-      .find()
+      .aggregate([
+        {
+          $match: {
+            boardId: new ObjectId(req.query.boardId)
+          }
+        }
+      ])
       .toArray();
   
     res.json(activities);
