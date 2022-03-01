@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import {
   Box,
   Button,
+  Container,
   Card,
   CardContent,
   TextField,
@@ -76,7 +77,7 @@ export const Boards = (props) => {
     setOpen(false);
   };
   return (
-    <Box {...props}>
+    <Box {...props} sx={{padding: 2}}>
       <Box
         sx={{
           alignItems: 'center',

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { format, compareAsc } from 'date-fns'
+import React from 'react';
+import { format } from 'date-fns'
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -17,12 +17,7 @@ export default function TDrawer({ activities }) {
     right: false,
   });
 
-  useEffect(() => {
-    console.log('draw activities = ', activities)
-  }, [activities])
-
   const toggleDrawer = (anchor, open) => (event) => {
-    console.log('toggleDrawer')
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }

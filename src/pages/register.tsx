@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Container,
-  FormHelperText,
   Link,
   TextField,
   Typography
@@ -22,18 +21,24 @@ const Register = () => {
       firstName: '',
       lastName: '',
       password: '',
-      policy: false
+      username: '',
     },
     validationSchema: Yup.object({
       email: Yup
         .string()
+        .max(255)
         .email(
           'Must be a valid email')
-        .max(255)
         .required(
           'Email is required'),
+      username: Yup
+          .string()
+          .max(255)
+          .required(
+            'username is required'),
       password: Yup
         .string()
+        .min(4)
         .max(255)
         .required(
           'Password is required')
@@ -46,30 +51,30 @@ const Register = () => {
   async function createUser(e) {
     e.preventDefault()
     const email = formik.values.email;
+    const username = formik.values.username;
     const password = formik.values.password;
-    console.log('enteredEmail ', email)
-    console.log('enteredPassword ', password)
+    console.log('e ', email, 'u ', username, 'p ', password)
 
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
-      body: JSON.stringify({ email, password}),
+      body: JSON.stringify({ email, username, password }),
       headers: {
         'Content-Type': 'application/json',
       },
     });
-  
-    const data = await response;
-    console.log('data =', data)
-    const { status, ok } = data;
-    console.log('satus = ', status)
-    if(ok){
-      router.replace('/');
+    try{
+      const data = await response;
+      const { status, ok } = data;
+      console.log('satus = ', status)
+      if (ok) {
+        console.log('sign up is a success...')
+        router.replace('/');
+      }   else if (status == 422) {
+        console.log('there was an error...')
+      }
+    } catch(err){
+      console.log('there was an error ', err)
     }
-    else if (status == 422) {
-      // throw new Error('User already exists!');
-      router.replace('/login');
-    }
-    return data;
   }
 
   return (
@@ -89,7 +94,7 @@ const Register = () => {
         }}
       >
         <Container maxWidth="sm">
-          <form onSubmit={(e) => {createUser(e)}}>
+          <form onSubmit={(e) => { createUser(e) }}>
             <Box sx={{ my: 3 }}>
               <Typography
                 color="textPrimary"
@@ -119,6 +124,19 @@ const Register = () => {
               variant="outlined"
             />
             <TextField
+              error={Boolean(formik.touched.username && formik.errors.username)}
+              fullWidth
+              helperText={formik.touched.username && formik.errors.username}
+              label="Username"
+              margin="normal"
+              name="username"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="text"
+              value={formik.values.username}
+              variant="outlined"
+            />
+            <TextField
               error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
               helperText={formik.touched.password && formik.errors.password}
@@ -131,11 +149,6 @@ const Register = () => {
               value={formik.values.password}
               variant="outlined"
             />
-            {Boolean(formik.touched.policy && formik.errors.policy) && (
-              <FormHelperText error>
-                {formik.errors.policy}
-              </FormHelperText>
-            )}
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
