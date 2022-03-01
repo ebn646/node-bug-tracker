@@ -30,7 +30,7 @@ export const Board = (props) => {
   const user = useContext(UserContext);
   const router = useRouter();
 
-  const getData = (endpoint, cb) => {
+  const getData = (endpoint) => {
     const { data } = useSWR(user ? `${endpoint}` : null, fetcher)
     return data
   }
@@ -73,6 +73,14 @@ export const Board = (props) => {
     }))
   }
 
+  function mutateActivities(act){
+    const newActivities = [...data.activities, act].reverse();
+    setData((prev) => ({
+      ...prev,
+      activities: newActivities,
+    }))
+  }
+
   function mutateBoard(name) {
     return {
       ...project,
@@ -80,21 +88,22 @@ export const Board = (props) => {
     }
   }
 
-  const project = getData(`/api/board/${router.query.id}`, mutateBoard);
-  const cards = getData(`/api/cards/${router.query.id}`, mutateCards);
-  const lists = getData(`/api/lists?id=${router.query.id}`, mutateLists);
+  const project = getData(`/api/board/${router.query.id}`);
+  const cards = getData(`/api/cards/${router.query.id}`);
+  const lists = getData(`/api/lists?id=${router.query.id}`);
+  const activities = getData(`/api/activities/${router.query.id}`);
 
   // refs
   const ref = useRef();
 
   // local state
-  const [showDrawer, setShowDrawer] = useState(false);
   const [editable, setEditable] = useState(false);
   const [open, setOpen] = useState(false);
   const [addList, setAddList] = useState(false);
   const [data, setData] = useState({
     list: null,
     cards: null,
+    activities: null,
   })
 
 
@@ -153,17 +162,19 @@ export const Board = (props) => {
   }
 
   useEffect(() => {
-    if (lists && cards && project) {
+    if (lists && cards && project && activities) {
       const sortedLists = _.orderBy(lists, ['order'], ['asc'])
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
+      const sortedAct = activities.reverse();
       setData({
         lists: sortedLists,
         cards: sortedCards,
+        activities: sortedAct,
       })
     } else {
       console.log('not yet...')
     }
-  }, [cards, lists, project])
+  }, [cards, lists, project, activities])
 
 
 
@@ -201,7 +212,7 @@ export const Board = (props) => {
         id: draggableId,
         order: newOrder
       })
-      .then((response) =>{console.log('r = ', response);  mutate();});
+      .then((response) => { console.log('r = ', response); mutate(); });
     // reorder list
     target.order = newOrder;
     console.log('reorder the list', data.lists)
@@ -217,9 +228,10 @@ export const Board = (props) => {
 
   const moveToNewList = (source, destination, draggableId) => {
     // console.log('I need to move card to a new list ', source, destination, draggableId);
-    console.log('I need to move card to a new list ', source.index, destination.index);
 
     let copy = [...data.cards];
+    const taskLength = data.cards.length;
+    console.log('I need to move card to a new list ', 'source index = ', source.index, 'dest index = ', destination.index, 'task len = ', taskLength);
 
     let target = copy.filter((c) => c._id === draggableId)[0];
     let newOrder;
@@ -227,12 +239,18 @@ export const Board = (props) => {
     if (destination.index === 0) {
       console.log('i am first...')
       newOrder = midString('', target.order)
-    } else if (destination.index > source.index) {
-      console.log('i just moved down...')
-      newOrder = midString(data.cards[destination.index].order, data.cards[destination.index].order + 1)
     } else if (destination.index < source.index) {
       console.log('i just moved up...')
-      newOrder = midString(data.cards[destination.index].order - 1, data.cards[destination.index].order)
+      newOrder = midString(
+        data.cards[destination.index - 1].order,
+        data.cards[destination.index].order
+      )
+    } else if (destination.index > source.index) {
+      console.log('i just moved down...')
+      newOrder = midString(
+        data.cards[destination.index].order,
+        data.cards[destination.index].order + 1
+      )
     } else {
       console.log('i am last...', target)
       newOrder = midString(target.order, '')
@@ -242,12 +260,15 @@ export const Board = (props) => {
     copy = copy.filter((c) => c._id !== target._id);
     target = Object.assign({ ...target }, { listId: destination.droppableId, order: newOrder })
     copy = [...copy, target];
-
-    console.log('target = ', target)
     // call api
+    // post card
     axios.patch(`/api/cards/${draggableId}`,
       { listId: destination.droppableId, order: newOrder })
       .then((response) => console.log('resp = ', response));
+    // post activity
+    axios.post(`/api/activities`,
+      { boardId: router.query.id, text: `${user.username} moved a card` })
+      .then((response) => mutateActivities(response.data));
 
     const sorted = _.orderBy(copy, ['order'], ['asc'])
     // reorder cards to rerender 
@@ -295,7 +316,7 @@ export const Board = (props) => {
       // 1. get new order for this card
       // first
       const column = startList
-      const taskLength = cards.filter((c) => c.listId === source.droppableId).length;
+      const taskLength = data.cards.filter((c) => c.listId === source.droppableId).length;
       console.log('l = ', taskLength);
       if (destination.index === 0) {
         console.log('I am first', column)
@@ -350,124 +371,132 @@ export const Board = (props) => {
   }
   return (
     <Container className="page-container" maxWidth={false} sx={{ display: 'flex', minHeight: 'calc(100vh - 85px)', padding: '0 !important', position: 'relative' }}>
-      <div style={{ width:'100%', marginTop: 60, position: 'relative'}}>
-       <Drawer show={showDrawer} />
+      <div style={{ width: '100%', marginTop: 60, position: 'relative' }}>
+        <Drawer activities={data.activities} />
         <Box sx={{ position: 'fixed', left: 0, right: 0 }}>
-        {
-          !editable ? (
-            <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
-            <Button variant="text" onClick={() => setEditable(true)}>
-              <Typography variant="h6">
-                {project.name}
-              </Typography>
-            </Button>
-            <Button onClick={(e) => e.preventDefault()}>Show menu</Button>
-            </Box>
-          ) : <TextField
-            autoFocus
-            margin="dense"
-            id="boardname"
-            label="Name"
-            variant="standard"
-            onBlur={(e) => { editBoard(e); setEditable(false); }}
-          />
-        }
+          {
+            !editable ? (
+              <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+                <Button variant="text" onClick={() => setEditable(true)}>
+                  <Typography variant="h6">
+                    {project.name}
+                  </Typography>
+                </Button>
+                <Button onClick={(e) => e.preventDefault()}>Show menu</Button>
+              </Box>
+            ) : <TextField
+              autoFocus
+              margin="dense"
+              id="boardname"
+              label="Name"
+              variant="standard"
+              onBlur={(e) => { editBoard(e); setEditable(false); }}
+            />
+          }
         </Box>
-          <Box className="all-columns-wrapper" sx={{ display: 'flex', mt: 5}}>
-            <div>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable
-                  droppableId="all-columns"
-                  direction="horizontal"
-                  type="column"
-                >
-                  {(provided) => (
-                    <div>
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                      >
-                        <div style={{ display: 'flex' }}>
-                          {
-                            data.lists && data.cards && data.lists.map((list, index) => {
-                              const cards = data.cards.filter(card => card.listId === list._id);
-                              return <Column key={list._id} column={list} tasks={cards} index={index} callback={mutateCards} listsCallback={mutateLists} editList={editList} />;
-                            })}
-                          {provided.placeholder}
-                          <div>
-                            <Stack
-                              spacing={1}
-                              sx={{ marginLeft: 1 }}
-                            >
-                              {
-                                addList ? (
-                                  <>
-                                    <TextField
-                                      id="new-list"
-                                      variant="standard"
-                                      placeholder="Enter list title..."
-                                      inputRef={ref}
-                                      autoFocus
-                                      onKeyDown={handleKeyDown}
-                                      onBlur={handleKeyDown}
-                                    />
-                                    <Box>
-                                      <Button
-                                        variant="contained"
-                                        onClick={() => addNewList()}>Add list
-                                      </Button>
-                                      <IconButton
-                                        color="primary"
-                                        onClick={() => resetAddList()}
-                                      >
-                                        <CloseIcon />
-                                      </IconButton>
-                                    </Box>
-                                  </>
-                                ) : <Box sx={{ width: 280 }}>
-                                  <Button sx={{ width: 270, justifyContent: 'flex-start' }} variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
-                                </Box>
-                              }
-                            </Stack>
-                          </div>
+        <Box className="all-columns-wrapper" sx={{ display: 'flex', mt: 5 }}>
+          <div>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable
+                droppableId="all-columns"
+                direction="horizontal"
+                type="column"
+              >
+                {(provided) => (
+                  <div>
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      <div style={{ display: 'flex' }}>
+                        {
+                          data.lists && data.cards && data.lists.map((list, index) => {
+                            const cards = data.cards.filter(card => card.listId === list._id);
+                            return <Column 
+                            key={list._id} 
+                            column={list} 
+                            tasks={cards} 
+                            index={index} 
+                            callback={mutateCards} 
+                            listsCallback={mutateLists} 
+                            editList={editList} 
+                            activitiescb={mutateActivities}/>;
+                          })}
+                        {provided.placeholder}
+                        <div>
+                          <Stack
+                            spacing={1}
+                            sx={{ marginLeft: 1 }}
+                          >
+                            {
+                              addList ? (
+                                <>
+                                  <TextField
+                                    id="new-list"
+                                    variant="standard"
+                                    placeholder="Enter list title..."
+                                    inputRef={ref}
+                                    autoFocus
+                                    onKeyDown={handleKeyDown}
+                                    onBlur={handleKeyDown}
+                                  />
+                                  <Box>
+                                    <Button
+                                      variant="contained"
+                                      onClick={() => addNewList()}>Add list
+                                    </Button>
+                                    <IconButton
+                                      color="primary"
+                                      onClick={() => resetAddList()}
+                                    >
+                                      <CloseIcon />
+                                    </IconButton>
+                                  </Box>
+                                </>
+                              ) : <Box sx={{ width: 280 }}>
+                                <Button sx={{ width: 270, justifyContent: 'flex-start' }} variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
+                              </Box>
+                            }
+                          </Stack>
                         </div>
                       </div>
                     </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-              </div>
-          </Box>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Create A New Project</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                To create a new project, please enter a name and description.
-              </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Name"
-                fullWidth
-                variant="standard"
-              />
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Description"
-                type="text"
-                fullWidth
-                variant="standard"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Create</Button>
-              <Button onClick={handleClose}>Cancel</Button>
-            </DialogActions>
-          </Dialog>
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
+        </Box>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Create A New Project</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To create a new project, please enter a name and description.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              fullWidth
+              variant="standard"
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Description"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Create</Button>
+            <Button onClick={handleClose}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </Container>
   );
 };

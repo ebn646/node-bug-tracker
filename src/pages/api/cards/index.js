@@ -25,15 +25,6 @@ handler.get(async (req, res) => {
 });
 
 handler.post(
-  // ...auths,
-  // validateBody({
-  //   type: 'object',
-  //   properties: {
-  //     content: ValidateProps.post.content,
-  //   },
-  //   required: ['content'],
-  //   additionalProperties: false,
-  // }),
   async (req, res) => {
     const client = await connectToDatabase();
     const db = client.db();

@@ -21,7 +21,7 @@ const DraggableHeader = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function Column({ column, tasks, index, callback, listsCallback, editList }) {
+export default function Column({ column, tasks, index, callback, listsCallback, editList, activitiescb }) {
     const router = useRouter();
     const ref = useRef();
     const titleRef = useRef();
@@ -43,8 +43,13 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
         }
         const response = await axios.post('/api/cards/', obj);
         // TODO:  Add error handling...
-        console.log('add card response is...', response);
         callback(response.data, 'ADD');
+        // post activity
+        axios.post(`/api/activities`,
+            { boardId: router.query.id, text: `user added a card` })
+            .then((response) => console.log('resp = ', response));
+
+        activitiescb(response.data)
         setValue('');
     }
 
@@ -67,8 +72,8 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
         }
     }
 
-    function updateListName(){
-        const obj = {...column, name: titleRef.current.value}
+    function updateListName() {
+        const obj = { ...column, name: titleRef.current.value }
         editList(obj, column._id)
     }
 
@@ -106,7 +111,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
                                             inputRef={titleRef}
                                             autoFocus
                                             onKeyDown={handleKeyDown2}
-                                            onBlur={() =>  setEdit(false)}
+                                            onBlur={() => setEdit(false)}
                                         />
                                     ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name} ({column.order})</Button>
                                 }
