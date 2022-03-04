@@ -10,9 +10,6 @@ import { Board } from '../../components/board/Board';
 import { DashboardLayout } from '../../components/DashboardLayout';
 
 function Project() {
-  useEffect(() => {
-    document.body.classList.add("board");
-  },[])
   return (
     <>
       <Head>

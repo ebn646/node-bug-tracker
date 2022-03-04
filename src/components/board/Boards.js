@@ -155,7 +155,7 @@ export const Boards = (props) => {
                 width: 200,
                 height: 100,
                 backgroundImage: `url(/static/images/${board.backgroundImage})`,
-                backgroundSize: '200px 100px',
+                backgroundSize: '100% 100%',
                 '&:hover': {
                   backgroundColor: 'primary.main',
                   opacity: [0.9, 0.8, 0.7],

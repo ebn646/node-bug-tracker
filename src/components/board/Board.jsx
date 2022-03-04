@@ -73,7 +73,7 @@ export const Board = (props) => {
     }))
   }
 
-  function mutateActivities(act){
+  function mutateActivities(act) {
     const newActivities = [...data.activities, act].reverse();
     setData((prev) => ({
       ...prev,
@@ -370,10 +370,23 @@ export const Board = (props) => {
     )
   }
   return (
-    <Container className="page-container" maxWidth={false} sx={{ display: 'flex', minHeight: 'calc(100vh - 85px)', padding: '0 !important', position: 'relative' }}>
-      <div style={{ width: '100%', marginTop: 60, position: 'relative' }}>
+    <Container
+      className="page-container"
+      maxWidth={false}
+      sx={{
+        display: 'flex',
+        height: 'calc(100vh - 0px)',
+        padding: '0 !important',
+        position: 'relative',
+        backgroundImage: `url(/static/images/${project.backgroundImage})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div style={{ width: '100%', marginTop: 64, position: 'relative' }}>
         <Drawer activities={data.activities} />
-        <Box sx={{ position: 'fixed', left: 0, right: 0 }}>
+        <Box sx={{ position: 'fixed', top: 64, left: 0, right: 0 }}>
           {
             !editable ? (
               <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
@@ -412,15 +425,15 @@ export const Board = (props) => {
                         {
                           data.lists && data.cards && data.lists.map((list, index) => {
                             const cards = data.cards.filter(card => card.listId === list._id);
-                            return <Column 
-                            key={list._id} 
-                            column={list} 
-                            tasks={cards} 
-                            index={index} 
-                            callback={mutateCards} 
-                            listsCallback={mutateLists} 
-                            editList={editList} 
-                            activitiescb={mutateActivities}/>;
+                            return <Column
+                              key={list._id}
+                              column={list}
+                              tasks={cards}
+                              index={index}
+                              callback={mutateCards}
+                              listsCallback={mutateLists}
+                              editList={editList}
+                              activitiescb={mutateActivities} />;
                           })}
                         {provided.placeholder}
                         <div>
