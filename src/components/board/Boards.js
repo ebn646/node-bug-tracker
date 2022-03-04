@@ -76,6 +76,8 @@ export const Boards = (props) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(images[0].id);
   const [boardTitle, setBoardTitle] = useState('');
+  const [backgroundColor, setBackgroundColor] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState('photo-1644145699796-6f88eedcb084.jpeg')
   // refs
   const nameInputRef = useRef();
 
@@ -107,8 +109,8 @@ export const Boards = (props) => {
     }
 
     const name = nameInputRef.current.value;
-    const userId = user._id;
-    const obj = { name, userId }
+    const creatorId = user._id;
+    const obj = { name, creatorId, backgroundColor, backgroundImage }
     const result = await axios.post('/api/boards/', obj)
     setBoardTitle('')
     mutate(`/api/boards?id=${user._id}`);
@@ -152,14 +154,15 @@ export const Boards = (props) => {
                 borderRadius: 1,
                 width: 200,
                 height: 100,
-                backgroundColor: 'primary.dark',
+                backgroundImage: `url(/static/images/${board.backgroundImage})`,
+                backgroundSize: '200px 100px',
                 '&:hover': {
                   backgroundColor: 'primary.main',
                   opacity: [0.9, 0.8, 0.7],
                 },
               }}
             >
-              <ProjectCard project={board} />
+              <ProjectCard data={board} />
             </Box>
           ))}
           <Button sx={{

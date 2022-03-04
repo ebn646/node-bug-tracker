@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { string } = require('prop-types')
 const { Schema } = mongoose
 
 const boardSchema = new Schema({
@@ -6,23 +7,17 @@ const boardSchema = new Schema({
         type: String,
         required: true
     },
-    userId: {
+    creatorId: {
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true
     },
-    image: {
-        color: {
-            type: String,
-            required: true
-        },
-        thumb: {
-            type: String,
-        },
-        full: {
-            type: String,
-        }
-    }
+    backgroundColor: {
+        type: String,
+    },
+    backgroundImage:{
+        type: String,
+    },
 },
 {
     timestamps: true

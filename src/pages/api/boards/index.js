@@ -22,7 +22,7 @@ handler.get(async (req, res) => {
       .aggregate([
         {
           $match: {
-            userId : new ObjectId(req.query.id)
+            creatorId : new ObjectId(req.query.id)
           }
         }
       ])
@@ -38,8 +38,9 @@ handler.get(async (req, res) => {
       const data = req.body;
       const board = {
         ...data,
-        userId: new ObjectId(data.userId),
+        creatorId: new ObjectId(data.creatorId),
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
       const { insertedId } = await db.collection('boards').insertOne(board);
       board._id = insertedId;
