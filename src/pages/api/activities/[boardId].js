@@ -13,7 +13,6 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
-    console.log('activities id = ', req.query.boardId)
     const client = await connectToDatabase();
     const db = client.db();
   

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/client';
 import Head from 'next/head';
 import Typography from '@mui/material/Typography';
@@ -6,11 +6,13 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { Box, Container } from '@mui/material';
 import useSWR from 'swr';
-import { Board } from '../../components/project/Board';
+import { Board } from '../../components/board/Board';
 import { DashboardLayout } from '../../components/DashboardLayout';
-import { fetcher } from '../../../lib/fetch';
 
 function Project() {
+  useEffect(() => {
+    document.body.classList.add("board");
+  },[])
   return (
     <>
       <Head>

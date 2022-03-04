@@ -5,7 +5,7 @@ import Head from 'next/head';
 import {
   Box, Container,
 } from '@mui/material';
-import { Boards } from '../components/project/Boards';
+import { Boards } from '../components/board/Boards';
 import { DashboardLayout } from '../components/DashboardLayout';
 import UserContext from '../context/UserContext';
 
@@ -15,6 +15,10 @@ function Index() {
   useEffect(() => {
     console.log('user = ', user);
   }, [user]);
+
+  useEffect(() => {
+    document.body.classList.remove("board");
+  },[])
 
   return (
     <>

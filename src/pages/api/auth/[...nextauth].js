@@ -36,7 +36,7 @@ export default NextAuth({
         client.close();
 
         if (user) {
-          return { email: user.email, name: user.username }
+          return { email: user.email, name: `${user.firstName} ${user.lastName}` }
         }
       },
     }),

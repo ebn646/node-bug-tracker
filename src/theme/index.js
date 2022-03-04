@@ -99,10 +99,13 @@ export const theme = createTheme({
           minHeight: '100%',
           width: '100%',
           overflowX: 'auto',
-          backgroundImage: 'url(/static/images/photo-1644145699796-6f88eedcb084.jpeg)',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          "&.board":
+          {
+            backgroundImage: 'url(/static/images/photo-1644145699796-6f88eedcb084.jpeg)',
+          }
         },
         '#__next': {
           display: 'flex',

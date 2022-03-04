@@ -40,7 +40,7 @@ export default function TDrawer({ activities }) {
       <Divider />
       <Box>
         <List>
-          {activities && activities.length && activities.map((act) => (
+          {activities && activities.length > 0 && activities.map((act) => (
             <ListItem button key={act._id}>
               <Box>
                 <p>{act.text}</p>

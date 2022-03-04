@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
@@ -14,6 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import midString from '../../utils/ordering';
+import UserContext from '../../context/UserContext';
 
 const DraggableHeader = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -22,6 +23,7 @@ const DraggableHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function Column({ column, tasks, index, callback, listsCallback, editList, activitiescb }) {
+    const user = useContext(UserContext);
     const router = useRouter();
     const ref = useRef();
     const titleRef = useRef();
@@ -46,7 +48,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
         callback(response.data, 'ADD');
         // post activity
         axios.post(`/api/activities`,
-            { boardId: router.query.id, text: `user added card ${ref.current.value}` })
+            { boardId: router.query.id, text: `${user.username}  added card ${ref.current.value}` })
             .then((response) => {
                 activitiescb(response.data)
             });

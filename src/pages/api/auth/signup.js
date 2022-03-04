@@ -8,22 +8,19 @@ async function handler(req, res) {
 
   const data = req.body;
   console.log(req.body)
-  const { email, username, password } = data;
-  console.log('e', email, 'u ', username, 'p ', password)
+  const { firstName, lastName, email, password } = data;
 
   if (
     !email ||
     !email.includes('@') ||
     !password ||
-    password.trim().length < 4
+    password.trim().length < 7
   ) {
     res.status(422).json({
-      message:
-        'Invalid input - password should also be at least 7 characters long.',
+      error: "auth-0001",
+      message: 'Invalid input - password should also be at least 7 characters long.',
     });
-    res.send({ status: 422, message:  'Invalid input - password should also be at least 7 characters long.' });
-    client.close();
-    return ;
+    throw new Error('No user found!');
   }
 
   const client = await connectToDatabase();
@@ -34,7 +31,6 @@ async function handler(req, res) {
 
   if (existingUser) {
     res.status(422).json({ message: 'User exists already!' });
-    res.send({ status: 422, message: 'User exists already!' });
     client.close();
     return;
   }
@@ -42,11 +38,13 @@ async function handler(req, res) {
   const hashedPassword = await hashPassword(password);
 
   const result = await db.collection('users').insertOne({
+    firstName: firstName,
+    lastName: lastName, 
     email: email,
     password: hashedPassword,
   });
 
-  res.send({ status: 201, message: null });
+  res.send({ status: 201, result: result });
   client.close();
 }
 

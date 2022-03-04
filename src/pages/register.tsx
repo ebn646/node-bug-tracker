@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { signIn } from 'next-auth/client';
+
 import {
   Box,
   Button,
@@ -15,27 +18,38 @@ import {
 
 const Register = () => {
   const router = useRouter();
+  const [error, setError] = useState('');
+
   const formik = useFormik({
     initialValues: {
-      email: '',
       firstName: '',
       lastName: '',
+      email: '',
       password: '',
-      username: '',
     },
     validationSchema: Yup.object({
+      firstName: Yup
+        .string()
+        .max(255)
+        .required(
+          'First Name is required'),
+      lastName: Yup
+        .string()
+        .max(255)
+        .required(
+          'Last Name is required'),
       email: Yup
         .string()
         .max(255)
-        .email(
-          'Must be a valid email')
         .required(
-          'Email is required'),
+          'Email is required')
+        .email(
+          'Must be a valid email'),
       username: Yup
-          .string()
-          .max(255)
-          .required(
-            'username is required'),
+        .string()
+        .max(255)
+        .required(
+          'username is required'),
       password: Yup
         .string()
         .min(4)
@@ -51,29 +65,30 @@ const Register = () => {
   async function createUser(e) {
     e.preventDefault()
     const email = formik.values.email;
-    const username = formik.values.username;
+    const firstName = formik.values.firstName;
+    const lastName = formik.values.lastName;
     const password = formik.values.password;
-    console.log('e ', email, 'u ', username, 'p ', password)
 
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify({ email, username, password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    try{
-      const data = await response;
-      const { status, ok } = data;
-      console.log('satus = ', status)
-      if (ok) {
-        console.log('sign up is a success...')
-        router.replace('/');
-      }   else if (status == 422) {
-        console.log('there was an error...')
+    try {
+      const response = await axios.post('/api/auth/signup', { firstName, lastName, email, password })
+      console.log('r  ', response)
+      if (response.data) {
+        const result = await signIn('credentials', {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (!result.error) {
+          // set some auth state
+          console.log('success = ', result)
+          router.replace('/');
+        } else {
+          console.log(result.error)
+        }
       }
-    } catch(err){
-      console.log('there was an error ', err)
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -81,7 +96,7 @@ const Register = () => {
     <>
       <Head>
         <title>
-          Register | Material Kit
+          Register | Trell-node
         </title>
       </Head>
       <Box
@@ -102,13 +117,44 @@ const Register = () => {
               >
                 Create a new account
               </Typography>
-              <Typography
-                color="textSecondary"
-                gutterBottom
-                variant="body2"
-              >
-                Use your email to create a new account
-              </Typography>
+              {
+                error && (
+                  <Typography
+                    color="error"
+                    variant="subtitle2"
+                  >
+                    There was an error!
+                  </Typography>
+                )
+              }
+            </Box>
+            <Box sx={{ display: 'flex' }}>
+              <TextField
+                sx={{ width: '50%' }}
+                error={Boolean(formik.touched.firstName && formik.errors.firstName)}
+                helperText={formik.touched.firstName && formik.errors.firstName}
+                label="First name"
+                margin="normal"
+                name="firstName"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                type="text"
+                value={formik.values.firstName}
+                variant="outlined"
+              />
+              <TextField
+                sx={{ width: '50%' }}
+                error={Boolean(formik.touched.lastName && formik.errors.lastName)}
+                helperText={formik.touched.lastName && formik.errors.lastName}
+                label="Last Name"
+                margin="normal"
+                name="lastName"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                type="text"
+                value={formik.values.lastName}
+                variant="outlined"
+              />
             </Box>
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
@@ -121,19 +167,6 @@ const Register = () => {
               onChange={formik.handleChange}
               type="email"
               value={formik.values.email}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.username && formik.errors.username)}
-              fullWidth
-              helperText={formik.touched.username && formik.errors.username}
-              label="Username"
-              margin="normal"
-              name="username"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="text"
-              value={formik.values.username}
               variant="outlined"
             />
             <TextField
