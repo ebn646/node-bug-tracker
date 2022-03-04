@@ -382,6 +382,7 @@ export const Board = (props) => {
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        overflowY: 'auto',
       }}
     >
       <div style={{ width: '100%', marginTop: 64, position: 'relative' }}>
