@@ -468,7 +468,16 @@ export const Board = (props) => {
                                   </Box>
                                 </>
                               ) : <Box sx={{ width: 280 }}>
-                                <Button sx={{ width: 270, justifyContent: 'flex-start' }} variant="contained" startIcon={<AddIcon />} onClick={() => setAddList(true)}>Add another list</Button>
+                                <Button
+                                  sx={{
+                                    width: 270,
+                                    justifyContent: 'flex-start'
+                                  }}
+                                  variant="contained"
+                                  startIcon={<AddIcon />}
+                                  onClick={() => setAddList(true)}>
+                                  {`${data.lists && data.lists.length ? 'Add another list' : 'Add a list'}`}
+                                </Button>
                               </Box>
                             }
                           </Stack>
