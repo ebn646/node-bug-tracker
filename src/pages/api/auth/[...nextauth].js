@@ -50,7 +50,6 @@ import { connectToDatabase } from '../../../../lib/db';
 export default NextAuth({
   providers: [
     CredentialProvider({
-      name: 'credentials',
       authorize: async (credentials) => {
         console.log('credential ', credentials)
         const client = await connectToDatabase();
