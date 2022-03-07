@@ -7,7 +7,6 @@ export default NextAuth({
   providers: [
     CredentialProvider({
       authorize: async (credentials) => {
-        console.log('credential ', credentials)
         const client = await connectToDatabase();
 
         const usersCollection = client.db().collection('users');
@@ -34,36 +33,32 @@ export default NextAuth({
         client.close();
 
         if (user) {
-          console.log('user=======', user)
-          return { email: user.email, name: `${user.firstName} ${user.lastName}`, id: user._id, firstName: user.firstName, lastName: user.lastName }
+          return { 
+            email: user.email, 
+            name: `${user.firstName} ${user.lastName}`, 
+            id: user._id, 
+            firstName: user.firstName, 
+            lastName: user.lastName 
+          }
         }
       }
     })
   ],
   callbacks: {
     jwt: async ({token, user}) => {
-      console.log('user = ', user)
       if(user){
         token.id = user.id;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
       }
-      console.log('token = ', token)
       return token;
     },
-    session: async ({session, token, user}) => {
-      console.log('session user = ', user)
-      console.log('session token = ', token)
-
+    session: async ({session, token}) => {
       if(token){
-        console.log('t = ', token)
-
         session.id = token.id;
+        session.firstName = token.firstName;
+        session.lastName = token.lastName;
       }
-      if(user){
-        console.log('session user = ', user)
-      }
-      console.log('s = ', session)
 
       return session;
     }  

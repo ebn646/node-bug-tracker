@@ -44,9 +44,11 @@ export function UserHeader() {
     console.log('session ', session);
   }, [session]);
 
+  if (!session) return <>Loading...</>
+
   return (
     // eslint-disable-next-line react/jsx-filename-extension
-    <AppBar position="fixed" sx={{pl: 1, pr: 1}}>
+    <AppBar position="fixed" sx={{ pl: 1, pr: 1 }}>
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -116,12 +118,7 @@ export function UserHeader() {
             </IconButton>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {
-                  session && (
-                    // <pre>{JSON.stringify(session,null, 2)}</pre>
-                    <Avatar alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
-                  )
-                }
+                <Avatar alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -141,10 +138,14 @@ export function UserHeader() {
               onClose={handleCloseUserMenu}
             >
               <MenuItem key={settings[0]} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{settings[0]}</Typography>
+                <Avatar sx={{marginRight: 1}} alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Typography textAlign="center">{session.user.name}</Typography>
+                  <Typography textAlign="center">{session.user.email}</Typography>
+                </Box>
               </MenuItem>
-              <MenuItem key={settings[1]} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{settings[1]}</Typography>
+              <MenuItem key={settings[0]} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">{settings[0]}</Typography>
               </MenuItem>
               <MenuItem key={settings[2]} onClick={() => { signOut(); handleCloseUserMenu() }}>
                 <Typography textAlign="center">{settings[2]}</Typography>
