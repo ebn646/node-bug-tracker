@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/react';
 
 import {
   Box,
