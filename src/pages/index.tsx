@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useContext, useEffect } from 'react';
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import {
   Box, Container,

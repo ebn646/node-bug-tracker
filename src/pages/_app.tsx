@@ -1,12 +1,11 @@
 import React, { FC, useState, useEffect, useCallback } from 'react';
+import { SessionProvider } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { CacheProvider } from '@emotion/react';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { useSession } from 'next-auth/client';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
 import { fetcher } from '../../lib/fetch';
@@ -51,14 +50,14 @@ function App(props) {
         />
       </Head>
 
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <SessionProvider>
         <UserContext.Provider value={currentUser}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
             {getLayout(<Component {...pageProps} />)}
           </ThemeProvider>
         </UserContext.Provider>
-      </LocalizationProvider>
+      </SessionProvider>
     </CacheProvider>
   );
 }

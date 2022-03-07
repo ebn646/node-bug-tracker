@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Head from 'next/head';
-import { signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';

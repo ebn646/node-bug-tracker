@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSession, signOut } from 'next-auth/client';
+import { useSession, signOut } from 'next-auth/react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,7 +21,7 @@ const settings = ['Profile', 'Account', 'Logout'];
 // eslint-disable-next-line import/prefer-default-export
 export function UserHeader() {
   const router = useRouter();
-  const [session, loading] = useSession();
+  const { data: session } = useSession();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -118,6 +118,7 @@ export function UserHeader() {
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {
                   session && (
+                    // <pre>{JSON.stringify(session,null, 2)}</pre>
                     <Avatar alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
                   )
                 }
