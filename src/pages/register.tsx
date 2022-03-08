@@ -1,7 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import axios from 'axios';
+import zxcvbn from 'zxcvbn';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -30,9 +31,6 @@ const Register = () => {
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
       .max(40, 'Password must not exceed 40 characters'),
-    confirmPassword: Yup.string()
-      .required('Confirm Password is required')
-      .oneOf([Yup.ref('password'), null], 'Confirm Password does not match'),
   });
 
   const {
@@ -68,6 +66,12 @@ const Register = () => {
       console.log('ERROR = ',err)
     }
   }
+
+  useEffect(() => {
+    const poop = zxcvbn('TilTuesday2021!');
+    console.log('poop =', poop.score+1)
+  }, [])
+  
 
   return (
     <Fragment>
@@ -152,24 +156,7 @@ const Register = () => {
                   {errors.password?.message}
                 </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  fullWidth
-                  margin="dense"
-                  {...register('confirmPassword')}
-                  error={errors.confirmPassword ? true : false}
-                />
-                <Typography variant="inherit" color="textSecondary">
-                  {errors.confirmPassword?.message}
-                </Typography>
-              </Grid>
             </Grid>
-
             <Box mt={3}>
               <Button
                 variant="contained"

@@ -45,7 +45,8 @@
     "react-perfect-scrollbar": "^1.5.8",
     "swr": "^1.2.0",
     "uuid": "^8.3.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@types/react": "^17.0.38",
