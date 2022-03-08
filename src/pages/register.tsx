@@ -1,74 +1,51 @@
-import React, { useState } from 'react';
-import Head from 'next/head';
-import NextLink from 'next/link';
+import React, { Fragment } from 'react';
 import { useRouter } from 'next/router';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import Head from 'next/head';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 
 import {
-  Box,
-  Button,
   Container,
-  Link,
+  Box,
+  Grid,
   TextField,
-  Typography
+  Typography,
+  Button
 } from '@mui/material';
 
 const Register = () => {
   const router = useRouter();
-  const [error, setError] = useState('');
-
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    },
-    validationSchema: Yup.object({
-      firstName: Yup
-        .string()
-        .max(255)
-        .required(
-          'First Name is required'),
-      lastName: Yup
-        .string()
-        .max(255)
-        .required(
-          'Last Name is required'),
-      email: Yup
-        .string()
-        .max(255)
-        .required(
-          'Email is required')
-        .email(
-          'Must be a valid email'),
-      username: Yup
-        .string()
-        .max(255)
-        .required(
-          'username is required'),
-      password: Yup
-        .string()
-        .min(4)
-        .max(255)
-        .required(
-          'Password is required')
-    }),
-    onSubmit: () => {
-      console.log('sumbit me')
-    }
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string()
+      .required('First name is required'),
+    lastName: Yup.string()
+      .required('Last name is required'),
+    email: Yup.string()
+      .required('Email is required')
+      .email('Email is invalid'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(6, 'Password must be at least 6 characters')
+      .max(40, 'Password must not exceed 40 characters'),
+    confirmPassword: Yup.string()
+      .required('Confirm Password is required')
+      .oneOf([Yup.ref('password'), null], 'Confirm Password does not match'),
   });
 
-  async function createUser(e) {
-    e.preventDefault()
-    const email = formik.values.email;
-    const firstName = formik.values.firstName;
-    const lastName = formik.values.lastName;
-    const password = formik.values.password;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(validationSchema)
+  });
 
+  async function onSubmit(data) {
+    console.log(JSON.stringify(data, null, 2));
+    const  { firstName, lastName, email, password } = data;
     try {
       const response = await axios.post('/api/auth/signup', { firstName, lastName, email, password })
       console.log('r  ', response)
@@ -84,23 +61,23 @@ const Register = () => {
           console.log('success = ', result)
           router.replace('/');
         } else {
-          console.log(result.error)
+          console.log('poop', result.error)
         }
       }
     } catch (err) {
-      console.log(err)
+      console.log('ERROR = ',err)
     }
   }
 
   return (
-    <>
+    <Fragment>
       <Head>
         <title>
           Register | Trell-node
         </title>
       </Head>
       <Box
-        component="main"
+        component="form"
         sx={{
           alignItems: 'center',
           display: 'flex',
@@ -109,114 +86,105 @@ const Register = () => {
         }}
       >
         <Container maxWidth="sm">
-          <form onSubmit={(e) => { createUser(e) }}>
-            <Box sx={{ my: 3 }}>
-              <Typography
-                color="textPrimary"
-                variant="h4"
-              >
-                Create a new account
-              </Typography>
-              {
-                error && (
-                  <Typography
-                    color="error"
-                    variant="subtitle2"
-                  >
-                    There was an error!
-                  </Typography>
-                )
-              }
-            </Box>
-            <Box sx={{ display: 'flex' }}>
-              <TextField
-                sx={{ width: '50%' }}
-                error={Boolean(formik.touched.firstName && formik.errors.firstName)}
-                helperText={formik.touched.firstName && formik.errors.firstName}
-                label="First name"
-                margin="normal"
-                name="firstName"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                type="text"
-                value={formik.values.firstName}
-                variant="outlined"
-              />
-              <TextField
-                sx={{ width: '50%' }}
-                error={Boolean(formik.touched.lastName && formik.errors.lastName)}
-                helperText={formik.touched.lastName && formik.errors.lastName}
-                label="Last Name"
-                margin="normal"
-                name="lastName"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                type="text"
-                value={formik.values.lastName}
-                variant="outlined"
-              />
-            </Box>
-            <TextField
-              error={Boolean(formik.touched.email && formik.errors.email)}
-              fullWidth
-              helperText={formik.touched.email && formik.errors.email}
-              label="Email Address"
-              margin="normal"
-              name="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="email"
-              value={formik.values.email}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.password && formik.errors.password)}
-              fullWidth
-              helperText={formik.touched.password && formik.errors.password}
-              label="Password"
-              margin="normal"
-              name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="password"
-              value={formik.values.password}
-              variant="outlined"
-            />
-            <Box sx={{ py: 2 }}>
+          <Box px={3} py={2} my={3}>
+            <Typography variant="h4" align="center" margin="dense">
+              Create a new account
+            </Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="fulfirstNamelname"
+                  name="firstName"
+                  label="First Name"
+                  fullWidth
+                  margin="dense"
+                  {...register('firstName')}
+                  error={errors.firstName ? true : false}
+                />
+                <Typography variant="inherit" color="textSecondary">
+                  {errors.firstName?.message}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="lastName"
+                  name="lastName"
+                  label="Last Name"
+                  fullWidth
+                  margin="dense"
+                  {...register('lastName')}
+                  error={errors.lastName ? true : false}
+                />
+                <Typography variant="inherit" color="textSecondary">
+                  {errors.lastName?.message}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
+                  id="email"
+                  name="email"
+                  label="Email"
+                  fullWidth
+                  margin="dense"
+                  {...register('email')}
+                  error={errors.email ? true : false}
+                />
+                <Typography variant="inherit" color="textSecondary">
+                  {errors.email?.message}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="password"
+                  name="password"
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  margin="dense"
+                  {...register('password')}
+                  error={errors.password ? true : false}
+                />
+                <Typography variant="inherit" color="textSecondary">
+                  {errors.password?.message}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  fullWidth
+                  margin="dense"
+                  {...register('confirmPassword')}
+                  error={errors.confirmPassword ? true : false}
+                />
+                <Typography variant="inherit" color="textSecondary">
+                  {errors.confirmPassword?.message}
+                </Typography>
+              </Grid>
+            </Grid>
+
+            <Box mt={3}>
               <Button
-                color="primary"
-                disabled={formik.isSubmitting}
-                fullWidth
-                size="large"
-                type="submit"
                 variant="contained"
+                color="primary"
+                onClick={handleSubmit(onSubmit)}
               >
-                Sign Up Now
+                Register
               </Button>
             </Box>
-            <Typography
-              color="textSecondary"
-              variant="body2"
-            >
-              Have an account?
-              {' '}
-              <NextLink
-                href="/login"
-                passHref
-              >
-                <Link
-                  variant="subtitle2"
-                  underline="hover"
-                >
-                  Sign In
-                </Link>
-              </NextLink>
-            </Typography>
-          </form>
+          </Box>
         </Container>
       </Box>
-    </>
+    </Fragment>
   );
 };
 
 export default Register;
+

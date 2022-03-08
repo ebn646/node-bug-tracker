@@ -113,9 +113,6 @@ export function UserHeader() {
           </Box>
 
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            <IconButton color="secondary">
-              <NotificationsIcon />
-            </IconButton>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
