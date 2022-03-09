@@ -31,7 +31,7 @@ export default function RowAndColumnSpacing() {
   return (
     <Box sx={{ width: '100%'}} my={2} px={1}>
         <Typography>Workspace name..</Typography>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
+      <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
         <BoardTile />
         <BoardTile />
         <BoardTile />
