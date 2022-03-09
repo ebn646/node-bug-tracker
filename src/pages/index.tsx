@@ -12,14 +12,6 @@ import UserContext from '../context/UserContext';
 function Index() {
   const user = useContext(UserContext);
 
-  useEffect(() => {
-    console.log('user = ', user);
-  }, [user]);
-
-  useEffect(() => {
-    document.body.classList.remove("board");
-  },[])
-
   return (
     <>
       <Head>

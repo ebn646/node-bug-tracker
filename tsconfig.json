@@ -24,7 +24,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/pages/api/workspaces/index.js"  ],
   "exclude": [
     "node_modules"
   ]
