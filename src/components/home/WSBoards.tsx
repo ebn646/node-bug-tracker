@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Container, Box, Grid } from '@mui/material';
+import WSSection from './WSSection'
 
 const WSBoards = () => {
     const { data } = useSession();
@@ -21,7 +22,8 @@ const WSBoards = () => {
 
     return (
         <Box sx={{ bgcolor: '#cfe8fc', height: '600px' }}>
-            I am the WS Boards
+           <WSSection />
+           <WSSection />
         </Box>
     )
 }

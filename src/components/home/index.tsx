@@ -1,8 +1,8 @@
 
 import React, { useEffect } from 'react';
-import { useSession, getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { Container, Box, Grid } from '@mui/material';
+import { Container,Grid, Typography } from '@mui/material';
 import LeftSidebar from './LeftSidebar';
 import WSBoards from './WSBoards';
 
@@ -24,11 +24,12 @@ const Home = () => {
   return (
     <React.Fragment>
       <Container maxWidth="lg">
-        <Grid container spacing={2} sx={{marginTop: 4}}>
-          <Grid item xs={4}>
+        <Grid container spacing={3} sx={{marginTop: 4}}>
+          <Grid item xs={3}>
             <LeftSidebar />
           </Grid>
           <Grid item xs={8}>
+              <Typography>YOUR WORKSPACES</Typography>
             <WSBoards />
           </Grid>
         </Grid>
