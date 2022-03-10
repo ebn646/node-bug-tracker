@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import BoardTile from './BoardTile';
@@ -9,21 +11,64 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Stack from '@mui/material/Stack';
+
+
+const items = [
+  {
+    url: '/static/images/photo-1644145699796-6f88eedcb084.jpeg',
+    title: 'Breakfast',
+    id: '1644145699796-6f88eedcb084',
+  },
+  {
+    url: '/static/images/photo-1646159378166-f342e7974649.jpeg',
+    title: 'Burgers',
+    id: '1646159378166-f342e797464',
+  },
+  {
+    url: '/static/images/photo-1646167858622-b94eb44d1b7a.jpeg',
+    title: 'Mountains',
+    id: '1646167858622-b94eb44d1b7a',
+  },
+  {
+    url: '/static/images/photo-1646233963514-f62b4267119b.jpeg',
+    title: 'Camera',
+    id: '1646233963514-f62b4267119b',
+  },
+];
 
 export default function WSSection({ boards }) {
+  // local state
   const [open, setOpen] = useState(false)
   const [boardTitle, setBoardTitle] = useState('');
   const [backgroundColor, setBackgroundColor] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState('photo-1644145699796-6f88eedcb084.jpeg')
-  const nameInputRef = React.useRef();
+  const nameInputRef = React.useRef<HTMLFormElement>(null);
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Title is required'),
+    backgroundImage: Yup.string(),
+  })
+
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(validationSchema)
+  });
 
   const handleChange = (e) => {
-    e.preventDefault()
-    setBoardTitle(e.target.value)
+    if (nameInputRef.current && nameInputRef.current.value) {
+      setBoardTitle(nameInputRef.current.value)
+    }
   }
 
-  const submitHandler = (e) => {
-    alert(true)
+  const submitHandler = (data) => {
+    console.log(data)
+    console.log(errors)
+
   }
 
   return (
@@ -56,7 +101,8 @@ export default function WSSection({ boards }) {
       <Dialog open={open}>
         <DialogTitle>Create Board</DialogTitle>
         <DialogContent>
-          <Box component="form" id="createboard_form" onSubmit={(e) => {submitHandler(e)}}>
+          <Box component="form" id="createboard_form" onSubmit={handleSubmit(submitHandler)}>
+            <Stack spacing={2}>
             <TextField
               inputRef={nameInputRef}
               autoFocus
@@ -65,53 +111,41 @@ export default function WSSection({ boards }) {
               fullWidth
               variant="standard"
               placeholder="Add board title..."
-              value={boardTitle}
-              onChange={handleChange}
+              // value={boardTitle}
+              // onChange={handleChange}
+              {...register('name')}
+              error={errors.name}
 
             />
             <FormControl>
-              <FormLabel id="demo-radio-buttons-group-label">Background</FormLabel>
+              <FormLabel id="demo-radio-buttons-group-label" sx={{mb: 1}}>Background</FormLabel>
               <RadioGroup
                 row
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
-                name="radio-buttons-group"
+                defaultValue={items[0].url}
               >
-                <FormControlLabel value="one" control={<Radio />}
-                  label={
-                    <img
-                      src='https://via.placeholder.com/150x100'
-                      className='img-fluid'
-                      alt='tst'
-                    />
-                  } />
-                <FormControlLabel value="two" control={<Radio />}
-                  label={
-                    <img
-                      src='https://via.placeholder.com/150x100'
-                      className='img-fluid'
-                      alt='tst'
-                    />
-                  } />
-                <FormControlLabel value="three" control={<Radio />}
-                  label={
-                    <img
-                      src='https://via.placeholder.com/150x100'
-                      className='img-fluid'
-                      alt='tst'
-                    />
-                  } />
-                <FormControlLabel value="four" control={<Radio />}
-                  label={
-                    <img
-                      src='https://via.placeholder.com/150x100'
-                      className='img-fluid'
-                      alt='tst'
-                    />
-                  } />
+                {
+                  items.map((i) =>
+                    <FormControlLabel 
+                    value={i.url}
+                    control={<Radio />}
+                    key={i.id}
+                      {...register("backgroundImage")}
+                      label={
+                        <img
+                          src={i.url}
+                          className='img-fluid'
+                          alt={i.title}
+                          width="64"
+                          height="40"
+                        />
+                      } />
+                  )
+                }
               </RadioGroup>
             </FormControl>
             <Button type="submit">Create Board</Button>
+            </Stack>
           </Box>
         </DialogContent>
       </Dialog>
