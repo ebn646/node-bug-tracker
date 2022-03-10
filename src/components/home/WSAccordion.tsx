@@ -46,19 +46,25 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function WSAccordions() {
+export default function WSAccordions({workspaces}) {
 
 
   return (
     <div>
-      <Accordion>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <><DashBoardIcon /><Typography>Eric Nichols's workspace</Typography></>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Button sx={{width: '100%', justifyContent: 'flex-start'}} startIcon={<DashBoardIcon />}> Boards </Button>
-        </AccordionDetails>
-      </Accordion>
+      {
+        workspaces && workspaces.length > 0 && (
+          workspaces.map((ws) => (
+            <Accordion key={Math.random()}>
+            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+              <><DashBoardIcon /><Typography>{ws.name}</Typography></>
+            </AccordionSummary>
+            <AccordionDetails>
+            <Button sx={{width: '100%', justifyContent: 'flex-start'}} startIcon={<DashBoardIcon />}> Boards </Button>
+            </AccordionDetails>
+          </Accordion>
+          )
+        ))
+      }
     </div>
   );
 }

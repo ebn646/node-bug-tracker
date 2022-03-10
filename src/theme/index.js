@@ -99,7 +99,7 @@ export const theme = createTheme({
           minHeight: '100%',
           width: '100%',
           overflowX: 'hidden',
-          overflowY: 'hidden',
+          overflowY: 'auto',
         },
         '#__next': {
           display: 'flex',
@@ -260,13 +260,8 @@ export const theme = createTheme({
       lineHeight: 1.75,
     },
     subtitle2: {
-      fontSize: '0.875rem',
-      fontWeight: 500,
-      lineHeight: 1.57,
-    },
-    subtitleBold: {
       fontSize: '1rem',
-      fontWeight: 700,
+      fontWeight: 500,
       lineHeight: 1.57,
     },
     overline: {

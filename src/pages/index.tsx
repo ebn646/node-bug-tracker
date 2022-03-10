@@ -51,6 +51,13 @@ export async function getServerSideProps(context) {
         permanent: false,
       },
     };
+  } else {
+    return {
+      redirect: {
+        destination: '/boards',
+        permanent: false,
+      },
+    };
   }
 
   return {

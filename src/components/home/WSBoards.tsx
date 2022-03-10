@@ -2,10 +2,10 @@
 import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { Container, Box, Grid } from '@mui/material';
+import { Container, Box, Grid, Typography } from '@mui/material';
 import WSSection from './WSSection'
 
-const WSBoards = () => {
+const WSBoards = ({ workspace, boards }) => {
     const { data } = useSession();
 
     async function getWorspaces(id) {
@@ -13,17 +13,17 @@ const WSBoards = () => {
         console.log('res = ', res)
     }
     useEffect(() => {
-        // constaxios.get(`/api/workspaces/${data.id}`)
         if (data) {
             console.log(data.id)
             getWorspaces(data.id)
         }
     }, [data])
 
+
     return (
-        <Box sx={{ bgcolor: '#cfe8fc', height: '600px' }}>
-           <WSSection />
-           <WSSection />
+        <Box sx={{ bgcolor: '#fff', height: 'auto', py: 1 }}>
+            <Typography variant="h6">{workspace.name}</Typography>
+            <WSSection key={Math.random()} boards={boards} />
         </Box>
     )
 }

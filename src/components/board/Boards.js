@@ -9,8 +9,6 @@ import {
   Button,
   ButtonBase,
   TextField,
-  InputAdornment,
-  SvgIcon,
   Typography,
   Dialog,
   DialogActions,

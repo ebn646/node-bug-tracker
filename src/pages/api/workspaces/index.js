@@ -38,7 +38,7 @@ handler.get(async (req, res) => {
       const data = req.body;
       const ws = {
         ...data,
-        creatorId: new ObjectId(data.creatorId),
+        creatorId: new ObjectId(req.query.id),
         createdAt: new Date(),
         updatedAt: new Date(),
       };

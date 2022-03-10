@@ -1,41 +1,130 @@
 
-import React, { useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import useSWR, {mutate} from "swr";
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { Container,Grid, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    Container,
+    Grid,
+    Typography,
+    Dialog,
+    DialogActions,
+    TextField,
+    DialogContent,
+    DialogTitle,
+} from '@mui/material';
 import LeftSidebar from './LeftSidebar';
 import WSBoards from './WSBoards';
+import { fetcher } from '../../../lib/fetch';
 
 const Home = () => {
-  const { data } = useSession();
+    const { data: session } = useSession();
+    const { data: workspaces } = useSWR(session ? `/api/workspaces?id=${session.id}` : null, fetcher)
+    const { data: boards } = useSWR(session ? `/api/boards?id=${session.id}` : null, fetcher)
 
-  async function getWorspaces(id) {
-    const res = await axios.get(`/api/workspaces?id=${id}`)
-    console.log('res = ', res)
-  }
-  useEffect(() => {
-    // constaxios.get(`/api/workspaces/${data.id}`)
-    if (data) {
-      console.log(data.id)
-      getWorspaces(data.id)
+    // local state
+    const [open, setOpen] = useState(false);
+    const [showForm, setShowForm] = useState(false);
+    const [boardTitle, setBoardTitle] = useState('');
+    // refs
+    const nameInputRef = useRef<HTMLInputElement>(null);
+
+    // post for new workspace
+    async function submitHandler(e) {
+        e.preventDefault();
+        if (nameInputRef.current.value) {
+            if (!nameInputRef.current.value || nameInputRef.current.value === '') {
+                return;
+            }
+            await axios.post(`/api/workspaces?id=${session.id}`, {name: nameInputRef.current.value} )
+            mutate(`/api/workspaces?id=${session.id}`);
+            setShowForm(false)
+        }
     }
-  }, [data])
 
-  return (
-    <React.Fragment>
-      <Container maxWidth="lg">
-        <Grid container spacing={3} sx={{marginTop: 4}}>
-          <Grid item xs={3}>
-            <LeftSidebar />
-          </Grid>
-          <Grid item xs={8}>
-              <Typography>YOUR WORKSPACES</Typography>
-            <WSBoards />
-          </Grid>
-        </Grid>
-      </Container>
-    </React.Fragment>
-  )
+    const handleChange = (e) => {
+        e.preventDefault()
+        setBoardTitle(e.target.value)
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    if(!workspaces || !boards){
+        return <div>Loading...</div>
+    }
+
+    return (
+        <React.Fragment>
+            <Container maxWidth="lg" sx={{mt: 3 }}>
+                {
+                    showForm ? (
+                        <Box sx={{ marginTop: 4, marginLeft: 'auto', marginRight: 'auto', width: 800 }}>
+                            <form
+                                onSubmit={(e) => {
+                                    submitHandler(e);
+                                }}
+                            >
+                                <Typography variant="subtitle2">Boost your productivity by making it easier for everyone to access boards in one location.</Typography>
+                                <TextField
+                                    inputRef={nameInputRef}
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    fullWidth
+                                    variant="standard"
+                                    placeholder="Workspace name"
+                                    value={boardTitle}
+                                    onChange={handleChange}
+                                />
+                                <Button variant="contained" type="submit" sx={{ marginTop: 2 }}>Create Workspace</Button>
+                            </form>
+                        </Box>
+                    ) : <Grid container spacing={3} sx={{ marginTop: 4 }}>
+                        <Grid item xs={3}>
+                            <LeftSidebar workspaces={workspaces} openModal={setOpen}/>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Typography sx={{my: 2, fontWeight: 700}}>YOUR WORKSPACES</Typography>
+                            {
+                                workspaces.map((ws) => <WSBoards workspace={ws} boards={boards} /> )
+                            }
+                        </Grid>
+                    </Grid>
+                }
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Let's build a workspace</DialogTitle>
+                    <DialogContent>
+                        <form
+                            onSubmit={(e) => {
+                                submitHandler(e);
+                            }}
+                        >
+                            <Typography variant="subtitle2">Boost your productivity by making it easier for everyone to access boards in one location.</Typography>
+                            <TextField
+                                inputRef={nameInputRef}
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                fullWidth
+                                variant="standard"
+                                placeholder="Workspace name"
+                                value={boardTitle}
+                                onChange={handleChange}
+
+                            />
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type="submit">Create</Button>
+                    </DialogActions>
+                </Dialog>
+            </Container>
+        </React.Fragment>
+    )
 }
 
 export default Home

@@ -1,27 +1,29 @@
 
 import React, { useEffect } from 'react';
+import Head from 'next/head';
 import { useSession, getSession } from 'next-auth/react';
 import axios from 'axios';
 import Home from '../components/home';
+import { DashboardLayout } from '../components/DashboardLayout';
 
 const Boards = () => {
-  const { data } = useSession();
-
-
-  async function getWorspaces(id) {
-    const res = await axios.get(`/api/workspaces?id=${id}`)
-    console.log('res = ', res)
-  }
-  useEffect(() => {
-    if (data) {
-      console.log(data.id)
-      getWorspaces(data.id)
-    }
-  }, [data])
 
   return (
-   <Home />
+    <>
+      <Head>
+        <title>
+          Boards | Node Bug Tracker
+        </title>
+      </Head>
+      <Home />
+    </>
   )
 }
+
+Boards.getLayout = (page) => (
+  <DashboardLayout>
+    {page}
+  </DashboardLayout>
+);
 
 export default Boards
