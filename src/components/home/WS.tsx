@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Container, Box, Grid, Typography } from '@mui/material';
 import WSSection from './WSSection'
 
-const WSBoards = ({ workspace, boards }) => {
+const WS = ({ workspace, boards }) => {
     const { data } = useSession();
 
     async function getWorspaces(id) {
@@ -28,4 +28,4 @@ const WSBoards = ({ workspace, boards }) => {
     )
 }
 
-export default WSBoards
+export default WS

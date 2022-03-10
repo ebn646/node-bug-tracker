@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { useSession, getSession } from 'next-auth/react';
-import axios from 'axios';
 import Home from '../components/home';
 import { DashboardLayout } from '../components/DashboardLayout';
 
@@ -25,5 +24,23 @@ Boards.getLayout = (page) => (
     {page}
   </DashboardLayout>
 );
+
+export async function getServerSideProps(context){
+  const session = await getSession({req: context.req});
+  if(!session){
+    return{ 
+      redirect:{
+          destination: '/login'
+        }
+    }
+  }
+  return {
+    props:{
+      redirect:{
+        destination: '/boards'
+      }
+    }
+  }
+}
 
 export default Boards

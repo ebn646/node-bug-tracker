@@ -16,7 +16,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 import LeftSidebar from './LeftSidebar';
-import WSBoards from './WSBoards';
+import WSBoards from './WS';
 import { fetcher } from '../../../lib/fetch';
 
 const Home = () => {
@@ -30,6 +30,15 @@ const Home = () => {
     const [boardTitle, setBoardTitle] = useState('');
     // refs
     const nameInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if(workspaces && !workspaces.length){
+        console.log('ws = ', workspaces)
+
+        setShowForm(true)
+      }
+    }, [workspaces])
+    
 
     // post for new workspace
     async function submitHandler(e) {
@@ -59,10 +68,10 @@ const Home = () => {
 
     return (
         <React.Fragment>
-            <Container maxWidth="lg" sx={{mt: 3 }}>
+            <Container maxWidth="lg" sx={{mt: 15 }}>
                 {
                     showForm ? (
-                        <Box sx={{ marginTop: 4, marginLeft: 'auto', marginRight: 'auto', width: 800 }}>
+                        <Box sx={{ marginLeft: 'auto', marginRight: 'auto', width: 800 }}>
                             <form
                                 onSubmit={(e) => {
                                     submitHandler(e);
@@ -83,7 +92,7 @@ const Home = () => {
                                 <Button variant="contained" type="submit" sx={{ marginTop: 2 }}>Create Workspace</Button>
                             </form>
                         </Box>
-                    ) : <Grid container spacing={3} sx={{ marginTop: 4 }}>
+                    ) : <Grid container spacing={3}>
                         <Grid item xs={3}>
                             <LeftSidebar workspaces={workspaces} openModal={setOpen}/>
                         </Grid>
