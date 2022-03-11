@@ -10,7 +10,6 @@ import Menu from '@mui/material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import AppsIcon from '@mui/icons-material/Apps';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
@@ -19,7 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 const settings = ['Profile', 'Account', 'Logout'];
 
 // eslint-disable-next-line import/prefer-default-export
-export function UserHeader() {
+export const UserHeader = (): JSX.Element => {
   const router = useRouter();
   const { data: session } = useSession();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -115,7 +114,7 @@ export function UserHeader() {
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                <Avatar alt={session?.user?.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -135,10 +134,10 @@ export function UserHeader() {
               onClose={handleCloseUserMenu}
             >
               <MenuItem key={settings[0]} onClick={handleCloseUserMenu}>
-                <Avatar sx={{marginRight: 1}} alt={session.user.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                <Avatar sx={{marginRight: 1}} alt={session?.user?.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <Typography textAlign="center">{session.user.name}</Typography>
-                  <Typography textAlign="center">{session.user.email}</Typography>
+                  <Typography textAlign="center">{session?.user?.name}</Typography>
+                  <Typography textAlign="center">{session?.user?.email}</Typography>
                 </Box>
               </MenuItem>
               <MenuItem key={settings[0]} onClick={handleCloseUserMenu}>

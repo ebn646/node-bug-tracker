@@ -13,7 +13,6 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Stack from '@mui/material/Stack';
 
-
 const items = [
   {
     url: '/static/images/photo-1644145699796-6f88eedcb084.jpeg',
@@ -37,12 +36,14 @@ const items = [
   },
 ];
 
-export default function WSSection({ boards }) {
+type Boards = {
+  boards: []
+}
+
+const WSSection = ({ boards }:Boards) => {
   // local state
   const [open, setOpen] = useState(false)
   const [boardTitle, setBoardTitle] = useState('');
-  const [backgroundColor, setBackgroundColor] = useState(null);
-  const [backgroundImage, setBackgroundImage] = useState('photo-1644145699796-6f88eedcb084.jpeg')
   const nameInputRef = React.useRef<HTMLFormElement>(null);
 
   const validationSchema = Yup.object().shape({
@@ -59,13 +60,13 @@ export default function WSSection({ boards }) {
     resolver: yupResolver(validationSchema)
   });
 
-  const handleChange = (e) => {
+  const handleChange = () => {
     if (nameInputRef.current && nameInputRef.current.value) {
       setBoardTitle(nameInputRef.current.value)
     }
   }
 
-  const submitHandler = (data) => {
+  const submitHandler = (data:{}) => {
     console.log(data)
     console.log(errors)
 
@@ -76,7 +77,7 @@ export default function WSSection({ boards }) {
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
         {
           boards.length ? (
-            boards.map((b) => <BoardTile key={b._id} board={b} />)
+            boards.map((b, {_id}: any) => <BoardTile key={_id} board={b} />)
           ) : null
         }
         <Grid item sm={3}>
@@ -152,3 +153,4 @@ export default function WSSection({ boards }) {
     </Box>
   );
 }
+export default WSSection;

@@ -1,7 +1,8 @@
 
-import React, { useEffect } from 'react';
+import { GetServerSideProps } from "next";
+import type { Session } from "next-auth";
 import Head from 'next/head';
-import { useSession, getSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import Home from '../components/home';
 import { DashboardLayout } from '../components/DashboardLayout';
 
@@ -19,27 +20,27 @@ const Boards = () => {
   )
 }
 
-Boards.getLayout = (page) => (
+Boards.getLayout = (page: JSX.Element) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export async function getServerSideProps(context){
+export const getServerSideProps: GetServerSideProps<{}> = async (context) => {  
   const session = await getSession({req: context.req});
   if(!session){
     return{ 
-      redirect:{
+        redirect:{
+          permanent: false,
           destination: '/login'
         }
     }
   }
   return {
-    props:{
       redirect:{
+        permanent: false,
         destination: '/boards'
       }
-    }
   }
 }
 

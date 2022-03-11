@@ -4,7 +4,12 @@ import DashBoardIcon from '@mui/icons-material/DashBoard';
 import AddIcon from '@mui/icons-material/Add';
 import WSAccordion from './WSAccordion';
 
-export default function LeftSidebar({workspaces, openModal}) {
+type Props = {
+  workspaces: [],
+  openModal: (params:boolean) => void,
+}
+
+export default function LeftSidebar({workspaces, openModal}: Props) {
 
   return (
     <div>

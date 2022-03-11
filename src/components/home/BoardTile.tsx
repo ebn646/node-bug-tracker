@@ -29,9 +29,16 @@ const Item = styled(Paper)(({ theme }) => ({
       }
   }
 }));
+type Board ={
+  board: {
+    _id: string,
+    name: string,
+    backgroundImage: string,
+  }
+}
 
 
-export default function BoardTile({ board }) {
+export default function BoardTile({ board } : Board) {
   console.log('board = ', board)
   return (
     <Grid item xs={3}>
