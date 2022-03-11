@@ -3,6 +3,8 @@ import CredentialProvider from "next-auth/providers/credentials";
 import { verifyPassword } from '../../../../lib/auth';
 import { connectToDatabase } from '../../../../lib/db';
 
+
+
 export default NextAuth({
   providers: [
     CredentialProvider({

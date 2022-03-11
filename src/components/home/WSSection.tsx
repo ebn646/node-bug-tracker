@@ -15,25 +15,29 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Stack from '@mui/material/Stack';
 import { addBoard } from '../../store/boards/boardsSlice';
+import useSWR, { mutate } from "swr";
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { fetcher } from '../../../lib/fetch';
 
 const items = [
   {
-    url: '/static/images/photo-1644145699796-6f88eedcb084.jpeg',
+    url: 'photo-1644145699796-6f88eedcb084.jpeg',
     title: 'Breakfast',
     id: '1644145699796-6f88eedcb084',
   },
   {
-    url: '/static/images/photo-1646159378166-f342e7974649.jpeg',
+    url: 'photo-1646159378166-f342e7974649.jpeg',
     title: 'Burgers',
     id: '1646159378166-f342e797464',
   },
   {
-    url: '/static/images/photo-1646167858622-b94eb44d1b7a.jpeg',
+    url: 'photo-1646167858622-b94eb44d1b7a.jpeg',
     title: 'Mountains',
     id: '1646167858622-b94eb44d1b7a',
   },
   {
-    url: '/static/images/photo-1646233963514-f62b4267119b.jpeg',
+    url: 'photo-1646233963514-f62b4267119b.jpeg',
     title: 'Camera',
     id: '1646233963514-f62b4267119b',
   },
@@ -44,6 +48,9 @@ type Boards = {
 }
 
 const WSSection = ({ boards }:Boards) => {
+  const { data: session } = useSession<boolean>(undefined);
+  const { data: userboards } = useSWR(session ? `/api/boards?id=${session.id}` : null, fetcher)
+
   // local state
   const [open, setOpen] = useState(false)
   const [boardTitle, setBoardTitle] = useState('');
@@ -72,14 +79,20 @@ const WSSection = ({ boards }:Boards) => {
     }
   }
 
-  const submitHandler = (data:any) => {
+  const submitHandler = async(data:any) => {
     console.log(data)
     console.log(errors)
+    if (session) {
+      await axios.post(`/api/boards?id=${session.id}`, data)
+      mutate(`/api/boards?id=${session.id}`);
+      setOpen(false)
+  }
     dispatch(addBoard(data))
   }
   useEffect(() => {
     console.log('user_boards = ', user_boards)
-  }, [user_boards])
+    console.log('boards = ', boards)
+  }, [user_boards, boards])
   
 
   return (
@@ -122,8 +135,6 @@ const WSSection = ({ boards }:Boards) => {
               fullWidth
               variant="standard"
               placeholder="Add board title..."
-              // value={boardTitle}
-              // onChange={handleChange}
               {...register('name')}
               error={errors.name}
 
@@ -144,7 +155,7 @@ const WSSection = ({ boards }:Boards) => {
                       {...register("backgroundImage")}
                       label={
                         <img
-                          src={i.url}
+                          src={`/static/images/${i.url}`}
                           className='img-fluid'
                           alt={i.title}
                           width="64"

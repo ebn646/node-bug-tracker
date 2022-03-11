@@ -1,5 +1,5 @@
 
-import { Container, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import WSSection from './WSSection';
 interface Props {
     workspace: {
@@ -9,6 +9,7 @@ interface Props {
 }
 
 const WS = ({ workspace, boards }: Props) => {
+    console.log('boards = ', boards)
     return (
         <Box sx={{ bgcolor: '#fff', height: 'auto', py: 1 }}>
             <Typography variant="h6">{workspace.name}</Typography>

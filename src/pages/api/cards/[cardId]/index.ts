@@ -21,7 +21,7 @@ handler.get('/:id', async(req,res) => {
 
     let lists = await db
       .cards.find(
-        { _id: { $in: [ 5, ObjectId(cardId) ] } }
+        { _id: { $in: [ 5, new ObjectId(cardId) ] } }
      )
     res.json( lists );
 });
@@ -56,7 +56,7 @@ handler.patch(async (req, res) => {
 
   let card = await db
     .collection("cards")
-    .updateOne({_id: ObjectId(req.query.cardId)}, {$set: obj })
+    .updateOne({_id: new ObjectId(req.query.cardId)}, {$set: obj })
   res.json( card );
 });
 
@@ -66,7 +66,7 @@ handler.delete(async (req, res) => {
 
   let card = await db
     .collection("cards")
-    .deleteOne({_id: ObjectId(req.query.cardId)})
+    .deleteOne({_id: new ObjectId(req.query.cardId)})
   res.json( card );
 })
 

@@ -1,8 +1,7 @@
-import React, { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import axios from 'axios';
-import zxcvbn from 'zxcvbn';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -67,12 +66,6 @@ const Register = () => {
     }
   }
 
-  useEffect(() => {
-    const poop = zxcvbn('TilTuesday2021!');
-    console.log('poop =', poop.score+1)
-  }, [])
-  
-
   return (
     <Fragment>
       <Head>
@@ -99,7 +92,6 @@ const Register = () => {
                 <TextField
                   required
                   id="fulfirstNamelname"
-                  name="firstName"
                   label="First Name"
                   fullWidth
                   margin="dense"
@@ -114,7 +106,6 @@ const Register = () => {
                 <TextField
                   required
                   id="lastName"
-                  name="lastName"
                   label="Last Name"
                   fullWidth
                   margin="dense"
@@ -129,7 +120,6 @@ const Register = () => {
                 <TextField
                   required
                   id="email"
-                  name="email"
                   label="Email"
                   fullWidth
                   margin="dense"
@@ -144,7 +134,6 @@ const Register = () => {
                 <TextField
                   required
                   id="password"
-                  name="password"
                   label="Password"
                   type="password"
                   fullWidth

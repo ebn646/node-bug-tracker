@@ -153,6 +153,9 @@ export const Board = (props) => {
       else {
         addNewList();
       }
+    } else {
+      setEditable(false)
+      setAddList(false);
     }
   }
 
@@ -375,28 +378,50 @@ export const Board = (props) => {
       maxWidth={false}
       sx={{
         display: 'flex',
-        height: 'calc(100vh - 0px)',
+        height: '100vh',
         padding: '0 !important',
         position: 'relative',
-        backgroundImage: `url(/static/images/${project.backgroundImage})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        overflowY: 'auto',
       }}
     >
+      <Box
+        sx={{
+          width: '100vw',
+          height: '100%',
+          backgroundImage: `url(/static/images/${project.backgroundImage})`,
+          position: 'fixed',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
       <div style={{ width: '100%', marginTop: 64, position: 'relative' }}>
         <Drawer activities={data.activities} />
         <Box sx={{ position: 'fixed', top: 64, left: 0, right: 0 }}>
           {
             !editable ? (
               <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
-                <Button variant="text" onClick={() => setEditable(true)}>
+                <Button
+                  sx={{
+                    my: 1,
+                    borderRadius: 0,
+                    backgroundColor: 'rgba(255,255,255, 0.5)'
+                  }}
+                  onClick={() => setEditable(true)}
+                >
                   <Typography variant="h6">
                     {project.name}
                   </Typography>
                 </Button>
-                <Button onClick={(e) => e.preventDefault()}>Show menu</Button>
+                <Button
+                  sx={{
+                    my: 1,
+                    borderRadius: 0,
+                    backgroundColor: 'rgba(255,255,255, 0.5)'
+                  }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Show menu
+                </Button>
               </Box>
             ) : <TextField
               autoFocus
@@ -445,26 +470,35 @@ export const Board = (props) => {
                             {
                               addList ? (
                                 <>
-                                  <TextField
-                                    id="new-list"
-                                    variant="standard"
-                                    placeholder="Enter list title..."
-                                    inputRef={ref}
-                                    autoFocus
-                                    onKeyDown={handleKeyDown}
-                                    onBlur={handleKeyDown}
-                                  />
-                                  <Box>
-                                    <Button
-                                      variant="contained"
-                                      onClick={() => addNewList()}>Add list
-                                    </Button>
-                                    <IconButton
-                                      color="primary"
-                                      onClick={() => resetAddList()}
-                                    >
-                                      <CloseIcon />
-                                    </IconButton>
+                                  <Box sx={{
+                                    p: 1,
+                                    width: 280,
+                                    backgroundColor: '#ebecf0',
+                                  }}>
+                                    <TextField
+                                      id="new-list"
+                                      variant="outlined"
+                                      placeholder="Enter list title..."
+                                      inputRef={ref}
+                                      autoFocus
+                                      onKeyDown={handleKeyDown}
+                                      onBlur={handleKeyDown}
+                                      sx={{ py: 1, }}
+                                    />
+                                    <Box sx={{
+                                      pt: 1,
+                                    }}>
+                                      <Button
+                                        variant="contained"
+                                        onClick={() => addNewList()}>Add list
+                                      </Button>
+                                      <IconButton
+                                        color="primary"
+                                        onClick={() => resetAddList()}
+                                      >
+                                        <CloseIcon />
+                                      </IconButton>
+                                    </Box>
                                   </Box>
                                 </>
                               ) : <Box sx={{ width: 280 }}>
