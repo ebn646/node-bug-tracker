@@ -1,6 +1,5 @@
 
 import { GetServerSideProps } from "next";
-import type { Session } from "next-auth";
 import Head from 'next/head';
 import { getSession } from 'next-auth/react';
 import Home from '../components/home';
@@ -30,17 +29,21 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
   const session = await getSession({req: context.req});
   if(!session){
     return{ 
+      props: {
         redirect:{
           permanent: false,
           destination: '/login'
         }
+      }
     }
   }
   return {
+    props: {
       redirect:{
         permanent: false,
         destination: '/boards'
       }
+    }
   }
 }
 

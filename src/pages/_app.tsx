@@ -3,13 +3,14 @@ import { SessionProvider } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { CacheProvider } from '@emotion/react';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
 import { fetcher } from '../../lib/fetch';
 import UserContext from '../context/UserContext';
+import { store } from '../store/store';
+import { Provider } from 'react-redux';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -54,7 +55,9 @@ function App(props) {
         <UserContext.Provider value={currentUser}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+            <Provider store={store}>
             {getLayout(<Component {...pageProps} />)}
+            </Provider>
           </ThemeProvider>
         </UserContext.Provider>
       </SessionProvider>

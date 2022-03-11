@@ -1,5 +1,5 @@
 
-import { Container, Box, Grid, Typography } from '@mui/material';
+import { Container, Box, Typography } from '@mui/material';
 import WSSection from './WSSection';
 interface Props {
     workspace: {
