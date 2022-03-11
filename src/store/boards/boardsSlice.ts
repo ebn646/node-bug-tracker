@@ -13,6 +13,7 @@ export const boardsSlice = createSlice({
     initialState,
     reducers: {
         addBoard: (state, action: PayloadAction<string>) => {
+            console.log(action.payload)
             state.value.push(action.payload)
         }
     }

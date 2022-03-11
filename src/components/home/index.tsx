@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect, Fragment, FormEvent, ChangeEvent } from 'react';
-import useSWR, {mutate} from "swr";
+import useSWR, { mutate } from "swr";
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import {
@@ -32,11 +32,11 @@ const Home = () => {
     const nameInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-      if(workspaces && !workspaces.length){
-        setShowForm(true)
-      }
+        if (workspaces && !workspaces.length) {
+            setShowForm(true)
+        }
     }, [workspaces])
-    
+
 
     // post for new workspace
     async function submitHandler(e: FormEvent<HTMLFormElement>) {
@@ -45,8 +45,8 @@ const Home = () => {
             if (!nameInputRef.current.value || nameInputRef.current.value === '') {
                 return;
             }
-            if(session){
-                await axios.post(`/api/workspaces?id=${session.id}`, {name: nameInputRef.current.value} )
+            if (session) {
+                await axios.post(`/api/workspaces?id=${session.id}`, { name: nameInputRef.current.value })
                 mutate(`/api/workspaces?id=${session.id}`);
                 setShowForm(false)
             }
@@ -62,13 +62,13 @@ const Home = () => {
         setOpen(false);
     };
 
-    if(!workspaces || !boards){
+    if (!workspaces || !boards) {
         return <div>Loading...</div>
     }
 
     return (
         <Fragment>
-            <Container maxWidth="lg" sx={{mt: 15 }}>
+            <Container maxWidth="lg" sx={{ mt: 15 }}>
                 {
                     showForm ? (
                         <Box sx={{ marginLeft: 'auto', marginRight: 'auto', width: 800 }}>
@@ -94,12 +94,19 @@ const Home = () => {
                         </Box>
                     ) : <Grid container spacing={3}>
                         <Grid item xs={3}>
-                            <LeftSidebar workspaces={workspaces} openModal={setOpen}/>
+                            <LeftSidebar
+                                workspaces={workspaces}
+                                openModal={setOpen}
+                            />
                         </Grid>
                         <Grid item xs={8}>
-                            <Typography sx={{my: 2, fontWeight: 700}}>YOUR WORKSPACES</Typography>
+                            <Typography sx={{ my: 2, fontWeight: 700 }}>YOUR WORKSPACES</Typography>
                             {
-                                workspaces.map((ws:any) => <WSBoards workspace={ws} boards={boards} /> )
+                                workspaces.map((ws: any) => <WSBoards
+                                    key={ws._id}
+                                    workspace={ws}
+                                    boards={boards}
+                                />)
                             }
                         </Grid>
                     </Grid>

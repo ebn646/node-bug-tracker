@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store/store';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import BoardTile from './BoardTile';
@@ -12,6 +14,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Stack from '@mui/material/Stack';
+import { addBoard } from '../../store/boards/boardsSlice';
 
 const items = [
   {
@@ -44,7 +47,7 @@ const WSSection = ({ boards }:Boards) => {
   // local state
   const [open, setOpen] = useState(false)
   const [boardTitle, setBoardTitle] = useState('');
-  const nameInputRef = React.useRef<HTMLFormElement>(null);
+  const nameInputRef = useRef<HTMLFormElement>(null);
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Title is required'),
@@ -60,17 +63,24 @@ const WSSection = ({ boards }:Boards) => {
     resolver: yupResolver(validationSchema)
   });
 
+  const user_boards = useSelector((state: RootState) => state.boards.value)
+  const dispatch = useDispatch();
+
   const handleChange = () => {
     if (nameInputRef.current && nameInputRef.current.value) {
       setBoardTitle(nameInputRef.current.value)
     }
   }
 
-  const submitHandler = (data:{}) => {
+  const submitHandler = (data:any) => {
     console.log(data)
     console.log(errors)
-
+    dispatch(addBoard(data))
   }
+  useEffect(() => {
+    console.log('user_boards = ', user_boards)
+  }, [user_boards])
+  
 
   return (
     <Box sx={{ width: '100%' }} my={2} pr={1}>

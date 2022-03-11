@@ -1,10 +1,8 @@
-import React from 'react';
 import Link from 'next/link';
 import { styled } from '@mui/material/styles';
 import { Grid, Typography } from '@mui/material'
 import Paper from '@mui/material/Paper';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import { withTheme } from '@emotion/react';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -29,7 +27,8 @@ const Item = styled(Paper)(({ theme }) => ({
       }
   }
 }));
-type Board ={
+
+interface BoardTypes {
   board: {
     _id: string,
     name: string,
@@ -38,8 +37,8 @@ type Board ={
 }
 
 
-export default function BoardTile({ board } : Board) {
-  console.log('board = ', board)
+export default function BoardTile({ board } : BoardTypes) {
+  
   return (
     <Grid item xs={3}>
       <Item sx={{
