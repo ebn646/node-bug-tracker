@@ -1,9 +1,10 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from '../../../../lib/db';
 import nc from 'next-connect';
 import { ObjectId } from 'mongodb';
 
 const ncOpts = {
-    onError(err, req, res) {
+    onError(err, res: NextApiResponse) {
       console.error(err);
       res.statusCode =
         err.status && err.status >= 100 && err.status < 600 ? err.status : 500;
@@ -13,7 +14,7 @@ const ncOpts = {
 
 const handler = nc(ncOpts);
 
-handler.get(async (req, res) => {
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     let client = await connectToDatabase();
     let db = client.db();
 
@@ -32,7 +33,7 @@ handler.get(async (req, res) => {
   });
 
   handler.post(
-    async (req, res) => {
+    async (req: NextApiRequest, res: NextApiResponse) => {
       let client = await connectToDatabase();
       let db = client.db();
       const data = req.body;

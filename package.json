@@ -32,7 +32,7 @@
     "history": "^5.0.0",
     "lodash": "^4.17.21",
     "mongodb": "^4.3.1",
-    "mongoose": "^6.2.4",
+    "mongoose": "^5.11.11",
     "next": "11.1.1",
     "next-auth": "^4.2.1",
     "next-connect": "^0.11.0",
@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@reduxjs/toolkit": "^1.8.0",
+    "@types/mongoose": "^5.11.97",
     "@types/bcryptjs": "^2.4.2",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^17.0.21",
