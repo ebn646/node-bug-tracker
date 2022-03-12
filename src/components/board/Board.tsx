@@ -369,7 +369,7 @@ export const Board = (props) => {
   }
   if (!project) {
     return (
-      <>Loading...</>
+     <div/>
     )
   }
   return (
@@ -420,7 +420,7 @@ export const Board = (props) => {
                   }}
                   onClick={(e) => e.preventDefault()}
                 >
-                  Show menu
+                  ... Show menu
                 </Button>
               </Box>
             ) : <TextField
