@@ -12,7 +12,7 @@ function Project() {
   return (
     <>
       <Head>
-        <title>Project Name</title>
+        <title>Board Name</title>
       </Head>
       <Box
         component="main"
