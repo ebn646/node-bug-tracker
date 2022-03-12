@@ -7,7 +7,9 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import {
+  Dashboard
+} from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import AppsIcon from '@mui/icons-material/Apps';
 import Container from '@mui/material/Container';
@@ -79,7 +81,7 @@ export const UserHeader = (): JSX.Element => {
               onClick={() => {
                 router.push('/');
               }}>
-              <DashboardIcon />
+              <Dashboard />
               <Typography
                 variant="h6"
                 noWrap
@@ -100,7 +102,7 @@ export const UserHeader = (): JSX.Element => {
           </Typography>
 
           <Box sx={{ flex: 1, display: { xs: 'none', md: 'flex', justifyContent: 'center' } }}>
-            <DashboardIcon />
+            <Dashboard />
             <Typography
               variant="h6"
               noWrap
