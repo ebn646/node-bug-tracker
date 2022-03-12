@@ -8,8 +8,9 @@ import MuiAccordionSummary, {
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
-import DashBoardIcon from '@mui/icons-material/DashBoard';
-
+import {
+  Dashboard
+} from '@mui/icons-material';
 type Workspaces = {
   workspaces: []
 }
@@ -60,10 +61,10 @@ const AccordionDetails = styled(MuiAccordionDetails)(() => ({
           workspaces.map(({name}: any) => (
             <Accordion key={Math.random()}>
             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-              <><DashBoardIcon /><Typography>{name}</Typography></>
+              <><Dashboard /><Typography>{name}</Typography></>
             </AccordionSummary>
             <AccordionDetails>
-            <Button sx={{width: '100%', justifyContent: 'flex-start'}} startIcon={<DashBoardIcon />}> Boards </Button>
+            <Button sx={{width: '100%', justifyContent: 'flex-start'}} startIcon={<Dashboard />}> Boards </Button>
             </AccordionDetails>
           </Accordion>
           )
