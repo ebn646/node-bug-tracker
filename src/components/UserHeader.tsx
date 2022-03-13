@@ -16,6 +16,7 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { getInitials } from '../utils/get-initials';
 
 const settings = ['Profile', 'Account', 'Logout'];
 
@@ -116,7 +117,7 @@ export const UserHeader = (): JSX.Element => {
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={session?.user?.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                <Avatar alt={getInitials(session?.user?.name).toUpperCase()} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

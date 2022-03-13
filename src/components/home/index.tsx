@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect, Fragment, FormEvent, ChangeEvent } from 'react';
+import Image from 'next/image'
 import useSWR, { mutate } from "swr";
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
@@ -77,6 +78,24 @@ const Home = () => {
                                     submitHandler(e);
                                 }}
                             >
+                                <Box sx={{
+                                    position: 'relative',
+                                    width: '100%',
+                                    height: 250,
+                                    display: 'flex',
+                                    justifyContent: 'center'
+                                }}
+                                >
+                                    <Image
+                                        alt="Mountains"
+                                        src="/static/images/empty-board.d1f066971350650d3346.svg"
+                                        layout="fill"
+                                        width={340}
+                                        height={250}
+                                        quality={100}
+                                    />
+                                </Box>
+                                <Typography variant="h5">Let's build a Workspace!</Typography>
                                 <Typography variant="subtitle2">Boost your productivity by making it easier for everyone to access boards in one location.</Typography>
                                 <TextField
                                     inputRef={nameInputRef}
