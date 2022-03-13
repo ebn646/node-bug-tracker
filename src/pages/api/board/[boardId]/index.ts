@@ -37,7 +37,7 @@ handler.patch(async (req, res) => {
 
   let board = await db
     .collection("boards")
-    .updateOne({_id: ObjectId(req.query.boardId)}, {$set: updateObject })
+    .updateOne({_id: new ObjectId(req.query.boardId)}, {$set: updateObject })
   res.json( board );
 });
 

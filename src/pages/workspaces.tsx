@@ -11,7 +11,7 @@ const Boards = () => {
     <>
       <Head>
         <title>
-          Boards | Node Bug Tracker
+          Workspaces | Node Bug Tracker
         </title>
       </Head>
       <Home />

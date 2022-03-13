@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, MouseEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react';
 import AppBar from '@mui/material/AppBar';
@@ -24,13 +24,13 @@ const settings = ['Profile', 'Account', 'Logout'];
 export const UserHeader = (): JSX.Element => {
   const router = useRouter();
   const { data: session } = useSession();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -46,7 +46,7 @@ export const UserHeader = (): JSX.Element => {
     console.log('session ', session);
   }, [session]);
 
-  if (!session) return <>Loading...</>
+  if (!session) return <></>
 
   return (
     // eslint-disable-next-line react/jsx-filename-extension
@@ -77,21 +77,6 @@ export const UserHeader = (): JSX.Element => {
               }}>
               <HomeIcon />
             </IconButton>
-            <IconButton
-              color="secondary"
-              onClick={() => {
-                router.push('/');
-              }}>
-              <Dashboard />
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-              >
-                Boards
-              </Typography>
-            </IconButton>
           </Box>
           <Typography
             variant="h6"
@@ -117,7 +102,7 @@ export const UserHeader = (): JSX.Element => {
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={getInitials(session?.user?.name).toUpperCase()} src="/static/images/avatar/2.jpg" />
+                <Avatar>{getInitials(session?.user?.name)}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -137,10 +122,10 @@ export const UserHeader = (): JSX.Element => {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleCloseUserMenu}>
-                <Avatar sx={{marginRight: 1}} alt={session?.user?.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                <Avatar sx={{marginRight: 1}} >{getInitials(session?.user?.name).toUpperCase()}</Avatar>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <Typography textAlign="center">{session?.user?.name}</Typography>
-                  <Typography textAlign="center">{session?.user?.email}</Typography>
+                  <Typography textAlign="center" variant="caption">{session?.user?.email}</Typography>
                 </Box>
               </MenuItem>
               <MenuItem onClick={handleCloseUserMenu}>

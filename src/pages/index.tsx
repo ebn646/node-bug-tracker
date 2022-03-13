@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useContext, useEffect } from 'react';
+import { GetServerSideProps } from "next";
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import {
-  Box, Container,
+  Box, 
+  Container,
 } from '@mui/material';
 import { Boards } from '../components/board/Boards';
 import { DashboardLayout } from '../components/DashboardLayout';
@@ -13,37 +15,18 @@ function Index() {
   const user = useContext(UserContext);
 
   return (
-    <>
-      <Head>
-        <title>
-          Projects | Node Bug Tracker
-        </title>
-      </Head>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
-      >
-        <Container maxWidth={false}>
-          <Boards />
-        </Container>
-      </Box>
-    </>
+    <></>
   );
 }
 
-Index.getLayout = (page) => (
+Index.getLayout = (page: JSX.Element) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps<{}> = async (context) => {  
   const session = await getSession({ req: context.req });
-  console.log('req session = ', session);
-
   if (!session) {
     return {
       redirect: {
@@ -54,7 +37,7 @@ export async function getServerSideProps(context) {
   } else {
     return {
       redirect: {
-        destination: '/boards',
+        destination: '/workspaces',
         permanent: false,
       },
     };
