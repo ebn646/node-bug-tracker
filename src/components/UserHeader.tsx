@@ -102,7 +102,7 @@ export const UserHeader = (): JSX.Element => {
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <Tooltip title="Open settings" sx={{ display: 'flex' }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>{getInitials(session?.user?.name)}</Avatar>
+                <Avatar>{session && session.user?.name && getInitials(session.user.name)}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -122,7 +122,7 @@ export const UserHeader = (): JSX.Element => {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleCloseUserMenu}>
-                <Avatar sx={{marginRight: 1}} >{getInitials(session?.user?.name).toUpperCase()}</Avatar>
+                <Avatar sx={{marginRight: 1}} >{session && session.user?.name && getInitials(session.user.name).toUpperCase()}</Avatar>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <Typography textAlign="center">{session?.user?.name}</Typography>
                   <Typography textAlign="center" variant="caption">{session?.user?.email}</Typography>

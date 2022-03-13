@@ -4,7 +4,7 @@ import nc from 'next-connect';
 import { ObjectId } from 'mongodb';
 
 const ncOpts = {
-    onError(err, res: NextApiResponse) {
+    onError(err: {status: number, message: string}, res: NextApiResponse) {
       console.error(err);
       res.statusCode =
         err.status && err.status >= 100 && err.status < 600 ? err.status : 500;
@@ -17,13 +17,14 @@ const handler = nc(ncOpts);
 handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     let client = await connectToDatabase();
     let db = client.db();
+    let id = req.query.id as string;
 
     let projects = await db
       .collection("boards")
       .aggregate([
         {
           $match: {
-            creatorId : new ObjectId(req.query.id)
+            creatorId : new ObjectId(id)
           }
         }
       ])
@@ -36,10 +37,11 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     async (req: NextApiRequest, res: NextApiResponse) => {
       let client = await connectToDatabase();
       let db = client.db();
+      let id = req.query.id as string;
       const data = req.body;
       const board = {
         ...data,
-        creatorId: new ObjectId(req.query.id),
+        creatorId: new ObjectId(id),
         createdAt: new Date(),
         updatedAt: new Date(),
       };
