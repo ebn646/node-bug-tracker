@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect, Fragment, FormEvent, ChangeEvent } from 'react';
+import { useState, useRef, useEffect, Fragment, FormEvent, ChangeEvent, MouseEvent } from 'react';
 import Image from 'next/image'
 import useSWR, { mutate } from "swr";
 import { useSession } from 'next-auth/react';
@@ -17,30 +17,33 @@ import {
     DialogTitle,
 } from '@mui/material';
 import LeftSidebar from './LeftSidebar';
-import WSBoards from './WS';
+import WSSection from './WSSection';
 import { fetcher } from '../../../lib/fetch';
+import { useRouter } from 'next/router';
 
-const Home = () => {
+const WS = () => {
+    const router = useRouter();
     const { data: session } = useSession<boolean>(undefined);
-    const { data: workspaces } = useSWR(session ? `/api/workspaces?id=${session.id}` : null, fetcher)
-    const { data: boards } = useSWR(session ? `/api/boards?id=${session.id}` : null, fetcher)
+    const { data: workspace } = useSWR(session ? `/api/workspaces/${router.query.id}` : null, fetcher)
+    const { data: boards } = useSWR(session ? `/api/boards?id=${router.query.id}` : null, fetcher)
 
     // local state
     const [open, setOpen] = useState(false);
+    const [ws, setWs] = useState();
     const [showForm, setShowForm] = useState(false);
     const [boardTitle, setBoardTitle] = useState('');
     // refs
     const nameInputRef = useRef<HTMLInputElement>(null);
+    const nameInputRef2 = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (workspaces && !workspaces.length) {
-            setShowForm(true)
-        }
-    }, [workspaces])
+       console.log('ws ======== ', workspace)
+    }, [workspace])
 
 
     // post for new workspace
     async function submitHandler(e: FormEvent<HTMLFormElement>) {
+        console.log('submitHandler called...')
         e.preventDefault();
         if (nameInputRef?.current?.value) {
             if (!nameInputRef.current.value || nameInputRef.current.value === '') {
@@ -50,6 +53,21 @@ const Home = () => {
                 await axios.post(`/api/workspaces?id=${session.id}`, { name: nameInputRef.current.value })
                 mutate(`/api/workspaces?id=${session.id}`);
                 setShowForm(false)
+            }
+        }
+    }
+    // post for new workspace
+    async function submitHandler2(e: MouseEvent<HTMLButtonElement>) {
+        console.log('submitHandler2 called...')
+        e.preventDefault();
+        if (nameInputRef2?.current?.value) {
+            if (!nameInputRef2.current.value || nameInputRef2.current.value === '') {
+                return;
+            }
+            if (session) {
+                await axios.post(`/api/workspaces?id=${session.id}`, { name: nameInputRef2.current.value })
+                mutate(`/api/workspaces?id=${session.id}`);
+                setOpen(false)
             }
         }
     }
@@ -63,7 +81,7 @@ const Home = () => {
         setOpen(false);
     };
 
-    if (!workspaces || !boards) {
+    if (!workspace || !boards) {
         return <div>Loading...</div>
     }
 
@@ -113,18 +131,16 @@ const Home = () => {
                         </Box>
                     ) : <Grid container spacing={3}>
                         <Grid item xs={3}>
-                            <LeftSidebar
+                            {/* <LeftSidebar
                                 workspaces={workspaces}
                                 openModal={setOpen}
-                            />
+                            /> */}
                         </Grid>
                         <Grid item xs={8}>
-                            <Typography sx={{ my: 2, fontWeight: 700 }}>YOUR WORKSPACES</Typography>
                             {
-                                workspaces.map((ws: any) => <WSBoards
-                                    key={ws._id}
-                                    workspace={ws}
-                                    boards={boards}
+                                workspace && (<WSSection
+                                    _id={workspace._id}
+                                    name={workspace.name}
                                 />)
                             }
                         </Grid>
@@ -133,14 +149,12 @@ const Home = () => {
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Let's build a workspace</DialogTitle>
                     <DialogContent>
-                        <form
-                            onSubmit={(e) => {
-                                submitHandler(e);
-                            }}
-                        >
-                            <Typography variant="subtitle2">Boost your productivity by making it easier for everyone to access boards in one location.</Typography>
+                        <form>
+                            <Typography variant="subtitle2">
+                                Boost your productivity by making it easier for everyone to access boards in one location.
+                            </Typography>
                             <TextField
-                                inputRef={nameInputRef}
+                                inputRef={nameInputRef2}
                                 autoFocus
                                 margin="dense"
                                 id="name"
@@ -149,12 +163,11 @@ const Home = () => {
                                 placeholder="Workspace name"
                                 value={boardTitle}
                                 onChange={handleChange}
-
                             />
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button type="submit">Create</Button>
+                        <Button onClick={submitHandler2}>Create</Button>
                     </DialogActions>
                 </Dialog>
             </Container>
@@ -162,4 +175,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default WS

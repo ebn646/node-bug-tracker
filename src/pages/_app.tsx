@@ -43,7 +43,7 @@ function App(props) {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Node Bug Tracker
+          Trell Node
         </title>
         <meta
           name="viewport"

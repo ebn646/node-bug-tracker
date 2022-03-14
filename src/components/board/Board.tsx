@@ -378,7 +378,7 @@ export const Board = (props) => {
       maxWidth={false}
       sx={{
         display: 'flex',
-        height: '100vh',
+        height: 'auto',
         padding: '0 !important',
         position: 'relative',
       }}

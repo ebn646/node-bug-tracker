@@ -14,22 +14,22 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
-  console.log(' id = ',req.query.id)
+  console.log(' ws id = ',req.query.id)
     let client = await connectToDatabase();
     let db = client.db();
 
-    let workspaces = await db
+    let workspace = await db
       .collection("workspaces")
       .aggregate([
         {
           $match: {
-            creatorId : new ObjectId(req.query.id)
+            _id : new ObjectId(req.query.id)
           }
         }
       ])
       .toArray();
   
-    res.json( workspaces );
+    res.json( workspace[0] );
   });
 
   handler.post(
@@ -39,7 +39,7 @@ handler.get(async (req, res) => {
       const data = req.body;
       const ws = {
         ...data,
-        creatorId: new ObjectId(req.query.id),
+        creatorId: new ObjectId(req.query.user),
         createdAt: new Date(),
         updatedAt: new Date(),
       };

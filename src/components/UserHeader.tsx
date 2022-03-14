@@ -24,18 +24,10 @@ const settings = ['Profile', 'Account', 'Logout'];
 export const UserHeader = (): JSX.Element => {
   const router = useRouter();
   const { data: session } = useSession();
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -49,8 +41,7 @@ export const UserHeader = (): JSX.Element => {
   if (!session) return <></>
 
   return (
-    // eslint-disable-next-line react/jsx-filename-extension
-    <AppBar position="fixed" sx={{ pl: 1, pr: 1 }}>
+    <AppBar position="relative" sx={{ pl: 1, pr: 1 }}>
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

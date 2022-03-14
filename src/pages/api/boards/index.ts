@@ -19,18 +19,18 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     let db = client.db();
     let id = req.query.id as string;
 
-    let projects = await db
+    let board = await db
       .collection("boards")
       .aggregate([
         {
           $match: {
-            creatorId : new ObjectId(id)
+            workspaceId : new ObjectId(id)
           }
         }
       ])
       .toArray();
   
-    res.json( projects );
+    res.json( board[0] );
   });
 
   handler.post(
@@ -41,7 +41,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
       const data = req.body;
       const board = {
         ...data,
-        creatorId: new ObjectId(id),
+        workspaceId: new ObjectId(id),
         createdAt: new Date(),
         updatedAt: new Date(),
       };

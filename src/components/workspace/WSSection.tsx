@@ -19,6 +19,7 @@ import useSWR, { mutate } from "swr";
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { fetcher } from '../../../lib/fetch';
+import { useRouter } from 'next/router';
 
 const items = [
   {
@@ -43,13 +44,16 @@ const items = [
   },
 ];
 
-type Boards = {
-  boards: []
+type WS = {
+  _id: string,
+  name: string
 }
 
-const WSSection = ({ boards }:Boards) => {
+const WSSection = ({ _id, name }:WS) => {
+  console.log('id ========= ', _id, name)
+  const router = useRouter();
   const { data: session } = useSession<boolean>(undefined);
-  const { data: userboards } = useSWR(session ? `/api/boards?id=${session.id}` : null, fetcher)
+  const { data: userboards } = useSWR(session ? `/api/boards?id=${router.query.id}` : null, fetcher)
 
   // local state
   const [open, setOpen] = useState(false)
@@ -83,24 +87,28 @@ const WSSection = ({ boards }:Boards) => {
     console.log(data)
     console.log(errors)
     if (session) {
-      await axios.post(`/api/boards?id=${session.id}`, data)
-      mutate(`/api/boards?id=${session.id}`);
+      await axios.post(`/api/boards?id=${router.query.id}`, data)
+      mutate(`/api/boards?id=${router.query.id}`);
       setOpen(false)
   }
     dispatch(addBoard(data))
   }
   useEffect(() => {
+    console.log('boards = ', userboards)
     console.log('user_boards = ', user_boards)
-    console.log('boards = ', boards)
-  }, [user_boards, boards])
+  }, [user_boards, userboards])
+
+  if(!userboards){
+    return <></>
+  }
   
 
   return (
     <Box sx={{ width: '100%' }} my={2} pr={1}>
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
         {
-          boards.length ? (
-            boards.map((b, {_id}: any) => <BoardTile key={_id} board={b} />)
+          userboards.length ? (
+            userboards.map((b, {_id}: any) => <BoardTile key={_id} board={b} />)
           ) : null
         }
         <Grid item sm={3}>
