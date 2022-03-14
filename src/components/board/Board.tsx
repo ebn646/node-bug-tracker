@@ -481,8 +481,8 @@ export const Board = (props) => {
                                       placeholder="Enter list title..."
                                       inputRef={ref}
                                       autoFocus
-                                      onKeyDown={handleKeyDown}
-                                      onBlur={handleKeyDown}
+                                      //onKeyDown={handleKeyDown}
+                                      onBlur={setEditable(false)}
                                       sx={{ py: 1, }}
                                     />
                                     <Box sx={{

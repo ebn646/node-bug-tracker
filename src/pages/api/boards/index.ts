@@ -19,7 +19,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     let db = client.db();
     let id = req.query.id as string;
 
-    let board = await db
+    let boards = await db
       .collection("boards")
       .aggregate([
         {
@@ -30,7 +30,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
       ])
       .toArray();
   
-    res.json( board[0] );
+    res.json( boards );
   });
 
   handler.post(

@@ -33,6 +33,7 @@ handler.post(
       ...data,
       boardId: new ObjectId(data.boardId),
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const { insertedId } = await db.collection('cards').insertOne(card);
     // eslint-disable-next-line no-underscore-dangle

@@ -51,9 +51,6 @@ handler.patch(async (req, res) => {
   } else {
     obj = {...updateObject}
   }
-
-  console.log('obj = ', obj)
-
   let card = await db
     .collection("cards")
     .updateOne({_id: new ObjectId(req.query.cardId)}, {$set: obj })

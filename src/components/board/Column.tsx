@@ -151,8 +151,8 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
                                                 inputRef={ref}
                                                 value={value}
                                                 autoFocus
-                                                onKeyDown={handleKeyDown}
-                                                onBlur={toggleAddCard}
+                                                // onKeyDown={handleKeyDown}
+                                                // onBlur={toggleAddCard}
                                                 onChange={(e) => { setValue(e.target.value) }}
                                             />
                                             <div style={{ display: 'flex', marginTop: 8 }}>

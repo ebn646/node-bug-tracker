@@ -20,6 +20,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { fetcher } from '../../../lib/fetch';
 import { useRouter } from 'next/router';
+import { AnyKeys } from 'mongoose';
 
 const items = [
   {
@@ -52,8 +53,7 @@ type WS = {
 const WSSection = ({ _id, name }:WS) => {
   console.log('id ========= ', _id, name)
   const router = useRouter();
-  const { data: session } = useSession<boolean>(undefined);
-  const { data: userboards } = useSWR(session ? `/api/boards?id=${router.query.id}` : null, fetcher)
+  const { data: userboards } = useSWR(`/api/boards?id=${router.query.id}`, fetcher)
 
   // local state
   const [open, setOpen] = useState(false)
@@ -84,14 +84,12 @@ const WSSection = ({ _id, name }:WS) => {
   }
 
   const submitHandler = async(data:any) => {
-    console.log(data)
+    console.log('d = ', data)
     console.log(errors)
-    if (session) {
       await axios.post(`/api/boards?id=${router.query.id}`, data)
       mutate(`/api/boards?id=${router.query.id}`);
       setOpen(false)
-  }
-    dispatch(addBoard(data))
+      dispatch(addBoard(data))
   }
   useEffect(() => {
     console.log('boards = ', userboards)
@@ -108,7 +106,7 @@ const WSSection = ({ _id, name }:WS) => {
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
         {
           userboards.length ? (
-            userboards.map((b, {_id}: any) => <BoardTile key={_id} board={b} />)
+            userboards.map((b:any, {_id}: any) => <BoardTile key={Math.random()} board={b} />)
           ) : null
         }
         <Grid item sm={3}>
@@ -133,7 +131,7 @@ const WSSection = ({ _id, name }:WS) => {
       <Dialog open={open}>
         <DialogTitle>Create Board</DialogTitle>
         <DialogContent>
-          <Box component="form" id="createboard_form" onSubmit={handleSubmit(submitHandler)}>
+          <Box component="form" id="createboard_form">
             <Stack spacing={2}>
             <TextField
               inputRef={nameInputRef}
@@ -174,7 +172,7 @@ const WSSection = ({ _id, name }:WS) => {
                 }
               </RadioGroup>
             </FormControl>
-            <Button type="submit">Create Board</Button>
+            <Button onClick={handleSubmit(submitHandler)}>Create Board</Button>
             </Stack>
           </Box>
         </DialogContent>
