@@ -30,16 +30,17 @@ export const Board = (props) => {
   const user = useContext(UserContext);
   const router = useRouter();
 
-  const getData = (endpoint) => {
+  const getData = (endpoint: string) => {
     const { data } = useSWR(user ? `${endpoint}` : null, fetcher)
     return data
   }
 
-  function mutateCards(card, type) {
+  function mutateCards(card, type: string) {
     let newCards;
     switch (type) {
       case 'UPDATE':
         newCards = new Set([...data.cards, card])
+        break;
       case 'ADD':
         newCards = [...data.cards, card];
         break;
@@ -55,7 +56,7 @@ export const Board = (props) => {
     }))
   }
 
-  function mutateLists(lst, type) {
+  function mutateLists(lst, type: string) {
     let newLists;
     switch (type) {
       case 'ADD':
@@ -128,7 +129,7 @@ export const Board = (props) => {
     setAddList(false);
   }
 
-  async function editList(data, id) {
+  async function editList(data, id: string) {
     //  mutate(`/api/lists?id=${router.query.id}`, [data], false);
     const response = await axios.patch(`/api/lists/${id}`, { name: data.name });
     mutate(`/api/lists?id=${router.query.id}`);
@@ -185,7 +186,7 @@ export const Board = (props) => {
     setOpen(false);
   };
 
-  const reorderColumns = (source, destination, draggableId) => {
+  const reorderColumns = (source, destination, draggableId: string) => {
     // change th eorder of gthe clluns, reset in stage to rerender
     console.log('s = ', source)
     console.log('d = ', destination)
@@ -215,7 +216,8 @@ export const Board = (props) => {
         id: draggableId,
         order: newOrder
       })
-      .then((response) => { console.log('r = ', response); mutate(); });
+      .then((response) => { console.log('r = ', response); 
+      mutate(); });
     // reorder list
     target.order = newOrder;
     console.log('reorder the list', data.lists)
@@ -360,10 +362,12 @@ export const Board = (props) => {
       console.log('reorder the list', data.cards)
       const sorted = _.orderBy(data.cards, ['order'], ['asc'])
       // console.log('sorted = ', sorted);
-      setData((prev) => ({
-        ...prev,
-        cards: sorted,
-      }))
+      setData((prev) => {
+        return ({
+          ...prev,
+          cards: sorted,
+        });
+      })
       return;
     }
   }
@@ -482,7 +486,7 @@ export const Board = (props) => {
                                       inputRef={ref}
                                       autoFocus
                                       //onKeyDown={handleKeyDown}
-                                      onBlur={setEditable(false)}
+                                      onBlur={() => setEditable(false)}
                                       sx={{ py: 1, }}
                                     />
                                     <Box sx={{

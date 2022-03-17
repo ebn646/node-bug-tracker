@@ -25,7 +25,7 @@ export const UserHeader = (): JSX.Element => {
   const router = useRouter();
   const { data: session } = useSession();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-
+  const [isFixed, setIsFixed] = useState<boolean>(false);
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -35,13 +35,18 @@ export const UserHeader = (): JSX.Element => {
   };
 
   useEffect(() => {
-    console.log('session ', session);
-  }, [session]);
+    console.log(router.pathname[0])
+    if(router.pathname.includes('/b/')){
+      setIsFixed(true)
+    }else{
+      setIsFixed(false)
+    }
+  }, [router]);
 
   if (!session) return <></>
 
   return (
-    <AppBar position="relative" sx={{ pl: 1, pr: 1 }}>
+    <AppBar position={isFixed ? "fixed" : "relative"} sx={{ pl: 1, pr: 1 }}>
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
