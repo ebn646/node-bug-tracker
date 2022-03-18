@@ -13,14 +13,23 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
+  console.log('req.query ========== ', req.query.boardid)
+
   const client = await connectToDatabase();
   const db = client.db();
 
   const cards = await db
     .collection('cards')
-    .find()
+    .aggregate([
+      {
+        $match: {
+          boardId: new ObjectId(req.query.boardid)
+        }
+      }
+    ])
     .toArray();
 
+  console.log('cards ========== ', cards)
   res.json(cards);
 });
 

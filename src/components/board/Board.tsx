@@ -10,11 +10,6 @@ import {
   IconButton,
   TextField,
   Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Stack,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,6 +20,7 @@ import Drawer from './Drawer';
 import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
+import EditCardDialog from '../dialogs/EditCardDialog';
 
 export const Board = (props) => {
   const user = useContext(UserContext);
@@ -90,7 +86,7 @@ export const Board = (props) => {
   }
 
   const project = getData(`/api/board/${router.query.id}`);
-  const cards = getData(`/api/cards/${router.query.id}`);
+  const cards = getData(`/api/cards/?boardid=${router.query.id}`);
   const lists = getData(`/api/lists?id=${router.query.id}`);
   const activities = getData(`/api/activities/${router.query.id}`);
 
@@ -99,7 +95,7 @@ export const Board = (props) => {
 
   // local state
   const [editable, setEditable] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [addList, setAddList] = useState(false);
   const [data, setData] = useState({
     list: null,
@@ -162,14 +158,20 @@ export const Board = (props) => {
 
   const resetAddList = () => {
     setAddList(false);
-
   }
 
   useEffect(() => {
+    if(lists){
+      console.log('lists ', lists)
+    }
+    if(cards){
+      console.log('cards ', cards)
+    }
     if (lists && cards && project && activities) {
       const sortedLists = _.orderBy(lists, ['order'], ['asc'])
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
       const sortedAct = activities.reverse();
+      console.log('sortedLists = ', sortedLists)
       setData({
         lists: sortedLists,
         cards: sortedCards,
@@ -485,7 +487,6 @@ export const Board = (props) => {
                                       placeholder="Enter list title..."
                                       inputRef={ref}
                                       autoFocus
-                                      //onKeyDown={handleKeyDown}
                                       onBlur={() => setEditable(false)}
                                       sx={{ py: 1, }}
                                     />
@@ -528,35 +529,7 @@ export const Board = (props) => {
             </DragDropContext>
           </div>
         </Box>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Create A New Project</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To create a new project, please enter a name and description.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Description"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Create</Button>
-            <Button onClick={handleClose}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
+        <EditCardDialog />
       </div>
     </Container>
   );

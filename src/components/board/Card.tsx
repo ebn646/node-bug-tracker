@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { openModal } from '../../store/modal/modalSlice';
 import {TextField, Paper }from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,6 +32,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Card({ task, index, callback }) {
+  const router = useRouter()
+  const dispatch = useDispatch();
 
   const [edit, showEdit] = useState(false);
 
@@ -58,6 +63,12 @@ export default function Card({ task, index, callback }) {
     }
   }
 
+  function goto(){
+    const href = `/b/${task.boardId}?cid=${task._id}`
+    router.push(href, href, { shallow: true })
+    dispatch(openModal(true));
+  }
+
   return (
     <Draggable draggableId={task._id} index={index}>
       {provided => (
@@ -65,7 +76,7 @@ export default function Card({ task, index, callback }) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          onClick={() => showEdit(true)}
+          onClick={() => goto()}
         >
           {
             edit ? (

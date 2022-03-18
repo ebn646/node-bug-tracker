@@ -22,7 +22,7 @@ handler.get(async (req, res) => {
     .aggregate([
       {
         $match: {
-          userId: new ObjectId(id)
+          userId: new ObjectId(req.query.id)
         }
       }
     ])
@@ -38,7 +38,7 @@ handler.patch(async (req, res) => {
   console.log('list update pob = ', obj, req.query.listId)
   let list = await db
     .collection("lists")
-    .updateOne({_id: ObjectId(req.query.listId)}, { $set: obj })
+    .updateOne({_id: new ObjectId(req.query.listId)}, { $set: obj })
   res.json( list );
 });
 
