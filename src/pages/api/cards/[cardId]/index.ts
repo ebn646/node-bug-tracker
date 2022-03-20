@@ -50,7 +50,7 @@ handler.patch(async (req, res) => {
   let card = await db
     .collection("cards")
     .updateOne({ _id: new ObjectId(req.query.cardId) }, { $set: obj })
-  res.json({card});
+  res.json(card);
 });
 
 handler.delete(async (req, res) => {

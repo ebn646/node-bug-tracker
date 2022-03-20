@@ -14,7 +14,7 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
-  const { query: { id }} = req;
+  const { query: { boardid }} = req;
     let client = await connectToDatabase();
     let db = client.db();
 
@@ -23,7 +23,7 @@ handler.get(async (req, res) => {
       .aggregate([
         {
           $match: {
-            boardId : new ObjectId(id),
+            boardId : new ObjectId(boardid),
           }
         }
       ])

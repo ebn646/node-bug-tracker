@@ -36,6 +36,7 @@ export const Board = () => {
     switch (type) {
       case 'UPDATE':
         mutate(`/api/cards/?boardid=${router.query.id}`)
+        mutate(`/api/lists/?boardid=${router.query.id}`)
         break;
       case 'ADD':
         newCards = [...data.cards, card];
@@ -46,10 +47,10 @@ export const Board = () => {
       default:
         throw new Error('Your type was not found!');
     }
-    setData((prev) => ({
-      ...prev,
-      cards: newCards
-    }))
+    // setData((prev) => ({
+    //   ...prev,
+    //   cards: newCards
+    // }))
   }
 
   function mutateLists(lst, type: string) {
@@ -86,9 +87,9 @@ export const Board = () => {
   }
  // destructure
  const { data: cards } = useSWR(`/api/cards/?boardid=${router.query.id}`, fetcher);
+ const { data: lists } = useSWR(`/api/lists?boardid=${router.query.id}`, fetcher);
 
   const project = getData(`/api/board/${router.query.id}`);
-  const lists = getData(`/api/lists?id=${router.query.id}`);
   const activities = getData(`/api/activities/${router.query.id}`);
 
   // refs
@@ -165,23 +166,28 @@ export const Board = () => {
     if(lists){
       console.log('lists ', lists)
     }
-    if(cards){
-      console.log('cards ', cards)
-    }
-    if (lists && cards && project && activities) {
+    if (lists && project && activities) {
       const sortedLists = _.orderBy(lists, ['order'], ['asc'])
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
       const sortedAct = activities.reverse();
       console.log('sortedLists = ', sortedLists)
       setData({
         lists: sortedLists,
-        cards: sortedCards,
         activities: sortedAct,
       })
     } else {
       console.log('not yet...')
     }
-  }, [cards, lists, project, activities])
+  }, [lists, project, activities])
+
+  useEffect(() => {
+    const sortedCards = _.orderBy(cards, ['order'], ['asc'])
+    setData((prev) => ({
+     ...prev,
+     cards: sortedCards
+    }))
+  }, [cards])
+  
 
 
 
@@ -374,7 +380,7 @@ export const Board = () => {
       return;
     }
   }
-  if (!project) {
+  if (!project || !lists) {
     return (
      <div/>
     )
@@ -530,7 +536,7 @@ export const Board = () => {
             </DragDropContext>
           </div>
         </Box>
-        <EditCardDialog callback={mutateCards} />
+        <EditCardDialog lists={lists} callback={mutateCards} mutateLists={mutateLists} />
       </div>
     </Container>
   );

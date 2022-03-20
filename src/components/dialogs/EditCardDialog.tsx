@@ -7,7 +7,10 @@ import { openModal } from '../../store/modal/modalSlice';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {
     Box,
     Button,
@@ -21,7 +24,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import useSWR, {mutate} from 'swr';
+import useSWR, { mutate } from 'swr';
 import { fetcher } from '../../../lib/fetch';
 import Register from '../../pages/register';
 
@@ -30,17 +33,21 @@ interface ICard {
     description: string,
 }
 interface IEditCardDiaog {
+    lists: [],
     callback: (card: ICard, type: string) => void,
+    mutateLists: () => void,
 }
 
-function EditCardDialog({ callback }: IEditCardDiaog) {
+function EditCardDialog({ callback, lists }: IEditCardDiaog) {
     const open_modal = useSelector((state: RootState) => state.modal.open)
     const dispatch = useDispatch()
     const router = useRouter();
+    // local state
     const [open, setOpen] = useState(true);
+    const [age, setAge] = useState('');
     const [cardId, setCardId] = useState<any | undefined>(undefined);
     // data hook
-    const { data, mutate  } = useSWR(cardId ? `/api/cards/${cardId}` : null, fetcher);
+    const { data, mutate } = useSWR(cardId ? `/api/cards/${cardId}` : null, fetcher);
     // form
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('First name is required'),
@@ -55,18 +62,31 @@ function EditCardDialog({ callback }: IEditCardDiaog) {
         resolver: yupResolver(validationSchema)
     });
 
-
+    useEffect(() => {
+        if(lists && data){
+            console.log('lists = ', lists)
+            console.log('target = ', lists.filter((l) => l._id === data.listId)[0]._id)
+        }
+    }, [lists, data])
 
     useEffect(() => {
         console.log('data = ', data)
     }, [data])
 
     useEffect(() => {
-        console.log('id = ', router.query.cardid)
         if (router.query && router.query.cid) {
             setCardId(router.query.cid)
         }
     }, [router])
+
+    const handleChange = async(event: SelectChangeEvent) => {
+        console.log(event.target)
+        // call api to update cars
+        const result = await axios.patch(`/api/cards/${router.query.cid}`, {listId: event.target.value})
+        const updated = { ...data, listId: event.target.value }
+        mutate(updated)
+        callback(updated, 'UPDATE')
+    };
 
 
 
@@ -75,15 +95,15 @@ function EditCardDialog({ callback }: IEditCardDiaog) {
         dispatch(openModal(false));
     };
 
-    const onSubmit = async(d: { name: string, description: string }) => {
+    const onSubmit = async (d: { name: string, description: string }) => {
         console.log('d = ', d)
-        const result = await axios.patch(`/api/cards/${router.query.cid}`,d)
-        if(result.data){
-            const updated = { ...data,  ...d}
+        const result = await axios.patch(`/api/cards/${router.query.cid}`, d)
+        if (result.data) {
+            const updated = { ...data, ...d }
             mutate(updated)
             callback(updated, 'UPDATE')
         }
-        console.log('success... ',result)
+        console.log('success... ', result)
     }
 
 
@@ -99,29 +119,46 @@ function EditCardDialog({ callback }: IEditCardDiaog) {
                 {/* <div>
                     <pre>{JSON.stringify(data, null, 2)}</pre>
                 </div> */}
-                <Box component="form">
-                    <TextField
-                        defaultValue={data.name}
-                        margin="dense"
-                        id="name"
-                        label="Name"
-                        fullWidth
-                        variant="outlined"
-                        {...register('name')}
-                    />
-                    <Box>
+                <Box sx={{ display: 'flex' }}>
+                    <Box component="form" sx={{ flex: 1 }}>
                         <TextField
+                            defaultValue={data.name}
                             margin="dense"
-                            id="description"
-                            label="Description"
-                            type="text"
+                            id="name"
+                            label="Name"
                             fullWidth
                             variant="outlined"
-                            multiline
-                            rows={2}
-                            {...register('description')}
+                            {...register('name')}
                         />
-                        <Button variant="contained" onClick={handleSubmit(onSubmit)}>Save</Button>
+                        <Box>
+                            <TextField
+                                margin="dense"
+                                id="description"
+                                label="Description"
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                multiline
+                                rows={2}
+                                {...register('description')}
+                            />
+                            <Button variant="contained" onClick={handleSubmit(onSubmit)}>Save</Button>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flex: 1, ml: 2 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Column</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                defaultValue={lists.filter((l) => l._id === data.listId)[0]._id}
+                                onChange={handleChange}
+                            >
+                                {
+                                    lists.map((l) => <MenuItem key={l._id} value={l._id}>{l.name}</MenuItem>)
+                                }
+                            </Select>
+                        </FormControl>
                     </Box>
                 </Box>
                 {/* <Box sx={{my:2}}>
