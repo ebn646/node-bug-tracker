@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../store/modal/modalSlice';
 import {TextField, Paper }from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/material/styles';
+import EditIcon from '@mui/icons-material/Edit';
 import { Draggable } from 'react-beautiful-dnd';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -30,6 +30,8 @@ const Item = styled(Paper)(({ theme }) => ({
     },
   },
 }));
+
+
 
 export default function Card({ task, index, callback }) {
   const router = useRouter()
@@ -89,7 +91,7 @@ export default function Card({ task, index, callback }) {
             />
             ) : <p>{task.name} ({task.order})</p>
           }
-          <DeleteIcon className='delete' onClick={(e) => deleteSubmitHandler(e)} />
+          <EditIcon className='delete' onClick={(e) =>  goto()} />
         </Item>
       )}
     </Draggable>

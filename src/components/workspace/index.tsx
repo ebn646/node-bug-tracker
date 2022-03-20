@@ -25,7 +25,6 @@ const WS = () => {
     const router = useRouter();
     const { data: session } = useSession<boolean>(undefined);
     const { data: workspace } = useSWR(session ? `/api/workspaces/${router.query.id}` : null, fetcher)
-    // const { data: boards } = useSWR(session ? `/api/boards?id=${router.query.id}` : null, fetcher)
 
     // local state
     const [open, setOpen] = useState(false);

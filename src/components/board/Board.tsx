@@ -22,12 +22,12 @@ import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
 import EditCardDialog from '../dialogs/EditCardDialog';
 
-export const Board = (props) => {
+export const Board = () => {
   const user = useContext(UserContext);
   const router = useRouter();
 
   const getData = (endpoint: string) => {
-    const { data } = useSWR(user ? `${endpoint}` : null, fetcher)
+    const { data } = useSWR(`${endpoint}`, fetcher)
     return data
   }
 
@@ -35,7 +35,7 @@ export const Board = (props) => {
     let newCards;
     switch (type) {
       case 'UPDATE':
-        newCards = new Set([...data.cards, card])
+        mutate(`/api/cards/?boardid=${router.query.id}`)
         break;
       case 'ADD':
         newCards = [...data.cards, card];
@@ -84,9 +84,10 @@ export const Board = (props) => {
       name,
     }
   }
+ // destructure
+ const { data: cards } = useSWR(`/api/cards/?boardid=${router.query.id}`, fetcher);
 
   const project = getData(`/api/board/${router.query.id}`);
-  const cards = getData(`/api/cards/?boardid=${router.query.id}`);
   const lists = getData(`/api/lists?id=${router.query.id}`);
   const activities = getData(`/api/activities/${router.query.id}`);
 
@@ -529,7 +530,7 @@ export const Board = (props) => {
             </DragDropContext>
           </div>
         </Box>
-        <EditCardDialog />
+        <EditCardDialog callback={mutateCards} />
       </div>
     </Container>
   );
