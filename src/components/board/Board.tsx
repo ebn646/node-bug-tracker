@@ -11,86 +11,51 @@ import {
   TextField,
   Typography,
   Stack,
+  OutlinedTextFieldProps
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult, DraggableLocation } from 'react-beautiful-dnd';
 import Column from './Column';
 import Drawer from './Drawer';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
 import EditCardDialog from '../dialogs/EditCardDialog';
 import { fetcher } from '../../../lib/fetch';
-
+interface ICard {
+  _id: string,
+  listId: string,
+}
+interface IList {
+  _id: string,
+}
 
 export const Board = () => {
-  const user = useContext(UserContext);
+  const user= useContext(UserContext);
   const router = useRouter();
 
-
-  function mutateCards(card, type: string) {
-    let newCards;
-    switch (type) {
-      case 'UPDATE':
-        mutate(`/api/cards/?boardid=${router.query.id}`)
-        break;
-      case 'ADD':
-        newCards = [...data.cards, card];
-        break;
-      case 'DELETE':
-        newCards = cards.filter((c) => c._id !== card._id);
-        break;
-      default:
-        throw new Error('Your type was not found!');
-    }
-  }
-
-  function mutateLists(lst, type: string) {
-    let newLists;
-    switch (type) {
-      case 'ADD':
-        newLists = [...data.lists, lst];
-        break;
-      case 'DELETE':
-        newLists = lists.filter((l) => l._id !== lst._id);
-        break;
-      default:
-        throw new Error('Your type was not found!');
-    }
-    setData((prev) => ({
-      ...prev,
-      lists: newLists
-    }))
-  }
-
-  function mutateActivities(act) {
-    const newActivities = [...data.activities, act].reverse();
-    setData((prev) => ({
-      ...prev,
-      activities: newActivities,
-    }))
-  }
-
-  function updateCards(){
+  function updateCards() {
     mutate(`/api/cards/?boardid=${router.query.id}`)
   }
 
-  function updateLists(){
-    mutate(`/api/listd/?boardid=${router.query.id}`)
+  function updateLists() {
+    alert('fuck')
+    mutate(`/api/lists/?boardid=${router.query.id}`)
   }
 
-  function updateActivities(){
-    mutate(`/api/listd/activities/${router.query.id}`)
+  function updateActivities() {
+    mutate(`/api/activities/${router.query.id}`)
   }
 
- // destructure
- const { data: cards } = useSWR(`/api/cards/?boardid=${router.query.id}`, fetcher);
- const { data: lists } = useSWR(`/api/lists?boardid=${router.query.id}`, fetcher);
- const { data: project } = useSWR(`/api/board/${router.query.id}`, fetcher);
- const { data: activities } = useSWR(`/api/activities/${router.query.id}`, fetcher);
+  // destructure
+  const { data: cards } = useSWR(`/api/cards/?boardid=${router.query.id}`, fetcher);
+  const { data: lists } = useSWR(`/api/lists?boardid=${router.query.id}`, fetcher);
+  const { data: project } = useSWR(`/api/board/${router.query.id}`, fetcher);
+  const { data: activities } = useSWR(`/api/activities/${router.query.id}`, fetcher);
 
   // refs
-  const ref = useRef();
+  const listTitleRef = useRef<OutlinedTextFieldProps>(null);
+  const boardnameRef = useRef<OutlinedTextFieldProps>(null);
 
   // local state
   const [editable, setEditable] = useState(false);
@@ -102,7 +67,6 @@ export const Board = () => {
     activities: null,
   })
 
-
   function getListsOrder() {
     if (lists.length) {
       return midString(lists[lists.length - 1].order, '')
@@ -113,47 +77,48 @@ export const Board = () => {
 
   async function addNewList() {
     const obj = {
-      name: ref.current.value,
+      name: listTitleRef.current?.value,
       boardId: router.query.id,
       order: getListsOrder(),
     }
 
     const response = await axios.post('/api/lists', obj);
     console.log('responese = ', response);
-    // mutateLists(response.data, 'ADD');
     updateLists()
     setAddList(false);
   }
 
-  async function editList(data, id: string) {
+  async function editList(data:{name: string}, id: string) {
     //  mutate(`/api/lists?id=${router.query.id}`, [data], false);
     const response = await axios.patch(`/api/lists/${id}`, { name: data.name });
     mutate(`/api/lists?id=${router.query.id}`);
   }
 
-  async function editBoard(e) {
-    if (e.target.value === '') return;
-    const name = e.target.value;
-    const obj = { ...project, name: name }
-    mutate(`/api/board/${router.query.id}`, obj, false);
-    const result = axios.patch(`/api/board/${router.query.id}`, { name });
-    console.log('result = ', result);
-    mutate(`/api/board/${router.query.id}`, result);
+  async function editBoard() {
+    if(boardnameRef && boardnameRef.current){
+      const name = boardnameRef.current.value;
+      const obj = { ...project, name: name }
+      mutate(`/api/board/${router.query.id}`, obj, false);
+      const result = axios.patch(`/api/board/${router.query.id}`, { name });
+      console.log('result = ', result);
+      mutate(`/api/board/${router.query.id}`, result);
+    }
   }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      if (ref.current.value === '') {
-        setAddList(false);
-      }
-      else {
-        addNewList();
-      }
-    } else {
-      setEditable(false)
-      setAddList(false);
-    }
+  const handleKeyDown = (event:KeyboardEvent) => {
+    console.log('keydown called')
+    // if (e.key === 'Enter') {
+    //   e.preventDefault()
+    //   if (listTitleRef.current.value === '') {
+    //     setAddList(false);
+    //   }
+    //   else {
+    //     addNewList();
+    //   }
+    // } else {
+    //   setEditable(false)
+    //   setAddList(false);
+    // }
   }
 
   const resetAddList = () => {
@@ -161,7 +126,7 @@ export const Board = () => {
   }
 
   useEffect(() => {
-    if(lists){
+    if (lists) {
       console.log('lists ', lists)
     }
     if (lists && project && activities) {
@@ -169,10 +134,6 @@ export const Board = () => {
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
       const sortedAct = activities.reverse();
       console.log('sortedLists = ', sortedLists)
-      setData({
-        lists: sortedLists,
-        activities: sortedAct,
-      })
     } else {
       console.log('not yet...')
     }
@@ -180,34 +141,32 @@ export const Board = () => {
 
   useEffect(() => {
     const sortedCards = _.orderBy(cards, ['order'], ['asc'])
-    setData((prev) => ({
-     ...prev,
-     cards: sortedCards
-    }))
+    console.log('sorted cards = ', sortedCards)
   }, [cards])
-  
 
-  const reorderColumns = (source, destination, draggableId: string) => {
+
+  const reorderColumns = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
     // change th eorder of gthe clluns, reset in stage to rerender
     console.log('s = ', source)
     console.log('d = ', destination)
+    return;
     let newOrder;
-    const target = data.lists.filter((i) => i._id === draggableId)[0];
+    const target = lists.filter((i:IList) => i._id === draggableId)[0];
     console.log('t = ', target)
 
     if (destination.index === 0) {
-      newOrder = midString('', data.lists[destination.index].order)
-    } else if (destination.index === data.lists.length - 1) {
-      newOrder = midString(data.lists[destination.index].order, '')
+      newOrder = midString('', lists[destination.index].order)
+    } else if (destination.index === lists.length - 1) {
+      newOrder = midString(lists[destination.index].order, '')
     } else if (destination.index > source.index) {
       newOrder = midString(
-        data.lists[destination.index - 1].order,
-        data.lists[destination.index].order
+        lists[destination.index - 1].order,
+        lists[destination.index].order
       )
     } else {
       newOrder = midString(
-        data.lists[destination.index].order,
-        data.lists[destination.index + 1].order,
+        lists[destination.index].order,
+        lists[destination.index + 1].order,
       )
     }
 
@@ -217,26 +176,28 @@ export const Board = () => {
         id: draggableId,
         order: newOrder
       })
-      .then((response) => { console.log('r = ', response); 
-      mutate(); });
+      .then((response) => {
+        console.log('patch is complete and response = ', response);
+        // mutate();
+      });
     // reorder list
     target.order = newOrder;
-    console.log('reorder the list', data.lists)
-    const sorted = _.orderBy(data.lists, ['order'], ['asc'])
+    console.log('reorder the list', lists)
+    const sorted = _.orderBy(lists, ['order'], ['asc'])
     console.log('sorted = ', sorted);
     // reset data to rereder
 
-    setData((prev) => ({
-      ...prev,
-      lists: sorted,
-    }))
+    // setData((prev) => ({
+    //   ...prev,
+    //   lists: sorted,
+    // }))
   }
 
-  const moveToNewList = (source, destination, draggableId) => {
-    // console.log('I need to move card to a new list ', source, destination, draggableId);
-
-    let copy = [...data.cards];
-    const taskLength = data.cards.length;
+  const moveToNewList = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
+    console.log('I need to move card to a new list ', source, destination, draggableId);
+    console.log('DONT FORGET TO REMOVE RETURN')
+    let copy = [...cards];
+    const taskLength = cards.length;
     console.log('I need to move card to a new list ', 'source index = ', source.index, 'dest index = ', destination.index, 'task len = ', taskLength);
 
     let target = copy.filter((c) => c._id === draggableId)[0];
@@ -248,14 +209,14 @@ export const Board = () => {
     } else if (destination.index < source.index) {
       console.log('i just moved up...')
       newOrder = midString(
-        data.cards[destination.index - 1].order,
-        data.cards[destination.index].order
+        cards[destination.index - 1].order,
+        cards[destination.index].order
       )
     } else if (destination.index > source.index) {
       console.log('i just moved down...')
       newOrder = midString(
-        data.cards[destination.index].order,
-        data.cards[destination.index].order + 1
+        cards[destination.index].order,
+        cards[destination.index].order + 1
       )
     } else {
       console.log('i am last...', target)
@@ -274,17 +235,17 @@ export const Board = () => {
     // post activity
     axios.post(`/api/activities`,
       { boardId: router.query.id, text: `${user.username} moved a card` })
-      .then((response) => mutateActivities(response.data));
+      .then((response) => updateActivities());
 
     const sorted = _.orderBy(copy, ['order'], ['asc'])
     // reorder cards to rerender 
-    setData((prev) => ({
-      ...prev,
-      cards: sorted,
-    }))
+    // setData((prev) => ({
+    //   ...prev,
+    //   cards: sorted,
+    // }))
   }
 
-  const onDragEnd = (result) => {
+  const onDragEnd = (result: DropResult) => {
     console.log('onDragEnd called ', result)
     const { destination, source, draggableId, type } = result;
     let newOrder;
@@ -308,8 +269,8 @@ export const Board = () => {
       return;
     }
     // 
-    const startList = data.lists.filter((i) => i._id === source.droppableId);
-    const targetCard = data.cards.filter((i) => i._id === draggableId)[0];
+    const startList = lists.filter((l:IList) => l._id === source.droppableId);
+    const targetCard = cards.filter((c: ICard) => c._id === draggableId)[0];
 
     if (source.droppableId !== destination.droppableId) {
       // move card to a new list
@@ -322,32 +283,32 @@ export const Board = () => {
       // 1. get new order for this card
       // first
       const column = startList
-      const taskLength = data.cards.filter((c) => c.listId === source.droppableId).length;
+      const taskLength = cards.filter((c:ICard) => c.listId === source.droppableId).length;
       console.log('l = ', taskLength);
       if (destination.index === 0) {
         console.log('I am first', column)
         // 1. find the card 
         // 2. assign card new order
-        newOrder = midString('', data.cards[destination.index].order)
+        newOrder = midString('', cards[destination.index].order)
       }
       else if (destination.index === taskLength - 1) {
         console.log('I am last')
-        newOrder = midString(data.cards[destination.index].order, '')
+        newOrder = midString(cards[destination.index].order, '')
       }
       // move closer to top, decrease index
       else if (destination.index < source.index) {
-        console.log('I moved closer to the top', data.cards[destination.index - 1].order, data.cards[destination.index].order);
+        console.log('I moved closer to the top', cards[destination.index - 1].order, cards[destination.index].order);
         newOrder = midString(
-          data.cards[destination.index - 1].order,
-          data.cards[destination.index].order,
+          cards[destination.index - 1].order,
+          cards[destination.index].order,
         )
       }
       // move closer to bottom, increase index
       else {
         console.log('I moved closer to the bottom')
         newOrder = midString(
-          data.cards[destination.index].order,
-          data.cards[destination.index + 1].order,
+          cards[destination.index].order,
+          cards[destination.index + 1].order,
         )
       }
       console.log('neworder ', newOrder)
@@ -360,22 +321,22 @@ export const Board = () => {
         .then((response) => console.log(response));
       // reorder list
       targetCard.order = newOrder;
-      console.log('reorder the list', data.cards)
-      const sorted = _.orderBy(data.cards, ['order'], ['asc'])
+      console.log('reorder the list', cards)
+      const sorted = _.orderBy(cards, ['order'], ['asc'])
       // console.log('sorted = ', sorted);
-      setData((prev) => {
-        return ({
-          ...prev,
-          cards: sorted,
-        });
-      })
+      // setData((prev) => {
+      //   return ({
+      //     ...prev,
+      //     cards: sorted,
+      //   });
+      // })
       return;
     }
   }
 
   if (!project || !lists) {
     return (
-     <div/>
+      <div />
     )
   }
   return (
@@ -401,7 +362,7 @@ export const Board = () => {
         }}
       />
       <div style={{ width: '100%', marginTop: 64, position: 'relative' }}>
-        <Drawer activities={data.activities} />
+        <Drawer activities={activities} />
         <Box sx={{ position: 'fixed', top: 64, left: 0, right: 0 }}>
           {
             !editable ? (
@@ -430,16 +391,20 @@ export const Board = () => {
                 </Button>
               </Box>
             ) : <TextField
+              inputRef={boardnameRef}
               autoFocus
               margin="dense"
               id="boardname"
               label="Name"
               variant="standard"
-              onBlur={(e) => { editBoard(e); setEditable(false); }}
+              onBlur={() => { editBoard(); setEditable(false); }}
             />
           }
         </Box>
-        <Box className="all-columns-wrapper" sx={{ display: 'flex', mt: 5 }}>
+        <Box
+          className="all-columns-wrapper"
+          sx={{ display: 'flex', mt: 5 }}
+        >
           <div>
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable
@@ -455,17 +420,17 @@ export const Board = () => {
                     >
                       <div style={{ display: 'flex' }}>
                         {
-                          lists && data.cards && lists.map((list, index) => {
-                            const cards = data.cards.filter(card => card.listId === list._id);
+                          lists && cards && lists.map((list:IList, index: number) => {
+                            const listCards = cards.filter((card:ICard) => card.listId === list._id);
                             return <Column
                               key={list._id}
                               column={list}
-                              tasks={cards}
+                              tasks={listCards}
                               index={index}
-                              callback={mutateCards}
-                              listsCallback={mutateLists}
+                              callback={updateCards}
+                              listsCallback={updateLists}
                               editList={editList}
-                              activitiescb={mutateActivities} />;
+                              activitiescb={updateActivities} />;
                           })}
                         {provided.placeholder}
                         <div>
@@ -485,7 +450,7 @@ export const Board = () => {
                                       id="new-list"
                                       variant="outlined"
                                       placeholder="Enter list title..."
-                                      inputRef={ref}
+                                      inputRef={listTitleRef}
                                       autoFocus
                                       onBlur={() => setEditable(false)}
                                       sx={{ py: 1, }}
@@ -515,7 +480,7 @@ export const Board = () => {
                                   variant="contained"
                                   startIcon={<AddIcon />}
                                   onClick={() => setAddList(true)}>
-                                  {`${data.lists && data.lists.length ? 'Add another list' : 'Add a list'}`}
+                                  {`${lists && lists.length ? 'Add another list' : 'Add a list'}`}
                                 </Button>
                               </Box>
                             }
@@ -529,7 +494,10 @@ export const Board = () => {
             </DragDropContext>
           </div>
         </Box>
-        <EditCardDialog lists={lists} updateCards={updateCards} updateLists={updateLists} />
+        <EditCardDialog
+          lists={lists}
+          updateCards={updateCards}
+        />
       </div>
     </Container>
   );

@@ -28,11 +28,10 @@ interface ICard {
 }
 interface IEditCardDiaog {
     lists: [],
-    updateCards: (card: ICard, type: string) => void,
-    updateLists: () => void,
+    updateCards: () => void,
 }
 
-function EditCardDialog({ callback, lists }: IEditCardDiaog) {
+function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
     const open_modal = useSelector((state: RootState) => state.modal.open)
     const dispatch = useDispatch()
     const router = useRouter();
@@ -41,7 +40,7 @@ function EditCardDialog({ callback, lists }: IEditCardDiaog) {
     const [age, setAge] = useState('');
     const [cardId, setCardId] = useState<any | undefined>(undefined);
     // data hook
-    const { data, mutate } = useSWR(cardId ? `/api/cards/${cardId}` : null, fetcher);
+    const { data: card, mutate } = useSWR(cardId ? `/api/cards/${cardId}` : null, fetcher);
     // form
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('First name is required'),
@@ -57,31 +56,18 @@ function EditCardDialog({ callback, lists }: IEditCardDiaog) {
     });
 
     useEffect(() => {
-        if(lists && data){
-            console.log('lists = ', lists)
-            console.log('target = ', lists.filter((l) => l._id === data.listId)[0]._id)
-        }
-    }, [lists, data])
-
-    useEffect(() => {
-        console.log('data = ', data)
-    }, [data])
-
-    useEffect(() => {
         if (router.query && router.query.cid) {
             setCardId(router.query.cid)
         }
     }, [router])
 
     const handleChange = async(event: SelectChangeEvent) => {
-        console.log(event.target)
         // call api to update cars
         const result = await axios.patch(`/api/cards/${router.query.cid}`, {listId: event.target.value})
-        const updated = { ...data, listId: event.target.value }
+        const updated = { ...card, listId: event.target.value }
         mutate(updated)
-        callback(updated, 'UPDATE')
+        updateCards()
     };
-
 
 
     const handleClose = () => {
@@ -89,19 +75,18 @@ function EditCardDialog({ callback, lists }: IEditCardDiaog) {
         dispatch(openModal(false));
     };
 
-    const onSubmit = async (d: { name: string, description: string }) => {
-        console.log('d = ', d)
-        const result = await axios.patch(`/api/cards/${router.query.cid}`, d)
+    const onEditSubmit = async (data: { name: string, description: string }) => {
+        const result = await axios.patch(`/api/cards/${router.query.cid}`, data)
         if (result.data) {
-            const updated = { ...data, ...d }
+            const updated = { ...card, ...data }
             mutate(updated)
-            callback(updated, 'UPDATE')
+            updateCards()
         }
         console.log('success... ', result)
     }
 
 
-    if (!data || !router.query.cid) {
+    if (!card || !router.query.cid) {
         return <></>
     }
 
@@ -110,13 +95,10 @@ function EditCardDialog({ callback, lists }: IEditCardDiaog) {
             open={open_modal}
             onClose={handleClose}>
             <DialogContent>
-                {/* <div>
-                    <pre>{JSON.stringify(data, null, 2)}</pre>
-                </div> */}
                 <Box sx={{ display: 'flex' }}>
                     <Box component="form" sx={{ flex: 1 }}>
                         <TextField
-                            defaultValue={data.name}
+                            defaultValue={card.name}
                             margin="dense"
                             id="name"
                             label="Name"
@@ -136,7 +118,7 @@ function EditCardDialog({ callback, lists }: IEditCardDiaog) {
                                 rows={2}
                                 {...register('description')}
                             />
-                            <Button variant="contained" onClick={handleSubmit(onSubmit)}>Save</Button>
+                            <Button variant="contained" onClick={handleSubmit(onEditSubmit)}>Save</Button>
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flex: 1, ml: 2 }}>
@@ -145,7 +127,7 @@ function EditCardDialog({ callback, lists }: IEditCardDiaog) {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                defaultValue={lists.filter((l) => l._id === data.listId)[0]._id}
+                                defaultValue={lists.filter((l) => l._id === card.listId)[0]._id}
                                 onChange={handleChange}
                             >
                                 {
