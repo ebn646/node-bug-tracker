@@ -35,11 +35,6 @@ const WS = () => {
     const nameInputRef = useRef<HTMLInputElement>(null);
     const nameInputRef2 = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-       console.log('ws ======== ', workspace)
-    }, [workspace])
-
-
     // post for new workspace
     async function submitHandler(e: FormEvent<HTMLFormElement>) {
         console.log('submitHandler called...')

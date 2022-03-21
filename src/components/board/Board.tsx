@@ -17,26 +17,22 @@ import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
 import Drawer from './Drawer';
-import { fetcher } from '../../../lib/fetch';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
 import EditCardDialog from '../dialogs/EditCardDialog';
+import { fetcher } from '../../../lib/fetch';
+
 
 export const Board = () => {
   const user = useContext(UserContext);
   const router = useRouter();
 
-  const getData = (endpoint: string) => {
-    const { data } = useSWR(`${endpoint}`, fetcher)
-    return data
-  }
 
   function mutateCards(card, type: string) {
     let newCards;
     switch (type) {
       case 'UPDATE':
         mutate(`/api/cards/?boardid=${router.query.id}`)
-        mutate(`/api/lists/?boardid=${router.query.id}`)
         break;
       case 'ADD':
         newCards = [...data.cards, card];
@@ -47,10 +43,6 @@ export const Board = () => {
       default:
         throw new Error('Your type was not found!');
     }
-    // setData((prev) => ({
-    //   ...prev,
-    //   cards: newCards
-    // }))
   }
 
   function mutateLists(lst, type: string) {
@@ -79,18 +71,23 @@ export const Board = () => {
     }))
   }
 
-  function mutateBoard(name) {
-    return {
-      ...project,
-      name,
-    }
+  function updateCards(){
+    mutate(`/api/cards/?boardid=${router.query.id}`)
   }
+
+  function updateLists(){
+    mutate(`/api/listd/?boardid=${router.query.id}`)
+  }
+
+  function updateActivities(){
+    mutate(`/api/listd/activities/${router.query.id}`)
+  }
+
  // destructure
  const { data: cards } = useSWR(`/api/cards/?boardid=${router.query.id}`, fetcher);
  const { data: lists } = useSWR(`/api/lists?boardid=${router.query.id}`, fetcher);
-
-  const project = getData(`/api/board/${router.query.id}`);
-  const activities = getData(`/api/activities/${router.query.id}`);
+ const { data: project } = useSWR(`/api/board/${router.query.id}`, fetcher);
+ const { data: activities } = useSWR(`/api/activities/${router.query.id}`, fetcher);
 
   // refs
   const ref = useRef();
@@ -123,7 +120,8 @@ export const Board = () => {
 
     const response = await axios.post('/api/lists', obj);
     console.log('responese = ', response);
-    mutateLists(response.data, 'ADD');
+    // mutateLists(response.data, 'ADD');
+    updateLists()
     setAddList(false);
   }
 
@@ -188,12 +186,6 @@ export const Board = () => {
     }))
   }, [cards])
   
-
-
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const reorderColumns = (source, destination, draggableId: string) => {
     // change th eorder of gthe clluns, reset in stage to rerender
@@ -380,6 +372,7 @@ export const Board = () => {
       return;
     }
   }
+
   if (!project || !lists) {
     return (
      <div/>
@@ -462,7 +455,7 @@ export const Board = () => {
                     >
                       <div style={{ display: 'flex' }}>
                         {
-                          data.lists && data.cards && data.lists.map((list, index) => {
+                          lists && data.cards && lists.map((list, index) => {
                             const cards = data.cards.filter(card => card.listId === list._id);
                             return <Column
                               key={list._id}
@@ -536,7 +529,7 @@ export const Board = () => {
             </DragDropContext>
           </div>
         </Box>
-        <EditCardDialog lists={lists} callback={mutateCards} mutateLists={mutateLists} />
+        <EditCardDialog lists={lists} updateCards={updateCards} updateLists={updateLists} />
       </div>
     </Container>
   );

@@ -18,15 +18,9 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    List,
-    ListItem,
-    ListItemText,
-    Typography,
 } from '@mui/material';
-
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { fetcher } from '../../../lib/fetch';
-import Register from '../../pages/register';
 
 interface ICard {
     name: string,
@@ -34,8 +28,8 @@ interface ICard {
 }
 interface IEditCardDiaog {
     lists: [],
-    callback: (card: ICard, type: string) => void,
-    mutateLists: () => void,
+    updateCards: (card: ICard, type: string) => void,
+    updateLists: () => void,
 }
 
 function EditCardDialog({ callback, lists }: IEditCardDiaog) {
