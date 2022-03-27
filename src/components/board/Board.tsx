@@ -59,13 +59,12 @@ export const Board = () => {
 
   // local state
   const [editable, setEditable] = useState(false);
-  const [open, setOpen] = useState(true);
   const [addList, setAddList] = useState(false);
-  const [data, setData] = useState({
-    list: null,
-    cards: null,
-    activities: null,
-  })
+  // const [data, setData] = useState({
+  //   list: null,
+  //   cards: null,
+  //   activities: null,
+  // })
 
   function getListsOrder() {
     if (lists.length) {
@@ -89,7 +88,6 @@ export const Board = () => {
   }
 
   async function editList(data:{name: string}, id: string) {
-    //  mutate(`/api/lists?id=${router.query.id}`, [data], false);
     const response = await axios.patch(`/api/lists/${id}`, { name: data.name });
     mutate(`/api/lists?id=${router.query.id}`);
   }
@@ -149,7 +147,6 @@ export const Board = () => {
     // change th eorder of gthe clluns, reset in stage to rerender
     console.log('s = ', source)
     console.log('d = ', destination)
-    return;
     let newOrder;
     const target = lists.filter((i:IList) => i._id === draggableId)[0];
     console.log('t = ', target)
@@ -366,7 +363,12 @@ export const Board = () => {
         <Box sx={{ position: 'fixed', top: 64, left: 0, right: 0 }}>
           {
             !editable ? (
-              <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'row', 
+                width: '100%', 
+                justifyContent: 'space-between' }}
+                >
                 <Button
                   sx={{
                     my: 1,

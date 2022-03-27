@@ -23,24 +23,30 @@ import useSWR from 'swr';
 import { fetcher } from '../../../lib/fetch';
 
 interface ICard {
-    name: string,
-    description: string,
+    name?: string,
+    description?: string,
+    listId: string,
 }
 interface IEditCardDiaog {
     lists: [],
     updateCards: () => void,
 }
 
+interface IList {
+    _id: string,
+    name: string,
+}
+
 function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
+    // redux
     const open_modal = useSelector((state: RootState) => state.modal.open)
     const dispatch = useDispatch()
+    // router
     const router = useRouter();
     // local state
-    const [open, setOpen] = useState(true);
-    const [age, setAge] = useState('');
     const [cardId, setCardId] = useState<any | undefined>(undefined);
     // data hook
-    const { data: card, mutate } = useSWR(cardId ? `/api/cards/${cardId}` : null, fetcher);
+    const { data: card, mutate } = useSWR<ICard>(cardId ? `/api/cards/${cardId}` : null, fetcher);
     // form
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('First name is required'),
@@ -61,9 +67,9 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
         }
     }, [router])
 
-    const handleChange = async(event: SelectChangeEvent) => {
+    const handleChange = async (event: SelectChangeEvent) => {
         // call api to update cars
-        const result = await axios.patch(`/api/cards/${router.query.cid}`, {listId: event.target.value})
+        const result = await axios.patch(`/api/cards/${router.query.cid}`, { listId: event.target.value })
         const updated = { ...card, listId: event.target.value }
         mutate(updated)
         updateCards()
@@ -75,7 +81,7 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
         dispatch(openModal(false));
     };
 
-    const onEditSubmit = async (data: { name: string, description: string }) => {
+    const onEditSubmit = async (data: any) => {
         const result = await axios.patch(`/api/cards/${router.query.cid}`, data)
         if (result.data) {
             const updated = { ...card, ...data }
@@ -83,6 +89,15 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
             updateCards()
         }
         console.log('success... ', result)
+    }
+
+
+    function getDefaultItem(){
+        if(card){
+            if(lists.filter((l: IList) => l._id === card.listId).length){
+                return lists.filter((l: IList) => l._id === card.listId)[0]._id
+            }
+        }
     }
 
 
@@ -127,11 +142,11 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                defaultValue={lists.filter((l) => l._id === card.listId)[0]._id}
+                                defaultValue={getDefaultItem()}
                                 onChange={handleChange}
                             >
                                 {
-                                    lists.map((l) => <MenuItem key={l._id} value={l._id}>{l.name}</MenuItem>)
+                                    lists.map((l: IList) => <MenuItem key={l._id} value={l._id}>{l.name}</MenuItem>)
                                 }
                             </Select>
                         </FormControl>
