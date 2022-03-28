@@ -10,7 +10,9 @@ import * as Yup from 'yup';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import CommentList from './CommentList';
 import {
     Box,
     Button,
@@ -152,7 +154,7 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
                         </FormControl>
                     </Box>
                 </Box>
-                {/* <Box sx={{my:2}}>
+                <Box sx={{my:2}}>
                 <Typography>Comments</Typography>
                 <TextField
                         margin="dense"
@@ -162,21 +164,8 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
                         fullWidth
                         variant="outlined"
                     />
-                    <List>
-                        <ListItem disablePadding>
-                            <ListItemText primary="Activity one" />
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemText primary="Activity two" />
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemText primary="Activity three" />
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemText primary="Activity four" />
-                        </ListItem>
-                    </List>
-                </Box> */}
+                    <CommentList />
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => handleClose()}>

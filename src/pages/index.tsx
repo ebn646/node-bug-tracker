@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, FormEvent, ChangeEvent, MouseEvent } from 'react';
+import { useState, useRef, useEffect, FormEvent, ChangeEvent, Fragment } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Link from 'next/link';
@@ -21,6 +21,7 @@ import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import Divider from '@mui/material/Divider';
 import { fetcher } from '../../lib/fetch';
 import useSWR, { mutate } from "swr";
+
 function Index({ session }) {
   const router = useRouter();
   const { data: workspaces } = useSWR(session && session.id ? `/api/workspaces?id=${session.id}` : null, fetcher)
@@ -34,13 +35,11 @@ function Index({ session }) {
   async function submitHandler(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (nameInputRef?.current?.value) {
-      if (!nameInputRef.current.value || nameInputRef.current.value === '') {
-        return;
-      }
-      if (session) {
         await axios.post(`/api/workspaces/${router.query.id}?user=${session.id}`, { name: nameInputRef.current.value })
-        mutate(`/api/workspaces?id=${session.id}`, false);
-      }
+        mutate(`/api/workspaces?id=${session.id}`);
+        setShowForm(false)
+    }else {
+      alert('Ummm, A workspace name is required!')
     }
   }
 
@@ -55,7 +54,7 @@ function Index({ session }) {
     } else {
       setShowForm(false)
     }
-  }, [workspaces, session])
+  }, [workspaces])
 
 
   if (!workspaces) return <></>
@@ -77,8 +76,8 @@ function Index({ session }) {
                 <List>
                   {
                     workspaces.map((ws: { _id: string, name: string }) =>
-                      <>
-                        <ListItem key={ws._id} disablePadding>
+                      <Fragment key={ws._id} >
+                        <ListItem disablePadding>
                           <Link href={`/workspace/${ws._id}`}>
                             <ListItemButton>
                               <a style={{ display: 'flex' }}>
@@ -91,7 +90,7 @@ function Index({ session }) {
                           </Link>
                         </ListItem>
                         <Divider />
-                      </>
+                      </Fragment>
                     )
                   }
                 </List>
@@ -116,7 +115,6 @@ function Index({ session }) {
                 <Image
                   alt="Mountains"
                   src="/static/images/empty-board.d1f066971350650d3346.svg"
-                  layout="fill"
                   width={340}
                   height={250}
                   quality={100}

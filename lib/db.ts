@@ -7,6 +7,7 @@ export async function connectToDatabase() {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	});
+	console.log('I Am Connected to Mongo...')
 	return client;
 }
 

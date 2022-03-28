@@ -1,6 +1,7 @@
 
 import { Box, Typography } from '@mui/material';
 import WSSection from './WSSection';
+
 interface Props {
     workspace: {
         name: string;

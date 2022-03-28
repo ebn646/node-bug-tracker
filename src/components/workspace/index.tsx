@@ -41,6 +41,7 @@ const WS = () => {
         e.preventDefault();
         if (nameInputRef?.current?.value) {
             if (!nameInputRef.current.value || nameInputRef.current.value === '') {
+                alert('A workspace name is required!')
                 return;
             }
             if (session) {

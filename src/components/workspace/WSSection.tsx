@@ -14,13 +14,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import { addBoard } from '../../store/boards/boardsSlice';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import { fetcher } from '../../../lib/fetch';
 import { useRouter } from 'next/router';
-import { AnyKeys } from 'mongoose';
 
 const items = [
   {
@@ -45,18 +44,24 @@ const items = [
   },
 ];
 
-type WS = {
-  _id: string,
-  name: string
-}
+const Item = styled(FormControlLabel)(({ theme }) => ({
+  '&.custom':{
+    '.MuiRadio-root':{
+      display: 'none',
+    },
+    '.img-fluid.selected':{
+      border: '2px solid red',
+    }
+  },
+}));
 
-const WSSection = ({ _id, name }:WS) => {
-  console.log('id ========= ', _id, name)
+const WSSection = () => {
   const router = useRouter();
   const { data: userboards } = useSWR(`/api/boards?id=${router.query.id}`, fetcher)
 
   // local state
   const [open, setOpen] = useState(false)
+  const[selectedImage, setSelectedImage] = useState(items[0].url)
   const [boardTitle, setBoardTitle] = useState('');
   const nameInputRef = useRef<HTMLFormElement>(null);
 
@@ -91,6 +96,7 @@ const WSSection = ({ _id, name }:WS) => {
       setOpen(false)
       dispatch(addBoard(data))
   }
+
   useEffect(() => {
     console.log('boards = ', userboards)
     console.log('user_boards = ', user_boards)
@@ -154,15 +160,18 @@ const WSSection = ({ _id, name }:WS) => {
               >
                 {
                   items.map((i) =>
-                    <FormControlLabel 
+                    <Item 
+                    className="custom"
                     value={i.url}
                     control={<Radio />}
+                    onClick={(e) => {setSelectedImage(items.find((i) => i.url === e.target.value)?.url)}}
                     key={i.id}
                       {...register("backgroundImage")}
                       label={
                         <img
+                          id={i.id}
                           src={`/static/images/${i.url}`}
-                          className='img-fluid'
+                          className={`img-fluid ${selectedImage === i.url && 'selected'}`}
                           alt={i.title}
                           width="64"
                           height="40"
