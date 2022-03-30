@@ -64,7 +64,7 @@ const WSSection = () => {
   const[selectedImage, setSelectedImage] = useState(items[0].url)
   const [boardTitle, setBoardTitle] = useState('');
   const nameInputRef = useRef<HTMLFormElement>(null);
-
+  // form
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Title is required'),
     backgroundImage: Yup.string(),
@@ -89,18 +89,12 @@ const WSSection = () => {
   }
 
   const submitHandler = async(data:any) => {
-    console.log('d = ', data)
     console.log(errors)
       await axios.post(`/api/boards?id=${router.query.id}`, data)
       mutate(`/api/boards?id=${router.query.id}`);
       setOpen(false)
       dispatch(addBoard(data))
   }
-
-  useEffect(() => {
-    console.log('boards = ', userboards)
-    console.log('user_boards = ', user_boards)
-  }, [user_boards, userboards])
 
   if(!userboards){
     return <></>

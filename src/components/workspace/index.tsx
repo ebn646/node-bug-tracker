@@ -132,10 +132,7 @@ const WS = () => {
                         </Grid>
                         <Grid item xs={8}>
                             {
-                                workspace && (<WSSection
-                                    _id={workspace._id}
-                                    name={workspace.name}
-                                />)
+                                workspace && (<WSSection />)
                             }
                         </Grid>
                     </Grid>

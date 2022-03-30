@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import CommentList from './CommentList';
+import Comments from './Comments';
 import {
     Box,
     Button,
@@ -94,9 +94,9 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
     }
 
 
-    function getDefaultItem(){
-        if(card){
-            if(lists.filter((l: IList) => l._id === card.listId).length){
+    function getDefaultItem() {
+        if (card) {
+            if (lists.filter((l: IList) => l._id === card.listId).length) {
                 return lists.filter((l: IList) => l._id === card.listId)[0]._id
             }
         }
@@ -109,10 +109,11 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
 
     return (
         <Dialog
+            fullWidth
             open={open_modal}
             onClose={handleClose}>
             <DialogContent>
-                <Box sx={{ display: 'flex' }}>
+                <Box sx={{ display: 'flex'}}>
                     <Box component="form" sx={{ flex: 1 }}>
                         <TextField
                             defaultValue={card.name}
@@ -154,18 +155,7 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
                         </FormControl>
                     </Box>
                 </Box>
-                <Box sx={{my:2}}>
-                <Typography>Comments</Typography>
-                <TextField
-                        margin="dense"
-                        id="name"
-                        label="Add a coment..."
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                    />
-                    <CommentList />
-                </Box>
+                <Comments />
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => handleClose()}>

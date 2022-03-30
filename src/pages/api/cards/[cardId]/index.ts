@@ -37,7 +37,6 @@ handler.patch(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
   var updateObject = req.body;
-  console.log('update obj = ', updateObject)
   let obj;
   if (updateObject['listId']) {
     obj = {

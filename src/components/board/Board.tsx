@@ -39,7 +39,6 @@ export const Board = () => {
   }
 
   function updateLists() {
-    alert('fuck')
     mutate(`/api/lists/?boardid=${router.query.id}`)
   }
 
