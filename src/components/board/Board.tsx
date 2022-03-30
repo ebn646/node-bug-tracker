@@ -85,7 +85,7 @@ export const Board = () => {
   async function deleteList( id: string) {
     const filtered = lists.filter((l:IList) => l._id !== id);
     console.log(filtered)
-    mutate(`/api/lists?boardid=${router.query.id}`, filtered);
+    // mutate(`/api/lists?boardid=${router.query.id}`, filtered);
     const response = await axios.delete(`/api/lists/${id}`);
     mutate(`/api/lists?boardid=${router.query.id}`);
     axios.post(`/api/activities`,
