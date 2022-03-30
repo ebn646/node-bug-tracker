@@ -1,12 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import {
   Box,
   Typography,
 } from '@mui/material';
 
-export const ProjectCard = ({ data, ...rest }) => (
+interface IProject {
+  data: {
+    _id: string,
+    name: string,
+  }
+}
+
+export const ProjectCard = ({ data }:IProject) => (
   <Link href={`/b/${data._id}`}>
     <a style={{textDecoration: 'none', height: '100%', width: '100%',display: 'inline-flex'}}>
     <Box
@@ -14,13 +20,12 @@ export const ProjectCard = ({ data, ...rest }) => (
         display: 'flex',
         flexDirection: 'column',
       }}
-      {...rest}
     >
         <Typography
           align="left"
           color="#fff"
           gutterBottom
-          variant="subtitleBold"
+          variant="subtitle2"
         >
           {data.name}
         </Typography>
@@ -29,7 +34,3 @@ export const ProjectCard = ({ data, ...rest }) => (
     </a>
   </Link>
 );
-
-ProjectCard.propTypes = {
-  data: PropTypes.object.isRequired,
-};

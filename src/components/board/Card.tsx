@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, FocusEvent} from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -31,35 +31,32 @@ const Item = styled(Paper)(({ theme }) => ({
   },
 }));
 
+interface ICard {
+  task: {
+    _id: string,
+    name: string,
+    boardId: string,
+    order: string,
+  },
+  callback: () => void,
+  index: number,
+}
 
-
-export default function Card({ task, index, callback }) {
+export default function Card({ task, index, callback }:ICard) {
   const router = useRouter()
   const dispatch = useDispatch();
 
   const [edit, showEdit] = useState(false);
 
-  async function deleteSubmitHandler(e) {
-    const response = await axios.delete(`/api/cards/${task._id}`);
-    // TODO:  Add error handling...
-    if(response.status === 200){
-      console.log('delete was a success!')
-      callback({_id: task._id}, 'DELETE');
-    }else{
-      throw new Error('There was an error deleting your card!')
-    }
-  }
-
-  async function editSubmitHandler(e) {
+  async function editSubmitHandler(e: FocusEvent<HTMLInputElement>) {
     e.preventDefault();
     if(e.target.value === task.name) return
-    console.log(e.target.value)
     const response = await axios.patch(`/api/cards/${task._id}`, {name: e.target.value});
     // TODO:  Add error handling...
     if(response.status === 200){
       console.log('update was a success!')
       task.name = e.target.value;
-      callback({_id: task._id}, 'UPDATE');
+      callback();
     }else{
       throw new Error('There was an error deleting your card!')
     }
@@ -72,7 +69,7 @@ export default function Card({ task, index, callback }) {
   }
 
   return (
-    <Draggable draggableId={task._id} index={index}>
+    <Draggable draggableId={task._id} index={index} >
       {provided => (
         <Item
           ref={provided.innerRef}
@@ -87,11 +84,11 @@ export default function Card({ task, index, callback }) {
               variant="standard"
               defaultValue={task.name}
               autoFocus
-              onBlur={(e) => {showEdit(false); editSubmitHandler(e)}}
+              onBlur={(e:FocusEvent<HTMLInputElement>) => {showEdit(false); editSubmitHandler(e)}}
             />
             ) : <p>{task.name} ({task.order})</p>
           }
-          <EditIcon className='delete' onClick={(e) =>  goto()} />
+          <EditIcon className='delete' onClick={() =>  goto()} />
         </Item>
       )}
     </Draggable>

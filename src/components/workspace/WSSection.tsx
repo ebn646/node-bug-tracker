@@ -21,6 +21,11 @@ import axios from 'axios';
 import { fetcher } from '../../../lib/fetch';
 import { useRouter } from 'next/router';
 
+interface IItem {
+  url: string,
+}
+
+
 const items = [
   {
     url: 'photo-1644145699796-6f88eedcb084.jpeg',
@@ -61,7 +66,7 @@ const WSSection = () => {
 
   // local state
   const [open, setOpen] = useState(false)
-  const[selectedImage, setSelectedImage] = useState(items[0].url)
+  const[selectedImage, setSelectedImage] = useState<IItem | undefined>(items[0])
   const [boardTitle, setBoardTitle] = useState('');
   const nameInputRef = useRef<HTMLFormElement>(null);
   // form
@@ -96,6 +101,10 @@ const WSSection = () => {
       dispatch(addBoard(data))
   }
 
+  const getSelected = (e: any) => {
+    return items.find((i) => i.url === e.target.value)
+  }
+
   if(!userboards){
     return <></>
   }
@@ -106,7 +115,7 @@ const WSSection = () => {
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
         {
           userboards.length ? (
-            userboards.map((b:any, {_id}: any) => <BoardTile key={Math.random()} board={b} />)
+            userboards.map((b:any, {_id}: any) => <BoardTile key={_id} board={b} />)
           ) : null
         }
         <Grid item sm={3}>
@@ -158,14 +167,14 @@ const WSSection = () => {
                     className="custom"
                     value={i.url}
                     control={<Radio />}
-                    onClick={(e) => {setSelectedImage(items.find((i) => i.url === e.target.value)?.url)}}
+                    onClick={(e) => {setSelectedImage(getSelected(e))}}
                     key={i.id}
                       {...register("backgroundImage")}
                       label={
                         <img
                           id={i.id}
                           src={`/static/images/${i.url}`}
-                          className={`img-fluid ${selectedImage === i.url && 'selected'}`}
+                          className={`img-fluid ${selectedImage?.url === i.url && 'selected'}`}
                           alt={i.title}
                           width="64"
                           height="40"

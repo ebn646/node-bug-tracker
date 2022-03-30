@@ -9,6 +9,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import CloseIcon from '@mui/icons-material/Close';
 
+
+
 export default function TDrawer({ activities }) {
   const [state, setState] = React.useState({
     top: false,
@@ -17,7 +19,7 @@ export default function TDrawer({ activities }) {
     right: false,
   });
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = (anchor, open) => (event:MouseEvent) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
@@ -59,7 +61,7 @@ export default function TDrawer({ activities }) {
           <Drawer
             variant="persistent"
             hideBackdrop
-            anchor={anchor}
+            anchor="right"
             open={state[anchor]}
             onClose={toggleDrawer(anchor, false)}
           >

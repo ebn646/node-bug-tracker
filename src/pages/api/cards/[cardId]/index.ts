@@ -26,7 +26,8 @@ handler.get(async (req, res) => {
       {
         $match: {
           _id: new ObjectId(cardId)
-        }
+        },
+        $sort: { order: 1}
       }
     ])
     .toArray();

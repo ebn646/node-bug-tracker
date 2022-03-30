@@ -56,6 +56,7 @@ export const Board = () => {
   // local state
   const [editable, setEditable] = useState(false);
   const [addList, setAddList] = useState(false);
+  const [cardsSorted, setCardsSorted] = useState()
 
   function getListsOrder() {
     if (lists.length) {
@@ -73,7 +74,6 @@ export const Board = () => {
     }
 
     const response = await axios.post('/api/lists', obj);
-    console.log('responese = ', response);
     updateLists()
     setAddList(false);
   }
@@ -126,18 +126,13 @@ export const Board = () => {
   }, [lists, project, activities])
 
   useEffect(() => {
-    const sortedCards = _.orderBy(cards, ['order'], ['asc'])
-    console.log('sorted cards = ', sortedCards)
+    const sorted = _.orderBy(cards, ['order'], ['asc'])
   }, [cards])
 
 
   const reorderColumns = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
-    // change th eorder of gthe clluns, reset in stage to rerender
-    console.log('s = ', source)
-    console.log('d = ', destination)
     let newOrder;
     const target = lists.filter((i:IList) => i._id === draggableId)[0];
-    console.log('t = ', target)
 
     if (destination.index === 0) {
       newOrder = midString('', lists[destination.index].order)
@@ -180,7 +175,6 @@ export const Board = () => {
 
   const moveToNewList = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
     console.log('I need to move card to a new list ', source, destination, draggableId);
-    console.log('DONT FORGET TO REMOVE RETURN')
     let copy = [...cards];
     const taskLength = cards.length;
     console.log('I need to move card to a new list ', 'source index = ', source.index, 'dest index = ', destination.index, 'task len = ', taskLength);
@@ -207,27 +201,23 @@ export const Board = () => {
       console.log('i am last...', target)
       newOrder = midString(target.order, '')
     }
+    // mutate local cache for   
 
     // assign order and listId
     copy = copy.filter((c) => c._id !== target._id);
     target = Object.assign({ ...target }, { listId: destination.droppableId, order: newOrder })
     copy = [...copy, target];
+    mutate(`/api/cards/?boardid=${router.query.id}`, copy)
+
     // call api
     // post card
     axios.patch(`/api/cards/${draggableId}`,
       { listId: destination.droppableId, order: newOrder })
-      .then((response) => console.log('resp = ', response));
+      .then(() => updateCards());
     // post activity
     axios.post(`/api/activities`,
-      { boardId: router.query.id, text: `${user.username} moved a card` })
-      .then((response) => updateActivities());
-
-    const sorted = _.orderBy(copy, ['order'], ['asc'])
-    // reorder cards to rerender 
-    // setData((prev) => ({
-    //   ...prev,
-    //   cards: sorted,
-    // }))
+      { boardId: router.query.id, text: `${user.firstName} ${user.lastName} moved a card` })
+      .then(() => updateActivities());
   }
 
   const onDragEnd = (result: DropResult) => {

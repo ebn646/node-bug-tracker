@@ -125,7 +125,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
                                 <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
                             </DraggableHeader>
                             {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
-                            <Droppable droppableId={column._id} index={index} type="card">
+                            <Droppable droppableId={column._id} type="card">
                                 {
                                     (provided) => (
                                         <div ref={provided.innerRef} {...provided.droppableProps}>

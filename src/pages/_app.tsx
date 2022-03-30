@@ -51,16 +51,16 @@ function App(props) {
         />
       </Head>
 
-      <SessionProvider>
         <UserContext.Provider value={currentUser}>
           <ThemeProvider theme={theme}>
+          <SessionProvider>
             <CssBaseline />
             <Provider store={store}>
             {getLayout(<Component {...pageProps} />)}
             </Provider>
+            </SessionProvider>
           </ThemeProvider>
         </UserContext.Provider>
-      </SessionProvider>
     </CacheProvider>
   );
 }
