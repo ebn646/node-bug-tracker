@@ -24,6 +24,9 @@ handler.get(async (req, res) => {
             boardId: new ObjectId(req.query.boardId)
           },
         },
+        {
+          $sort:{createdAt: -1}
+        }
       ])
       .toArray();
   

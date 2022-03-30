@@ -8,7 +8,6 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import CloseIcon from '@mui/icons-material/Close';
-import Avatar from '@mui/material/Avatar';
 import UserAvatar from '../common/UserAvatar';
 
 

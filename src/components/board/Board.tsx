@@ -56,7 +56,6 @@ export const Board = () => {
   // local state
   const [editable, setEditable] = useState(false);
   const [addList, setAddList] = useState(false);
-  const [cardsSorted, setCardsSorted] = useState()
 
   function getListsOrder() {
     if (lists.length) {
@@ -118,8 +117,6 @@ export const Board = () => {
     if (lists && project && activities) {
       const sortedLists = _.orderBy(lists, ['order'], ['asc'])
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
-      const sortedAct = activities.reverse();
-      console.log('lists = ', lists)
     } else {
       console.log('not yet...')
     }
@@ -337,7 +334,7 @@ export const Board = () => {
         }}
       />
       <div style={{ width: '100%', marginTop: 64, position: 'relative' }}>
-        <Drawer activities={activities} />
+        <Drawer activities={activities.reverse()} />
         <Box sx={{ position: 'fixed', top: 64, left: 0, right: 0 }}>
           {
             !editable ? (
