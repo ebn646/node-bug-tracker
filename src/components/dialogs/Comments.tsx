@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, FormEvent, ChangeEvent } from 'react'
 import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -13,11 +13,11 @@ import { fetcher } from '../../../lib/fetch';
 export default function Comments() {
     const router = useRouter();
     const { data } = useSWR(`/api/comments?cid=${router.query.cid}`, fetcher);
-    const ref = useRef();
-    // local statusCode       
+    const ref = useRef<any>(null);
+    // local state       
      const [comment, setComment] = useState('');
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:FormEvent) => {
         e.preventDefault();
         if (ref?.current?.value) {
             const response = await axios.post('/api/comments', { text: ref.current.value, boardId: router.query.id, cardId: router.query.cid })
@@ -26,12 +26,12 @@ export default function Comments() {
         }
     }
 
-    const handleChange = (event) => {
-        setComment(event.target.value)
+    const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
+        setComment(e.target.value)
     }
 
     return (
-        <Box component="form" sx={{ my: 2 }} onSubmit={(e) => handleSubmit(e)}>
+        <Box component="form" sx={{ my: 2 }} onSubmit={(e:FormEvent) => handleSubmit(e)}>
             <Typography>Comments</Typography>
             <TextField
                 inputRef={ref}
@@ -42,14 +42,14 @@ export default function Comments() {
                 type="text"
                 fullWidth
                 variant="outlined"
-                onChange={handleChange}
+                onChange={(event:ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
             <Button type="submit">Save</Button>
             {
                 data ? (
                     <List>
                         {
-                            data.map((c) => <CommentItem key={c._id} data={c} />)
+                            data.map((c: any) => <CommentItem key={c._id} data={c} />)
                         }
                     </List>) : null
             }

@@ -2,17 +2,14 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import axios from 'axios';
-import _ from 'lodash'
-import {
-  Box,
-  Container,
-  Button,
-  IconButton,
-  TextField,
-  Typography,
-  Stack,
-  OutlinedTextFieldProps
-} from '@mui/material';
+import _ from 'lodash';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable, DropResult, DraggableLocation } from 'react-beautiful-dnd';
@@ -22,6 +19,7 @@ import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
 import EditCardDialog from '../dialogs/EditCardDialog';
 import { fetcher } from '../../../lib/fetch';
+
 interface ICard {
   _id: string,
   listId: string,
@@ -53,17 +51,12 @@ export const Board = () => {
   const { data: activities } = useSWR(`/api/activities/${router.query.id}`, fetcher);
 
   // refs
-  const listTitleRef = useRef<OutlinedTextFieldProps>(null);
-  const boardnameRef = useRef<OutlinedTextFieldProps>(null);
+  const listTitleRef = useRef(null);
+  const boardnameRef = useRef(null);
 
   // local state
   const [editable, setEditable] = useState(false);
   const [addList, setAddList] = useState(false);
-  // const [data, setData] = useState({
-  //   list: null,
-  //   cards: null,
-  //   activities: null,
-  // })
 
   function getListsOrder() {
     if (lists.length) {
@@ -75,7 +68,7 @@ export const Board = () => {
 
   async function addNewList() {
     const obj = {
-      name: listTitleRef.current?.value,
+      name: listTitleRef.current.value,
       boardId: router.query.id,
       order: getListsOrder(),
     }
