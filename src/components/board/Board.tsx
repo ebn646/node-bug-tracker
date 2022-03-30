@@ -25,6 +25,8 @@ interface ICard {
 }
 interface IList {
   _id: string,
+  name: string,
+  order: string,
 }
 
 export const Board = () => {
@@ -77,8 +79,8 @@ export const Board = () => {
     setAddList(false);
   }
 
-  async function editList(data:{name: string}, id: string) {
-    await axios.patch(`/api/lists/${id}`, { name: data.name });
+  async function editList(name: string, id: string) {
+    await axios.patch(`/api/lists/${id}`, { name: name });
     mutate(`/api/lists?boardid=${router.query.id}`);
   }
 
@@ -401,10 +403,10 @@ export const Board = () => {
                               column={list}
                               tasks={_.orderBy(listCards, ['order'], ['asc'])}
                               index={index}
-                              callback={updateCards}
+                              updateCards={updateCards}
                               deleteList={deleteList}
                               editList={editList}
-                              activitiescb={updateActivities} />;
+                              updateActivities={updateActivities} />;
                           })}
                         {provided.placeholder}
                         <div>

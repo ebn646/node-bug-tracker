@@ -22,11 +22,25 @@ const DraggableHeader = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function Column({ column, tasks, index, callback, deleteList, editList, activitiescb }) {
+interface IColumn {
+    index: number,
+    column: {
+        _id: string,
+        name: string,
+        order: string,
+    },
+    tasks:any[],
+    updateCards:() => void,
+    deleteList:(id:string) => void,
+    editList:(name:string, id: string) => void,
+    updateActivities:() => void,
+}
+
+export default function Column({ column, tasks, index, updateCards, deleteList, editList, updateActivities }:IColumn) {
     const user = useContext(UserContext);
     const router = useRouter();
-    const ref = useRef();
-    const titleRef = useRef();
+    const ref = useRef<any>(null);
+    const titleRef = useRef<any>(null);
     const [addCard, showAddCard] = useState(false);
     const [value, setValue] = useState('');
     const [edit, setEdit] = useState(false);
@@ -45,12 +59,12 @@ export default function Column({ column, tasks, index, callback, deleteList, edi
         }
         const response = await axios.post('/api/cards/', obj);
         // TODO:  Add error handling...
-        callback(response.data, 'ADD');
+        updateCards();
         // post activity
         axios.post(`/api/activities`,
             { boardId: router.query.id, text: `${user.firstName} ${user.lastName} added ${ref.current.value}` })
             .then((response) => {
-                activitiescb(response.data)
+                updateActivities()
             });
         setValue('');
     }
@@ -58,11 +72,10 @@ export default function Column({ column, tasks, index, callback, deleteList, edi
     async function deleteListSubmitHandler() {
         deleteList(column._id);
         // TODO:  Add error handling...
-        
         setValue('');
     }
 
-    function handleKeyDown(e) {
+    function handleKeyDown(e:KeyboardEvent) {
         if (e.key === 'Enter') {
             e.preventDefault()
             if (ref.current.value === '') {
@@ -75,11 +88,10 @@ export default function Column({ column, tasks, index, callback, deleteList, edi
     }
 
     function updateListName() {
-        const obj = { ...column, name: titleRef.current.value }
-        editList(obj, column._id)
+        editList(titleRef.current.value, column._id)
     }
 
-    function handleKeyDown2(e) {
+    function handleKeyDown2(e:any) {
         if (e.key === 'Enter') {
             e.preventDefault()
             if (titleRef.current.value === '') {
@@ -111,7 +123,7 @@ export default function Column({ column, tasks, index, callback, deleteList, edi
                                             variant="standard"
                                             inputRef={titleRef}
                                             autoFocus
-                                            onKeyDown={handleKeyDown2}
+                                            onKeyDown={(e) => handleKeyDown2(e)}
                                             onBlur={() => setEdit(false)}
                                         />
                                     ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name} ({column.order})</Button>
@@ -123,8 +135,8 @@ export default function Column({ column, tasks, index, callback, deleteList, edi
                                 {
                                     (provided) => (
                                         <div ref={provided.innerRef} {...provided.droppableProps}>
-                                            {tasks.map((task, index) => (
-                                                <Card key={task._id} task={task} index={index} callback={callback} />
+                                            {tasks.map((task:any, index) => (
+                                                <Card key={task._id} task={task} index={index} callback={updateCards} />
                                             ))}
                                             {provided.placeholder}
                                         </div>

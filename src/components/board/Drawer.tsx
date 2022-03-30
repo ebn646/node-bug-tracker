@@ -10,15 +10,23 @@ import ListItemText from '@mui/material/ListItemText';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from '../common/UserAvatar';
 
-export default function TDrawer({ activities }) {
-  const [state, setState] = React.useState({
+interface IActivities {
+  activities: [{
+    _id: string,
+    text: string,
+    createdAt: Date,
+  }]
+}
+
+export default function TDrawer({ activities }: IActivities) {
+  const [state, setState] = React.useState<any>({
     top: false,
     left: false,
     bottom: false,
     right: false,
   });
 
-  const toggleDrawer = (anchor, open) => (event: MouseEvent) => {
+  const toggleDrawer = (anchor: string, open: boolean) => (event: any) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
@@ -27,13 +35,13 @@ export default function TDrawer({ activities }) {
   };
 
 
-  const list = (anchor) => (
+  const list = (anchor: string) => (
     <Box
       sx={{ width: 335 }}
       role="presentation"
     >
       <List>
-        <ListItem sx={{ display: 'flex', wodth: '100%', justifyContent: 'space-between' }} button key="menu" onClick={toggleDrawer(anchor, false)}>Menu <CloseIcon /></ListItem>
+        <ListItem sx={{ display: 'flex', wodth: '100%', justifyContent: 'space-between' }} key="menu" onClick={toggleDrawer(anchor, false)}>Menu <CloseIcon /></ListItem>
         <ListItem button key="activity"><ListItemText primary="Activity" /></ListItem>
       </List>
       <Divider />
