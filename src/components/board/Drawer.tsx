@@ -33,8 +33,6 @@ export default function TDrawer({ activities }) {
     >
       <List>
         <ListItem sx={{ display: 'flex', wodth: '100%', justifyContent: 'space-between' }} button key="menu" onClick={toggleDrawer(anchor, false)}>Menu <CloseIcon /></ListItem>
-        <ListItem button key="change-background"><ListItemText primary="Change background" /></ListItem>
-        <ListItem button key="delete"><ListItemText primary="Delete board" /></ListItem>
         <ListItem button key="activity"><ListItemText primary="Activity" /></ListItem>
       </List>
       <Divider />

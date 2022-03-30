@@ -8,7 +8,6 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -51,8 +50,8 @@ export const Board = () => {
   const { data: activities } = useSWR(`/api/activities/${router.query.id}`, fetcher);
 
   // refs
-  const listTitleRef = useRef(null);
-  const boardnameRef = useRef(null);
+  const listTitleRef = useRef<HTMLInputElement>(null);
+  const boardnameRef = useRef<HTMLInputElement>(null);
 
   // local state
   const [editable, setEditable] = useState(false);
@@ -68,7 +67,7 @@ export const Board = () => {
 
   async function addNewList() {
     const obj = {
-      name: listTitleRef.current.value,
+      name: listTitleRef?.current?.value,
       boardId: router.query.id,
       order: getListsOrder(),
     }
@@ -80,7 +79,7 @@ export const Board = () => {
   }
 
   async function editList(data:{name: string}, id: string) {
-    const response = await axios.patch(`/api/lists/${id}`, { name: data.name });
+    await axios.patch(`/api/lists/${id}`, { name: data.name });
     mutate(`/api/lists?id=${router.query.id}`);
   }
 
@@ -116,9 +115,6 @@ export const Board = () => {
   }
 
   useEffect(() => {
-    if (lists) {
-      console.log('lists ', lists)
-    }
     if (lists && project && activities) {
       const sortedLists = _.orderBy(lists, ['order'], ['asc'])
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
@@ -428,10 +424,6 @@ export const Board = () => {
                           })}
                         {provided.placeholder}
                         <div>
-                          <Stack
-                            spacing={1}
-                            sx={{ marginLeft: 1 }}
-                          >
                             {
                               addList ? (
                                 <>
@@ -447,7 +439,6 @@ export const Board = () => {
                                       inputRef={listTitleRef}
                                       autoFocus
                                       onBlur={() => setEditable(false)}
-                                      sx={{ py: 1, }}
                                     />
                                     <Box sx={{
                                       pt: 1,
@@ -478,7 +469,6 @@ export const Board = () => {
                                 </Button>
                               </Box>
                             }
-                          </Stack>
                         </div>
                       </div>
                     </div>

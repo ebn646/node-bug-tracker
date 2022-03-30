@@ -10,9 +10,9 @@ import * as Yup from 'yup';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Comments from './Comments';
+
 import {
     Box,
     Button,
@@ -29,6 +29,7 @@ interface ICard {
     description?: string,
     listId: string,
 }
+
 interface IEditCardDiaog {
     lists: [],
     updateCards: () => void,
@@ -90,15 +91,17 @@ function EditCardDialog({ lists, updateCards }: IEditCardDiaog) {
             mutate(updated)
             updateCards()
         }
-        console.log('success... ', result)
     }
 
 
     function getDefaultItem() {
         if (card) {
-            if (lists.filter((l: IList) => l._id === card.listId).length) {
-                return lists.filter((l: IList) => l._id === card.listId)[0]._id
-            }
+            let target: any
+                if(lists.find((l: IList) => l._id === card.listId) ){
+                    target = lists.find((l: IList) => l._id === card.listId);
+                    const { _id } = target;
+                    return _id
+                }
         }
     }
 
