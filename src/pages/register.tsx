@@ -42,7 +42,7 @@ const Register = () => {
     resolver: yupResolver(validationSchema)
   });
 
-  async function (data) {
+  async function onSubmit(data) {
     console.log(JSON.stringify(data, null, 2));
     const  { firstName, lastName, email, password } = data;
     try {
