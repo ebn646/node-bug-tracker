@@ -48,7 +48,7 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
         callback(response.data, 'ADD');
         // post activity
         axios.post(`/api/activities`,
-            { boardId: router.query.id, text: `${user.username}  added card ${ref.current.value}` })
+            { boardId: router.query.id, text: `${user.firstName} ${user.lastName} added card ${ref.current.value}` })
             .then((response) => {
                 activitiescb(response.data)
             });

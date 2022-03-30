@@ -1,10 +1,9 @@
 import { connectToDatabase } from '../../../../../lib/db';
 import nc from 'next-connect';
 import { ObjectId } from 'mongodb';
-import { update } from 'lodash';
 
 const ncOpts = {
-  onError(err, req, res) {
+  onError(err: any, res) {
     console.error(err);
     res.statusCode =
       err.status && err.status >= 100 && err.status < 600 ? err.status : 500;
@@ -56,7 +55,6 @@ handler.patch(async (req, res) => {
 handler.delete(async (req, res) => {
   let client = await connectToDatabase();
   let db = client.db();
-
   let card = await db
     .collection("cards")
     .deleteOne({ _id: new ObjectId(req.query.cardId) })

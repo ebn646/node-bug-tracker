@@ -290,7 +290,6 @@ export const Board = () => {
       // 2. update in db
       axios.patch(`/api/cards/${draggableId}`,
         {
-          ...targetCard,
           order: newOrder,
         })
         .then((response) => console.log(response));
@@ -309,7 +308,7 @@ export const Board = () => {
     }
   }
 
-  if (!project || !lists) {
+  if (!project || !lists || !activities) {
     return (
       <div />
     )

@@ -8,7 +8,8 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import CloseIcon from '@mui/icons-material/Close';
-
+import Avatar from '@mui/material/Avatar';
+import UserAvatar from '../common/UserAvatar';
 
 
 export default function TDrawer({ activities }) {
@@ -42,6 +43,7 @@ export default function TDrawer({ activities }) {
         <List>
           {activities && activities.length > 0 && activities.map((act) => (
             <ListItem button key={act._id}>
+              <UserAvatar />
               <Box>
                 <p>{act.text}</p>
                 <p style={{fontSize: 10}}>{format(new Date(act.createdAt), "M/d/yy' at 'HH:mm.aa")}</p>
