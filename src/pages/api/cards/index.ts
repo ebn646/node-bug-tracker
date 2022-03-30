@@ -24,8 +24,13 @@ handler.get(async (req, res) => {
           boardId: new ObjectId(req.query.boardid)
         }
       },
+      {
+        $sort:{ order: 1}
+      }
     ])
     .toArray();
+
+    console.log(cards)
   res.json(cards);
 });
 

@@ -398,7 +398,7 @@ export const Board = () => {
                             return <Column
                               key={list._id}
                               column={list}
-                              tasks={_.orderBy(listCards)}
+                              tasks={_.orderBy(listCards, ['order'], ['asc'])}
                               index={index}
                               callback={updateCards}
                               deleteList={deleteList}
