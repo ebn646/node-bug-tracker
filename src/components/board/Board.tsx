@@ -119,7 +119,7 @@ export const Board = () => {
       const sortedLists = _.orderBy(lists, ['order'], ['asc'])
       const sortedCards = _.orderBy(cards, ['order'], ['asc'])
       const sortedAct = activities.reverse();
-      console.log('sortedLists = ', sortedLists)
+      console.log('lists = ', lists)
     } else {
       console.log('not yet...')
     }
@@ -149,7 +149,9 @@ export const Board = () => {
         lists[destination.index + 1].order,
       )
     }
-
+    let copy = lists.find((l: IList) => l._id === draggableId)
+   copy = {...copy, order: newOrder}
+   // mutate(`/api/lists?boardid=${router.query.id}`, [copy])
     // 2. update in db
     axios.patch(`/api/lists/${draggableId}`,
       {
@@ -157,8 +159,7 @@ export const Board = () => {
         order: newOrder
       })
       .then((response) => {
-        console.log('patch is complete and response = ', response);
-        // mutate();
+        mutate(`/api/lists?boardid=${router.query.id}`)
       });
     // reorder list
     target.order = newOrder;
@@ -399,7 +400,7 @@ export const Board = () => {
                     >
                       <div style={{ display: 'flex' }}>
                         {
-                          lists && cards && lists.map((list:IList, index: number) => {
+                          lists && cards && _.orderBy(lists, ['order'], ['asc']).map((list:IList, index: number) => {
                             const listCards = cards.filter((card:ICard) => card.listId === list._id);
                             return <Column
                               key={list._id}
