@@ -32,11 +32,11 @@ export const Board = () => {
   const router = useRouter();
 
   function updateCards() {
-    mutate(`/api/cards/?boardid=${router.query.id}`)
+    mutate(`/api/cards?boardid=${router.query.id}`)
   }
 
   function updateLists() {
-    mutate(`/api/lists/?boardid=${router.query.id}`)
+    mutate(`/api/lists?boardid=${router.query.id}`)
   }
 
   function updateActivities() {
@@ -44,7 +44,7 @@ export const Board = () => {
   }
 
   // destructure
-  const { data: cards } = useSWR(`/api/cards/?boardid=${router.query.id}`, fetcher);
+  const { data: cards } = useSWR(`/api/cards?boardid=${router.query.id}`, fetcher);
   const { data: lists } = useSWR(`/api/lists?boardid=${router.query.id}`, fetcher);
   const { data: project } = useSWR(`/api/board/${router.query.id}`, fetcher);
   const { data: activities } = useSWR(`/api/activities/${router.query.id}`, fetcher);
@@ -72,14 +72,14 @@ export const Board = () => {
       order: getListsOrder(),
     }
 
-    const response = await axios.post('/api/lists', obj);
-    updateLists()
+    await axios.post('/api/lists', obj);
+    mutate(`/api/lists?boardid=${router.query.id}`)
     setAddList(false);
   }
 
   async function editList(data:{name: string}, id: string) {
     await axios.patch(`/api/lists/${id}`, { name: data.name });
-    mutate(`/api/lists?id=${router.query.id}`);
+    mutate(`/api/lists?boardid=${router.query.id}`);
   }
 
   async function editBoard() {
@@ -122,10 +122,6 @@ export const Board = () => {
     }
   }, [lists, project, activities])
 
-  useEffect(() => {
-    const sorted = _.orderBy(cards, ['order'], ['asc'])
-  }, [cards])
-
 
   const reorderColumns = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
     let newOrder;
@@ -155,7 +151,7 @@ export const Board = () => {
         id: draggableId,
         order: newOrder
       })
-      .then((response) => {
+      .then(() => {
         mutate(`/api/lists?boardid=${router.query.id}`)
       });
     // reorder list
@@ -164,11 +160,6 @@ export const Board = () => {
     const sorted = _.orderBy(lists, ['order'], ['asc'])
     console.log('sorted = ', sorted);
     // reset data to rereder
-
-    // setData((prev) => ({
-    //   ...prev,
-    //   lists: sorted,
-    // }))
   }
 
   const moveToNewList = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
@@ -199,15 +190,13 @@ export const Board = () => {
       console.log('i am last...', target)
       newOrder = midString(target.order, '')
     }
-    // mutate local cache for   
 
     // assign order and listId
     copy = copy.filter((c) => c._id !== target._id);
     target = Object.assign({ ...target }, { listId: destination.droppableId, order: newOrder })
     copy = [...copy, target];
-    mutate(`/api/cards/?boardid=${router.query.id}`, copy)
+    mutate(`/api/cards?boardid=${router.query.id}`, copy)
 
-    // call api
     // post card
     axios.patch(`/api/cards/${draggableId}`,
       { listId: destination.droppableId, order: newOrder })
@@ -219,7 +208,6 @@ export const Board = () => {
   }
 
   const onDragEnd = (result: DropResult) => {
-    console.log('onDragEnd called ', result)
     const { destination, source, draggableId, type } = result;
     let newOrder;
     // dropped outside the list
@@ -257,7 +245,8 @@ export const Board = () => {
       // first
       const column = startList
       const taskLength = cards.filter((c:ICard) => c.listId === source.droppableId).length;
-      console.log('l = ', taskLength);
+      const colummnCards = cards.filter((c:ICard) => c.listId === source.droppableId)
+      const sorted = _.orderBy(colummnCards, ['order'], ['asc'])
       if (destination.index === 0) {
         console.log('I am first', column)
         // 1. find the card 
@@ -265,43 +254,34 @@ export const Board = () => {
         newOrder = midString('', cards[destination.index].order)
       }
       else if (destination.index === taskLength - 1) {
-        console.log('I am last')
+       //  console.log('I am last')
         newOrder = midString(cards[destination.index].order, '')
       }
       // move closer to top, decrease index
       else if (destination.index < source.index) {
-        console.log('I moved closer to the top', cards[destination.index - 1].order, cards[destination.index].order);
+        // console.log('I moved closer to the top!', sorted[destination.index].order, sorted[destination.index - 1].order);
         newOrder = midString(
-          cards[destination.index - 1].order,
-          cards[destination.index].order,
+          sorted[destination.index - 1].order,
+          sorted[destination.index].order,
         )
+        console.log('new order = ', newOrder)
       }
       // move closer to bottom, increase index
       else {
-        console.log('I moved closer to the bottom')
+        // console.log('I moved closer to the bottom' , sorted[destination.index + 1].order, sorted[destination.index].order)
         newOrder = midString(
-          cards[destination.index].order,
-          cards[destination.index + 1].order,
+          sorted[destination.index].order,
+          sorted[destination.index + 1].order,
         )
       }
-      console.log('neworder ', newOrder)
       // 2. update in db
       axios.patch(`/api/cards/${draggableId}`,
         {
           order: newOrder,
         })
-        .then((response) => console.log(response));
+        .then(() => updateCards());
       // reorder list
-      targetCard.order = newOrder;
-      console.log('reorder the list', cards)
-      const sorted = _.orderBy(cards, ['order'], ['asc'])
-      // console.log('sorted = ', sorted);
-      // setData((prev) => {
-      //   return ({
-      //     ...prev,
-      //     cards: sorted,
-      //   });
-      // })
+      updateCards();
       return;
     }
   }
@@ -402,7 +382,7 @@ export const Board = () => {
                             return <Column
                               key={list._id}
                               column={list}
-                              tasks={listCards}
+                              tasks={_.orderBy(listCards, ['order'], ['asc'])}
                               index={index}
                               callback={updateCards}
                               listsCallback={updateLists}

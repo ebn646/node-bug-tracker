@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import { connectToDatabase } from '../../../../lib/db';
 
 const ncOpts = {
-  onError(err, req, res) {
+  onError(err, res) {
     console.error(err);
     res.statusCode = err.status && err.status >= 100 && err.status < 600 ? err.status : 500;
     res.json({ message: err.message });
@@ -13,8 +13,6 @@ const ncOpts = {
 const handler = nc(ncOpts);
 
 handler.get(async (req, res) => {
-  console.log('req.query ========== ', req.query.boardid)
-
   const client = await connectToDatabase();
   const db = client.db();
 
@@ -28,8 +26,6 @@ handler.get(async (req, res) => {
       }
     ])
     .toArray();
-
-  console.log('cards ========== ', cards)
   res.json(cards);
 });
 
