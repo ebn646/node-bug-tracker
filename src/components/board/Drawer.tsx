@@ -19,7 +19,7 @@ export default function TDrawer({ activities }) {
     right: false,
   });
 
-  const toggleDrawer = (anchor, open) => (event:MouseEvent) => {
+  const toggleDrawer = (anchor, open) => (event: MouseEvent) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
@@ -45,7 +45,7 @@ export default function TDrawer({ activities }) {
               <UserAvatar />
               <Box>
                 <p>{act.text}</p>
-                <p style={{fontSize: 10}}>{format(new Date(act.createdAt), "M/d/yy' at 'HH:mm.aa")}</p>
+                <p style={{ fontSize: 10 }}>{format(new Date(act.createdAt), "M/d/yy' at 'HH:mm.aa")}</p>
               </Box>
             </ListItem>
           ))}
@@ -58,7 +58,14 @@ export default function TDrawer({ activities }) {
     <div style={{ position: 'absolute', right: 0 }}>
       {['right'].map((anchor) => (
         <React.Fragment key={anchor}>
-          <Button sx={{ border: '1px solid red', width: 100, opacity: 0, zIndex: 5 }} onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
+          <Button
+            sx={{
+              border: '1px solid red',
+              width: 100,
+              opacity: 0,
+              zIndex: 5
+            }}
+            onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
           <Drawer
             variant="persistent"
             hideBackdrop

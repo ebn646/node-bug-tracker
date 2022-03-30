@@ -23,7 +23,7 @@ handler.get(async (req, res) => {
         $match: {
           boardId: new ObjectId(req.query.boardid)
         }
-      }
+      },
     ])
     .toArray();
   res.json(cards);

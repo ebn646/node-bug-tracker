@@ -71,9 +71,9 @@ export const Board = () => {
       boardId: router.query.id,
       order: getListsOrder(),
     }
-
+    mutate(`/api/lists?boardid=${router.query.id}`, [...lists, obj]);
     await axios.post('/api/lists', obj);
-    mutate(`/api/lists?boardid=${router.query.id}`)
+    mutate(`/api/lists?boardid=${router.query.id}`);
     setAddList(false);
   }
 
@@ -81,6 +81,20 @@ export const Board = () => {
     await axios.patch(`/api/lists/${id}`, { name: data.name });
     mutate(`/api/lists?boardid=${router.query.id}`);
   }
+
+  async function deleteList( id: string) {
+    const filtered = lists.filter((l:IList) => l._id !== id);
+    console.log(filtered)
+    mutate(`/api/lists?boardid=${router.query.id}`, filtered);
+    const response = await axios.delete(`/api/lists/${id}`);
+    mutate(`/api/lists?boardid=${router.query.id}`);
+    axios.post(`/api/activities`,
+            { boardId: router.query.id, text: `user deleted list` })
+            .then((response) => {
+              updateActivities()
+            });
+  }
+
 
   async function editBoard() {
     if(boardnameRef && boardnameRef.current){
@@ -274,14 +288,16 @@ export const Board = () => {
           sorted[destination.index + 1].order,
         )
       }
+
+      let copy = cards.filter((c:ICard) => c._id !== draggableId);
+      mutate(`/api/cards?boardid=${router.query.id}`, [...cards, {...copy, order: newOrder}]);
+
       // 2. update in db
       axios.patch(`/api/cards/${draggableId}`,
         {
           order: newOrder,
         })
         .then(() => updateCards());
-      // reorder list
-      updateCards();
       return;
     }
   }
@@ -382,10 +398,10 @@ export const Board = () => {
                             return <Column
                               key={list._id}
                               column={list}
-                              tasks={_.orderBy(listCards, ['order'], ['asc'])}
+                              tasks={_.orderBy(listCards)}
                               index={index}
                               callback={updateCards}
-                              listsCallback={updateLists}
+                              deleteList={deleteList}
                               editList={editList}
                               activitiescb={updateActivities} />;
                           })}

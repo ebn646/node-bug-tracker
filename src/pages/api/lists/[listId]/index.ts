@@ -48,7 +48,7 @@ handler.delete(async (req, res) => {
 
   let card = await db
     .collection("lists")
-    .deleteOne({_id: ObjectId(req.query.listId)})
+    .deleteOne({_id: new ObjectId(req.query.listId)})
   res.json( card );
 })
 

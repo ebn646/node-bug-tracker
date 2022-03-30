@@ -22,7 +22,7 @@ const DraggableHeader = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function Column({ column, tasks, index, callback, listsCallback, editList, activitiescb }) {
+export default function Column({ column, tasks, index, callback, deleteList, editList, activitiescb }) {
     const user = useContext(UserContext);
     const router = useRouter();
     const ref = useRef();
@@ -56,15 +56,9 @@ export default function Column({ column, tasks, index, callback, listsCallback, 
     }
 
     async function deleteListSubmitHandler() {
-        listsCallback({ _id: column._id }, 'DELETE');
-        const response = await axios.delete(`/api/lists/${column._id}`);
+        deleteList(column._id);
         // TODO:  Add error handling...
-        console.log('delete response is...', response);
-        axios.post(`/api/activities`,
-            { boardId: router.query.id, text: `user deleted list ${column.name}` })
-            .then((response) => {
-                activitiescb(response.data)
-            });
+        
         setValue('');
     }
 
