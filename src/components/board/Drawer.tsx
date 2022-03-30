@@ -10,7 +10,6 @@ import ListItemText from '@mui/material/ListItemText';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from '../common/UserAvatar';
 
-
 export default function TDrawer({ activities }) {
   const [state, setState] = React.useState({
     top: false,

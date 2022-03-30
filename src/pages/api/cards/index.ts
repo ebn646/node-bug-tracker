@@ -29,8 +29,6 @@ handler.get(async (req, res) => {
       }
     ])
     .toArray();
-
-    console.log(cards)
   res.json(cards);
 });
 

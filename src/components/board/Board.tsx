@@ -290,7 +290,8 @@ export const Board = () => {
       }
 
       let copy = cards.filter((c:ICard) => c._id !== draggableId);
-      mutate(`/api/cards?boardid=${router.query.id}`, [...cards, {...copy, order: newOrder}]);
+      let sortedArr =  [...cards, {...copy, order: newOrder}].sort((a,b) => a.order - b.order);
+      mutate(`/api/cards?boardid=${router.query.id}`, sortedArr);
 
       // 2. update in db
       axios.patch(`/api/cards/${draggableId}`,
