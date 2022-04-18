@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement } from 'react';
+import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
-import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Box, Container } from '@mui/material';
-import useSWR from 'swr';
 import { Board } from '../../components/board/Board';
 import { DashboardLayout } from '../../components/DashboardLayout';
 
@@ -29,22 +28,25 @@ function Project() {
   );
 }
 
-Project.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Project.getLayout = (page: ReactElement) => <DashboardLayout>{page}</DashboardLayout>;
 
-export async function getServerSideProps(context) {
-  const session = await getSession({ req: context.req });
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  try {
+    const session = await getSession({ req: context.req });
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+  } catch(err){
+    
   }
-
+ 
   return {
-    props: { session },
+    props: {},
   };
 }
 

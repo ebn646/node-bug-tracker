@@ -12,11 +12,18 @@ import UserContext from '../context/UserContext';
 import { store } from '../store/store';
 import { Provider } from 'react-redux';
 
+interface IUser {
+  _id: string
+  firstName: string
+  lastName: string
+  email: string
+}
+
 const clientSideEmotionCache = createEmotionCache();
 
-function App(props) {
+function App(props: any) {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   
   useEffect(() => {
     if (!currentUser) {
@@ -50,7 +57,6 @@ function App(props) {
           content="initial-scale=1, width=device-width"
         />
       </Head>
-
         <UserContext.Provider value={currentUser}>
           <ThemeProvider theme={theme}>
           <SessionProvider>

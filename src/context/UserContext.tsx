@@ -1,6 +1,13 @@
 import { string } from 'prop-types';
 import { createContext } from 'react';
 
-const UserContext = createContext({firstName: string, lastName: string, _id: string, email: string,});
+interface AppContextInterface {
+    _id: string
+    firstName: string
+    lastName: string
+    email: string
+  }
+
+const UserContext = createContext<AppContextInterface | null>(null);
 
 export default UserContext
