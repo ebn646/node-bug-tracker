@@ -1,2 +1,2 @@
-email = test@test.com
-pw=password1234
+email = test@abc.com
+pw=1234567

@@ -13,11 +13,13 @@ export default NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
 
-      async authorize({email, password}) {
+      async authorize({ email, password }) {
         // Add logic here to look up the user from the credentials supplied
         const client = await connectToDatabase();
-        const usersCollection = client.db().collection('users');
+        console.log('authorized ', client.db());
 
+        const usersCollection = client.db().collection('users');
+        console.log('usersCollection ', usersCollection);
         const user = await usersCollection.findOne({
           email,
         });
@@ -26,10 +28,7 @@ export default NextAuth({
           client.close();
           throw new Error('No user found!');
         } else {
-          const isValid = await verifyPassword(
-            password,
-            user.password
-          );
+          const isValid = await verifyPassword(password, user.password);
 
           if (!isValid) {
             client.close();

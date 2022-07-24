@@ -1,14 +1,15 @@
-import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 
 const MONGO_URI: string = process.env.MONGO_URI as string;
 
 export async function connectToDatabase() {
-	const client = await mongoose.connect(MONGO_URI, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
-	console.log('I Am Connected to Mongo...')
-	return client;
+  try {
+    const client = await MongoClient.connect(MONGO_URI);
+    console.log('I Am Connected to Mongo...');
+    return client;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 // const MONGO_URI: string = process.env.MONGO_URI as string;
