@@ -22,7 +22,7 @@ import Divider from '@mui/material/Divider';
 import { fetcher } from '../../lib/fetch';
 import useSWR, { mutate } from "swr";
 
-function Index({ session }) {
+function Index({ session}: any) {
   const router = useRouter();
   const { data: workspaces } = useSWR(session && session.id ? `/api/workspaces?id=${session.id}` : null, fetcher)
   // local state

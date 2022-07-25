@@ -14,8 +14,8 @@ const Login = () => {
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      email: 'test@test.com',
-      password: 'password1234'
+      email: '',
+      password: ''
     },
     validationSchema: Yup.object({
       email: Yup
