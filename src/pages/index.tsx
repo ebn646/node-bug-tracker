@@ -4,7 +4,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GetServerSideProps } from "next";
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { DashboardLayout } from '../components/DashboardLayout';
 import {
   Button,
@@ -22,7 +22,8 @@ import Divider from '@mui/material/Divider';
 import { fetcher } from '../../lib/fetch';
 import useSWR, { mutate } from "swr";
 
-function Index({ session}: any) {
+function Index() {
+  const { data: session } = useSession();
   const router = useRouter();
   const { data: workspaces } = useSWR(session && session.id ? `/api/workspaces?id=${session.id}` : null, fetcher)
   // local state
@@ -35,8 +36,8 @@ function Index({ session}: any) {
   async function submitHandler(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (nameInputRef?.current?.value) {
-        await axios.post(`/api/workspaces/${router.query.id}?user=${session.id}`, { name: nameInputRef.current.value })
-        mutate(`/api/workspaces?id=${session.id}`);
+        await axios.post(`/api/workspaces/${router.query.id}?user=${session?.id}`, { name: nameInputRef.current.value })
+        mutate(`/api/workspaces?id=${session?.id}`);
         setShowForm(false)
     }else {
       alert('Ummm, A workspace name is required!')
@@ -158,7 +159,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
     };
   } else {
     return {
-      props: { session },
+      props: {},
     };
   }
 }
