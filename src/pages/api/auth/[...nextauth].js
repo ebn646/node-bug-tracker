@@ -16,10 +16,7 @@ export default NextAuth({
       async authorize({ email, password }) {
         // Add logic here to look up the user from the credentials supplied
         const client = await connectToDatabase();
-        console.log('authorized ', client.db());
-
         const usersCollection = client.db().collection('users');
-        console.log('usersCollection ', usersCollection);
         const user = await usersCollection.findOne({
           email,
         });

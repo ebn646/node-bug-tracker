@@ -35,7 +35,6 @@ export const UserHeader = (): JSX.Element => {
   };
 
   useEffect(() => {
-    console.log(router.pathname[0])
     if(router.pathname.includes('/b/')){
       setIsFixed(true)
     }else{
