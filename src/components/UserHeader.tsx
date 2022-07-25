@@ -124,9 +124,6 @@ export const UserHeader = (): JSX.Element => {
                   <Typography textAlign="center" variant="caption">{session?.user?.email}</Typography>
                 </Box>
               </MenuItem>
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{settings[0]}</Typography>
-              </MenuItem>
               <MenuItem onClick={() => { signOut(); handleCloseUserMenu() }}>
                 <Typography textAlign="center">{settings[2]}</Typography>
               </MenuItem>

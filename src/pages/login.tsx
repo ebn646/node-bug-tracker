@@ -1,16 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, FormEvent } from 'react';
 import Head from 'next/head';
 import { signIn } from 'next-auth/react';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, TextField, Typography } from '@mui/material';
 
 const Login = () => {
   const [error, setError] = useState();
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -36,31 +36,31 @@ const Login = () => {
     }
   });
 
-  async function submitHandler(e){
+  async function submitHandler(e: FormEvent) {
     e.preventDefault()
     const email = formik.values.email;
     const password = formik.values.password;
 
-    const result = await signIn('credentials', {
+    const result: any = await signIn('credentials', {
       redirect: false,
       email,
       password,
     });
- 
 
-    if (!result.error) {
+    if (result) {
+      if (!result.error) {
         // set some auth state
-        console.log('success = ', result)
         router.replace('/');
       } else {
         setError(result.error)
       }
+    }
   }
 
   return (
     <>
       <Head>
-        <title>Login | Material Kit</title>
+        <title>Login | TrellNode</title>
       </Head>
       <Box
         component="main"
@@ -74,11 +74,11 @@ const Login = () => {
         <Container maxWidth="sm">
           {
             error && (
-              <p style={{color: 'red'}}>{error}</p>
+              <p style={{ color: 'red' }}>{error}</p>
             )
           }
 
-          <form onSubmit={(e) => {submitHandler(e)}}>
+          <form onSubmit={(e) => { submitHandler(e) }}>
             <Box sx={{ my: 3 }}>
               <Typography
                 color="textPrimary"
@@ -132,21 +132,9 @@ const Login = () => {
               variant="body2"
             >
               Don&apos;t have an account?
-              {' '}
-              <NextLink
-                href="/register"
-              >
-                <Link
-                  to="/register"
-                  variant="subtitle2"
-                  underline="hover"
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                >
-                  Sign Up
-                </Link>
-              </NextLink>
+              <Link href="/register">
+                <a>Sign Up</a>
+              </Link>
             </Typography>
           </form>
         </Container>
