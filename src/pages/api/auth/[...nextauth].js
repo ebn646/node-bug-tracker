@@ -1,9 +1,12 @@
 import NextAuth from 'next-auth';
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
+import clientPromise from "../../../../lib/mongodb"
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '../../../../lib/auth';
 import { connectToDatabase } from '../../../../lib/db';
 
 export default NextAuth({
+  // adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -66,6 +69,6 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_URL,
   jwt: {
-    secret: process.env.NEXTAUTH_URL,
+    secret: process.env.NEXTAUTH_SECRET,
   },
 });

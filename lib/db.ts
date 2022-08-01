@@ -1,6 +1,11 @@
 import { MongoClient } from 'mongodb';
 
-const MONGO_URI: string = process.env.MONGO_URI as string;
+const MONGO_URI:string = process.env.MONGO_URI as string;
+
+
+if (!process.env.MONGO_URI) {
+  throw new Error("Please add your Mongo URI to .env.local")
+}
 
 export async function connectToDatabase() {
   try {
