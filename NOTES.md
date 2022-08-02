@@ -1,7 +1,7 @@
 local
-email = test@abc.com
+email = test@test.com
 pw=1234567
 
 live
 test@test.com
-pw=password1234
+pw=1234567

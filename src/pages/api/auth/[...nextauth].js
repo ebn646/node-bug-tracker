@@ -1,6 +1,4 @@
 import NextAuth from 'next-auth';
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-import clientPromise from "../../../../lib/mongodb"
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '../../../../lib/auth';
 import { connectToDatabase } from '../../../../lib/db';
@@ -67,7 +65,7 @@ export default NextAuth({
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_URL,
+  secret: process.env.NEXTAUTH_SECRET,
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
