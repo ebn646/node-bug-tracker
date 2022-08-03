@@ -30,7 +30,7 @@ interface IList {
 }
 
 export const Board = () => {
-  const user= useContext(UserContext);
+  const user = useContext(UserContext);
   const router = useRouter();
 
   function updateCards() {
@@ -84,22 +84,22 @@ export const Board = () => {
     mutate(`/api/lists?boardid=${router.query.id}`);
   }
 
-  async function deleteList( id: string) {
-    const filtered = lists.filter((l:IList) => l._id !== id);
+  async function deleteList(id: string) {
+    const filtered = lists.filter((l: IList) => l._id !== id);
     console.log(filtered)
     // mutate(`/api/lists?boardid=${router.query.id}`, filtered);
     const response = await axios.delete(`/api/lists/${id}`);
     mutate(`/api/lists?boardid=${router.query.id}`);
     axios.post(`/api/activities`,
-            { boardId: router.query.id, text: `user deleted list` })
-            .then((response) => {
-              updateActivities()
-            });
+      { boardId: router.query.id, text: `user deleted list` })
+      .then((response) => {
+        updateActivities()
+      });
   }
 
 
   async function editBoard() {
-    if(boardnameRef && boardnameRef.current){
+    if (boardnameRef && boardnameRef.current) {
       const name = boardnameRef.current.value;
       const obj = { ...project, name: name }
       mutate(`/api/board/${router.query.id}`, obj, false);
@@ -109,7 +109,7 @@ export const Board = () => {
     }
   }
 
-  const handleKeyDown = (event:KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     console.log('keydown called')
     // if (e.key === 'Enter') {
     //   e.preventDefault()
@@ -139,9 +139,9 @@ export const Board = () => {
   }, [lists, project, activities])
 
 
-  const reorderColumns = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
+  const reorderColumns = (source: DraggableLocation, destination: DraggableLocation, draggableId: string) => {
     let newOrder;
-    const target = lists.filter((i:IList) => i._id === draggableId)[0];
+    const target = lists.filter((i: IList) => i._id === draggableId)[0];
 
     if (destination.index === 0) {
       newOrder = midString('', lists[destination.index].order)
@@ -159,8 +159,8 @@ export const Board = () => {
       )
     }
     let copy = lists.find((l: IList) => l._id === draggableId)
-   copy = {...copy, order: newOrder}
-   // mutate(`/api/lists?boardid=${router.query.id}`, [copy])
+    copy = { ...copy, order: newOrder }
+    // mutate(`/api/lists?boardid=${router.query.id}`, [copy])
     // 2. update in db
     axios.patch(`/api/lists/${draggableId}`,
       {
@@ -178,7 +178,7 @@ export const Board = () => {
     // reset data to rereder
   }
 
-  const moveToNewList = (source:DraggableLocation, destination:DraggableLocation, draggableId: string) => {
+  const moveToNewList = (source: DraggableLocation, destination: DraggableLocation, draggableId: string) => {
     console.log('I need to move card to a new list ', source, destination, draggableId);
     let copy = [...cards];
     const taskLength = cards.length;
@@ -188,22 +188,18 @@ export const Board = () => {
     let newOrder;
 
     if (destination.index === 0) {
-      console.log('i am first...')
       newOrder = midString('', target.order)
     } else if (destination.index < source.index) {
-      console.log('i just moved up...')
       newOrder = midString(
         cards[destination.index - 1].order,
         cards[destination.index].order
       )
     } else if (destination.index > source.index) {
-      console.log('i just moved down...')
       newOrder = midString(
         cards[destination.index].order,
         cards[destination.index].order + 1
       )
     } else {
-      console.log('i am last...', target)
       newOrder = midString(target.order, '')
     }
 
@@ -211,15 +207,16 @@ export const Board = () => {
     copy = copy.filter((c) => c._id !== target._id);
     target = Object.assign({ ...target }, { listId: destination.droppableId, order: newOrder })
     copy = [...copy, target];
-    mutate(`/api/cards?boardid=${router.query.id}`, copy)
-
+    const options = { optimisticData: `/api/cards?boardid=${router.query.id}`, rollbackOnError: true }
+    mutate(`/api/cards?boardid=${router.query.id}`, copy,)
+    updateCards()
     // post card
     axios.patch(`/api/cards/${draggableId}`,
       { listId: destination.droppableId, order: newOrder })
       .then(() => updateCards());
     // post activity
     axios.post(`/api/activities`,
-      { boardId: router.query.id, text: `${user.firstName} ${user.lastName} moved a card` })
+      { boardId: router.query.id, text: `${user?.firstName} ${user?.lastName} moved a card` })
       .then(() => updateActivities());
   }
 
@@ -246,7 +243,7 @@ export const Board = () => {
       return;
     }
     // 
-    const startList = lists.filter((l:IList) => l._id === source.droppableId);
+    const startList = lists.filter((l: IList) => l._id === source.droppableId);
     const targetCard = cards.filter((c: ICard) => c._id === draggableId)[0];
 
     if (source.droppableId !== destination.droppableId) {
@@ -260,17 +257,17 @@ export const Board = () => {
       // 1. get new order for this card
       // first
       const column = startList
-      const taskLength = cards.filter((c:ICard) => c.listId === source.droppableId).length;
-      const colummnCards = cards.filter((c:ICard) => c.listId === source.droppableId)
+      const taskLength = cards.filter((c: ICard) => c.listId === source.droppableId).length;
+      const colummnCards = cards.filter((c: ICard) => c.listId === source.droppableId)
       const sorted = _.orderBy(colummnCards, ['order'], ['asc'])
       if (destination.index === 0) {
-        console.log('I am first', column)
+        console.log('I am first')
         // 1. find the card 
         // 2. assign card new order
         newOrder = midString('', cards[destination.index].order)
       }
       else if (destination.index === taskLength - 1) {
-       //  console.log('I am last')
+        //  console.log('I am last')
         newOrder = midString(cards[destination.index].order, '')
       }
       // move closer to top, decrease index
@@ -291,16 +288,18 @@ export const Board = () => {
         )
       }
 
-      let copy = cards.filter((c:ICard) => c._id !== draggableId);
-      let sortedArr =  [...cards, {...copy, order: newOrder}].sort((a,b) => a.order - b.order);
-      mutate(`/api/cards?boardid=${router.query.id}`, sortedArr);
+      let target = cards.find((c: ICard) => c._id === draggableId);
+      let copy = cards.filter((c: ICard) => c._id !== draggableId);
+      let sortedArr = [...copy, { ...target, order: newOrder }].sort((a, b) => a.order - b.order);
+      const options = { optimisticData: `/api/cards?boardid=${router.query.id}`, rollbackOnError: true }
+       mutate(`/api/cards?boardid=${router.query.id}`, sortedArr, options);
 
       // 2. update in db
       axios.patch(`/api/cards/${draggableId}`,
         {
           order: newOrder,
         })
-        .then(() => updateCards());
+        .then(() => { updateCards() });
       return;
     }
   }
@@ -337,12 +336,13 @@ export const Board = () => {
         <Box sx={{ position: 'fixed', top: 64, left: 0, right: 0 }}>
           {
             !editable ? (
-              <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'row', 
-                width: '100%', 
-                justifyContent: 'space-between' }}
-                >
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between'
+              }}
+              >
                 <Button
                   sx={{
                     my: 1,
@@ -396,8 +396,8 @@ export const Board = () => {
                     >
                       <div style={{ display: 'flex' }}>
                         {
-                          lists && cards && _.orderBy(lists, ['order'], ['asc']).map((list:IList, index: number) => {
-                            const listCards = cards.filter((card:ICard) => card.listId === list._id);
+                          lists && cards && _.orderBy(lists, ['order'], ['asc']).map((list: IList, index: number) => {
+                            const listCards = cards.filter((card: ICard) => card.listId === list._id);
                             return <Column
                               key={list._id}
                               column={list}
@@ -410,51 +410,51 @@ export const Board = () => {
                           })}
                         {provided.placeholder}
                         <div>
-                            {
-                              addList ? (
-                                <>
+                          {
+                            addList ? (
+                              <>
+                                <Box sx={{
+                                  p: 1,
+                                  width: 280,
+                                  backgroundColor: '#ebecf0',
+                                }}>
+                                  <TextField
+                                    id="new-list"
+                                    variant="outlined"
+                                    placeholder="Enter list title..."
+                                    inputRef={listTitleRef}
+                                    autoFocus
+                                    onBlur={() => setEditable(false)}
+                                  />
                                   <Box sx={{
-                                    p: 1,
-                                    width: 280,
-                                    backgroundColor: '#ebecf0',
+                                    pt: 1,
                                   }}>
-                                    <TextField
-                                      id="new-list"
-                                      variant="outlined"
-                                      placeholder="Enter list title..."
-                                      inputRef={listTitleRef}
-                                      autoFocus
-                                      onBlur={() => setEditable(false)}
-                                    />
-                                    <Box sx={{
-                                      pt: 1,
-                                    }}>
-                                      <Button
-                                        variant="contained"
-                                        onClick={() => addNewList()}>Add list
-                                      </Button>
-                                      <IconButton
-                                        color="primary"
-                                        onClick={() => resetAddList()}
-                                      >
-                                        <CloseIcon />
-                                      </IconButton>
-                                    </Box>
+                                    <Button
+                                      variant="contained"
+                                      onClick={() => addNewList()}>Add list
+                                    </Button>
+                                    <IconButton
+                                      color="primary"
+                                      onClick={() => resetAddList()}
+                                    >
+                                      <CloseIcon />
+                                    </IconButton>
                                   </Box>
-                                </>
-                              ) : <Box sx={{ width: 280 }}>
-                                <Button
-                                  sx={{
-                                    width: 270,
-                                    justifyContent: 'flex-start'
-                                  }}
-                                  variant="contained"
-                                  startIcon={<AddIcon />}
-                                  onClick={() => setAddList(true)}>
-                                  {`${lists && lists.length ? 'Add another list' : 'Add a list'}`}
-                                </Button>
-                              </Box>
-                            }
+                                </Box>
+                              </>
+                            ) : <Box sx={{ width: 280 }}>
+                              <Button
+                                sx={{
+                                  width: 270,
+                                  justifyContent: 'flex-start'
+                                }}
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                                onClick={() => setAddList(true)}>
+                                {`${lists && lists.length ? 'Add another list' : 'Add a list'}`}
+                              </Button>
+                            </Box>
+                          }
                         </div>
                       </div>
                     </div>

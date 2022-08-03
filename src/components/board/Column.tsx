@@ -62,7 +62,7 @@ export default function Column({ column, tasks, index, updateCards, deleteList, 
         updateCards();
         // post activity
         axios.post(`/api/activities`,
-            { boardId: router.query.id, text: `${user.firstName} ${user.lastName} added ${ref.current.value}` })
+            { boardId: router.query.id, text: `${user?.firstName} ${user?.lastName} added ${ref.current.value}` })
             .then((response) => {
                 updateActivities()
             });
@@ -130,7 +130,6 @@ export default function Column({ column, tasks, index, updateCards, deleteList, 
                                 }
                                 <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
                             </DraggableHeader>
-                            {/* <p style={{ fontSize: 10 }}>{column._id}</p> */}
                             <Droppable droppableId={column._id} type="card">
                                 {
                                     (provided) => (

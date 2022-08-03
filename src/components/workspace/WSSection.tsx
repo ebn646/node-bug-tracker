@@ -168,7 +168,7 @@ const WSSection = () => {
                     value={i.url}
                     control={<Radio />}
                     onClick={(e) => {setSelectedImage(getSelected(e))}}
-                    key={i.id}
+                    key={Math.random()}
                       {...register("backgroundImage")}
                       label={
                         <img
