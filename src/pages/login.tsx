@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
 import { Box, Button, Container, TextField, Typography } from '@mui/material';
 
 const Login = () => {
@@ -137,6 +140,19 @@ const Login = () => {
               </Link>
             </Typography>
           </form>
+          <Card variant="outlined" sx={{marginTop: 3}}>
+            <CardContent>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+               Test Account
+              </Typography>
+              <Typography color="text.secondary" variant="body2">
+                email: test@test.com
+              </Typography>
+              <Typography color="text.secondary" variant="body2">
+                password: 1234567
+              </Typography>
+            </CardContent>
+          </Card>
         </Container>
       </Box>
     </>

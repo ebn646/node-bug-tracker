@@ -42,7 +42,7 @@ const Register = () => {
     resolver: yupResolver(validationSchema)
   });
 
-  async function onSubmit(data) {
+  async function onSubmit(data: any) {
     console.log(JSON.stringify(data, null, 2));
     const  { firstName, lastName, email, password } = data;
     try {
@@ -55,12 +55,15 @@ const Register = () => {
           password,
         });
 
-        if (!result.error) {
-          // set some auth state
-          console.log('success = ', result)
-          router.replace('/');
-        } else {
-          console.log('poop', result.error)
+        if(result){
+          const { error } = result;
+          if (!error) {
+            // set some auth state
+            console.log('success = ', result)
+            router.replace('/');
+          } else {
+            console.log('There was an error...', error)
+          }
         }
       }
     } catch (err) {
