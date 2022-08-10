@@ -105,6 +105,8 @@ const WSSection = () => {
     return items.find((i) => i.url === e.target.value)
   }
 
+  useEffect(() => {console.log('ub ', userboards)},[userboards])
+
   if(!userboards){
     return <></>
   }

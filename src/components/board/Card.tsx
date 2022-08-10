@@ -86,7 +86,7 @@ export default function Card({ task, index, callback }:ICard) {
               autoFocus
               onBlur={(e:FocusEvent<HTMLInputElement>) => {showEdit(false); editSubmitHandler(e)}}
             />
-            ) : <p>{task.name} ({task.order})</p>
+            ) : <p>{task.name}</p>
           }
           <EditIcon className='delete' onClick={() =>  goto()} />
         </Item>

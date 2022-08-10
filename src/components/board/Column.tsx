@@ -126,7 +126,7 @@ export default function Column({ column, tasks, index, updateCards, deleteList, 
                                             onKeyDown={(e) => handleKeyDown2(e)}
                                             onBlur={() => setEdit(false)}
                                         />
-                                    ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name} ({column.order})</Button>
+                                    ) : <Button variant="text" onClick={() => setEdit(true)}>{column.name}</Button>
                                 }
                                 <DeleteIcon className='delete' onClick={() => deleteListSubmitHandler()} />
                             </DraggableHeader>

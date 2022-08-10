@@ -442,7 +442,7 @@ export const Board = () => {
                                   </Box>
                                 </Box>
                               </>
-                            ) : <Box sx={{ width: 280 }}>
+                            ) : <Box sx={{ width: 280, marginLeft: 1 }}>
                               <Button
                                 sx={{
                                   width: 270,
