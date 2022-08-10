@@ -32,7 +32,7 @@ function App(props: any) {
         const { email } = pageProps.session.user;
         getUser(email);
       } else {
-        console.log('Aint no sessions.....');
+        console.log('There is no session.....');
       }
     }
   }, [router]);

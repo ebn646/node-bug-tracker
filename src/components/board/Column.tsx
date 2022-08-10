@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
+import { IColumn } from '../../types'
 
 const DraggableHeader = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -22,19 +23,7 @@ const DraggableHeader = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-interface IColumn {
-    index: number,
-    column: {
-        _id: string,
-        name: string,
-        order: string,
-    },
-    tasks:any[],
-    updateCards:() => void,
-    deleteList:(id:string) => void,
-    editList:(name:string, id: string) => void,
-    updateActivities:() => void,
-}
+
 
 export default function Column({ column, tasks, index, updateCards, deleteList, editList, updateActivities }:IColumn) {
     const user = useContext(UserContext);
@@ -46,6 +35,7 @@ export default function Column({ column, tasks, index, updateCards, deleteList, 
     const [edit, setEdit] = useState(false);
 
     function toggleAddCard() {
+        console.log('toggleAddCard called')
         showAddCard(!addCard)
         setValue('');
     }
@@ -75,7 +65,7 @@ export default function Column({ column, tasks, index, updateCards, deleteList, 
         setValue('');
     }
 
-    function handleKeyDown(e:KeyboardEvent) {
+    function handleKeyDown(e:any) {
         if (e.key === 'Enter') {
             e.preventDefault()
             if (ref.current.value === '') {
@@ -156,8 +146,8 @@ export default function Column({ column, tasks, index, updateCards, deleteList, 
                                                 inputRef={ref}
                                                 value={value}
                                                 autoFocus
-                                                // onKeyDown={handleKeyDown}
-                                                // onBlur={toggleAddCard}
+                                                onKeyDown={(event:any) => handleKeyDown(event)}
+                                                onBlur={toggleAddCard}
                                                 onChange={(e) => { setValue(e.target.value) }}
                                             />
                                             <div style={{ display: 'flex', marginTop: 8 }}>

@@ -18,16 +18,7 @@ import midString from '../../utils/ordering';
 import UserContext from '../../context/UserContext';
 import EditCardDialog from '../dialogs/EditCardDialog';
 import { fetcher } from '../../../lib/fetch';
-
-interface ICard {
-  _id: string,
-  listId: string,
-}
-interface IList {
-  _id: string,
-  name: string,
-  order: string,
-}
+import {ICard, IList } from '../../types'
 
 export const Board = () => {
   const user = useContext(UserContext);
@@ -113,18 +104,18 @@ export const Board = () => {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     console.log('keydown called')
-    // if (e.key === 'Enter') {
-    //   e.preventDefault()
-    //   if (listTitleRef.current.value === '') {
-    //     setAddList(false);
-    //   }
-    //   else {
-    //     addNewList();
-    //   }
-    // } else {
-    //   setEditable(false)
-    //   setAddList(false);
-    // }
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      if (listTitleRef?.current?.value === '') {
+        setAddList(false);
+      }
+      else {
+        addNewList();
+      }
+    } else {
+      // setEditable(false)
+      // setAddList(false);
+    }
   }
 
   const resetAddList = () => {
@@ -421,13 +412,15 @@ export const Board = () => {
                                     inputRef={listTitleRef}
                                     autoFocus
                                     onBlur={() => setEditable(false)}
+                                    onKeyDown={(event:any) => handleKeyDown(event)}
                                   />
                                   <Box sx={{
                                     pt: 1,
                                   }}>
                                     <Button
                                       variant="contained"
-                                      onClick={() => addNewList()}>Add list
+                                      onClick={() => addNewList()}>
+                                        Add list
                                     </Button>
                                     <IconButton
                                       color="primary"
