@@ -73,6 +73,7 @@ export const Board = () => {
       boardId: router.query.id,
       order: getListsOrder(),
     }
+
     const options = { optimisticData: `/api/cards?boardid=${router.query.id}`, rollbackOnError: true }
     mutate(`/api/lists?boardid=${router.query.id}`, [...lists, obj], options);
     await axios.post('/api/lists', obj);
@@ -243,7 +244,6 @@ export const Board = () => {
     }
     // 
     const startList = lists.filter((l: IList) => l._id === source.droppableId);
-    const targetCard = cards.filter((c: ICard) => c._id === draggableId)[0];
 
     if (source.droppableId !== destination.droppableId) {
       // move card to a new list
@@ -260,18 +260,15 @@ export const Board = () => {
       const colummnCards = cards.filter((c: ICard) => c.listId === source.droppableId)
       const sorted = _.orderBy(colummnCards, ['order'], ['asc'])
       if (destination.index === 0) {
-        console.log('I am first')
         // 1. find the card 
         // 2. assign card new order
         newOrder = midString('', cards[destination.index].order)
       }
       else if (destination.index === taskLength - 1) {
-        //  console.log('I am last')
         newOrder = midString(cards[destination.index].order, '')
       }
       // move closer to top, decrease index
       else if (destination.index < source.index) {
-        // console.log('I moved closer to the top!', sorted[destination.index].order, sorted[destination.index - 1].order);
         newOrder = midString(
           sorted[destination.index - 1].order,
           sorted[destination.index].order,
@@ -280,7 +277,6 @@ export const Board = () => {
       }
       // move closer to bottom, increase index
       else {
-        // console.log('I moved closer to the bottom' , sorted[destination.index + 1].order, sorted[destination.index].order)
         newOrder = midString(
           sorted[destination.index].order,
           sorted[destination.index + 1].order,
@@ -416,6 +412,7 @@ export const Board = () => {
                                   p: 1,
                                   width: 280,
                                   backgroundColor: '#ebecf0',
+                                  marginLeft: 1
                                 }}>
                                   <TextField
                                     id="new-list"
