@@ -73,7 +73,8 @@ export const Board = () => {
       boardId: router.query.id,
       order: getListsOrder(),
     }
-    mutate(`/api/lists?boardid=${router.query.id}`, [...lists, obj]);
+    const options = { optimisticData: `/api/cards?boardid=${router.query.id}`, rollbackOnError: true }
+    mutate(`/api/lists?boardid=${router.query.id}`, [...lists, obj], options);
     await axios.post('/api/lists', obj);
     mutate(`/api/lists?boardid=${router.query.id}`);
     setAddList(false);
@@ -179,10 +180,8 @@ export const Board = () => {
   }
 
   const moveToNewList = (source: DraggableLocation, destination: DraggableLocation, draggableId: string) => {
-    console.log('I need to move card to a new list ', source, destination, draggableId);
     let copy = [...cards];
     const taskLength = cards.length;
-    console.log('I need to move card to a new list ', 'source index = ', source.index, 'dest index = ', destination.index, 'task len = ', taskLength);
 
     let target = copy.filter((c) => c._id === draggableId)[0];
     let newOrder;
